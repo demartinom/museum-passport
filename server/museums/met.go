@@ -17,6 +17,10 @@ type MetSingleArtwork struct {
 	PrimaryImageSmall string `json:"primaryImageSmall"`
 }
 
+func NewMetClient() *MetClient {
+	return &MetClient{BaseURL: "https://collectionapi.metmuseum.org/public/collection/v1"}
+}
+
 // Takes Object API response store in MetSingleArtwork and normalizes it into the models.Artwork struct
 func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.SingleArtwork {
 	return models.SingleArtwork{
