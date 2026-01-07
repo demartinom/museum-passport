@@ -1,5 +1,9 @@
 package museums
 
+type MetClient struct {
+	BaseURL string
+}
+
 type MetSingleArtwork struct {
 	ObjectID          int    `json:"objectID"`
 	ObjectName        string `json:"objectName"`
