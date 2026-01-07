@@ -1,5 +1,7 @@
 package museums
 
+import "github.com/demartinom/museum-passport/models"
+
 type MetClient struct {
 	BaseURL string
 }
@@ -13,4 +15,18 @@ type MetSingleArtwork struct {
 	Repository        string `json:"repository"`
 	PrimaryImage      string `json:"primaryImage"`
 	PrimaryImageSmall string `json:"primaryImageSmall"`
+}
+
+// Takes Object API response store in MetSingleArtwork and normalizes it into the models.Artwork struct
+func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.SingleArtwork {
+	return models.SingleArtwork{
+		ID:           receivedArt.ObjectID,
+		ArtworkTitle: receivedArt.ObjectName,
+		ArtistName:   receivedArt.ArtistDisplayName,
+		DateCreated:  receivedArt.ObjectDate,
+		ArtMedium:    receivedArt.Medium,
+		ImageLarge:   receivedArt.PrimaryImage,
+		ImageSmall:   receivedArt.PrimaryImageSmall,
+		Museum:       receivedArt.Repository,
+	}
 }
