@@ -8,4 +8,5 @@ type SingleArtwork struct {
 	ArtMedium    string
 	ImageLarge   string
 	ImageSmall   string
+	Museum       string
 }
