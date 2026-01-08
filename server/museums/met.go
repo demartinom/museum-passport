@@ -2,10 +2,12 @@ package museums
 
 import "github.com/demartinom/museum-passport/models"
 
+// Client for handling calls to the Met API
 type MetClient struct {
 	BaseURL string
 }
 
+// Struct for receiving a single artwork from the Met API
 type MetSingleArtwork struct {
 	ObjectID          int    `json:"objectID"`
 	ObjectName        string `json:"objectName"`
@@ -17,6 +19,7 @@ type MetSingleArtwork struct {
 	PrimaryImageSmall string `json:"primaryImageSmall"`
 }
 
+// Start up new Met Client
 func NewMetClient() *MetClient {
 	return &MetClient{BaseURL: "https://collectionapi.metmuseum.org/public/collection/v1"}
 }
