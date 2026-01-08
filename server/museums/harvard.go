@@ -2,10 +2,14 @@ package museums
 
 import "github.com/demartinom/museum-passport/models"
 
+// Client for handling calls to the Harvard API
 type HarvardClient struct {
 	BaseURL string
 	APIKey  string
 }
+
+// Struct for receiving single artwork response from Harvard API
+// Receives AAPI key from .env file
 type HarvardSingleArtwork struct {
 	ID     int    `json:"id"`
 	Dated  string `json:"dated"`
@@ -17,6 +21,7 @@ type HarvardSingleArtwork struct {
 	Title           string `json:"title"`
 }
 
+// Create new Harvard API client
 func NewHarvardClient(key string) *HarvardClient {
 	return &HarvardClient{BaseURL: "https://api.harvardartmuseums.org", APIKey: key}
 }
