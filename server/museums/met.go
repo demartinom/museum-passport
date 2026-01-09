@@ -16,7 +16,7 @@ type MetClient struct {
 // Struct for receiving a single artwork from the Met API
 type MetSingleArtwork struct {
 	ObjectID          int    `json:"objectID"`
-	ObjectName        string `json:"objectName"`
+	Title             string `json:"title"`
 	ArtistDisplayName string `json:"artistDisplayName"`
 	ObjectDate        string `json:"objectDate"`
 	Medium            string `json:"medium"`
@@ -39,13 +39,13 @@ func (m *MetClient) GetMuseumName() string {
 func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.SingleArtwork {
 	return models.SingleArtwork{
 		ID:           fmt.Sprintf("met-%d", receivedArt.ObjectID),
-		ArtworkTitle: receivedArt.ObjectName,
+		ArtworkTitle: receivedArt.Title,
 		ArtistName:   receivedArt.ArtistDisplayName,
 		DateCreated:  receivedArt.ObjectDate,
 		ArtMedium:    receivedArt.Medium,
 		ImageLarge:   receivedArt.PrimaryImage,
 		ImageSmall:   receivedArt.PrimaryImageSmall,
-		Museum:       receivedArt.Repository,
+		Museum:       "The Metropolitan Museum of Art",
 	}
 }
 

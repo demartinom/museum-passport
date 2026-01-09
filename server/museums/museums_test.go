@@ -7,7 +7,7 @@ import (
 func TestNormalizeMetArtwork(t *testing.T) {
 	raw := MetSingleArtwork{
 		ObjectID:          436105,
-		ObjectName:        "The Death of Socrates",
+		Title:             "The Death of Socrates",
 		ArtistDisplayName: "Jacques-Louis David",
 		ObjectDate:        "1787",
 		Medium:            "Oil on canvas",
