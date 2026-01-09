@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/demartinom/museum-passport/handlers"
+	"github.com/demartinom/museum-passport/museums"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 )
@@ -16,10 +18,16 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// metClient := museums.NewMetClient()
-	// harvardClient := museums.NewHarvardClient(os.Getenv("HARVARD_KEY"))
+	//Creates map of museum clients to be used by different handlers
+	clients := map[string]museums.Client{
+		"met":     museums.NewMetClient(),
+		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY")),
+	}
+
+	ArtworkHandler := handlers.NewArtworkHandler(clients)
 
 	r := chi.NewRouter()
+	r.Get("/api/artwork/{id}", ArtworkHandler.GetArtwork)
 
 	port := os.Getenv("PORT")
 	fmt.Printf("Starting server at port%s\n", port)
