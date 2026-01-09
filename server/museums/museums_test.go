@@ -18,8 +18,8 @@ func TestNormalizeMetArtwork(t *testing.T) {
 	client := NewMetClient()
 	normalized := client.NormalizeArtwork(raw)
 
-	if normalized.ID != 436105 {
-		t.Errorf("Expected ID 536105, returned ID %d", normalized.ID)
+	if normalized.ID != "met-436105" {
+		t.Errorf("Expected ID 536105, returned ID %s", normalized.ID)
 	}
 
 	if normalized.ArtworkTitle != "The Death of Socrates" {
@@ -42,8 +42,8 @@ func TestNormalizeHarvardArtwork(t *testing.T) {
 	client := NewHarvardClient("test")
 	normalized := client.NormalizeArtwork(raw)
 
-	if normalized.ID != 230120 {
-		t.Errorf("Expected ID 230120, returned ID %d", normalized.ID)
+	if normalized.ID != "harvard-230120" {
+		t.Errorf("Expected ID 230120, returned ID %s", normalized.ID)
 	}
 
 	if normalized.ArtworkTitle != "When the Morning Stars Sang Together and All the Sons of God Shouted for Joy" {
