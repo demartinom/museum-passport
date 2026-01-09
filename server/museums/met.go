@@ -1,6 +1,12 @@
 package museums
 
-import "github.com/demartinom/museum-passport/models"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/demartinom/museum-passport/models"
+)
 
 // Client for handling calls to the Met API
 type MetClient struct {
@@ -36,4 +42,20 @@ func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.Single
 		ImageSmall:   receivedArt.PrimaryImageSmall,
 		Museum:       receivedArt.Repository,
 	}
+}
+
+// Makes an API call to the Met to receive data on a single artwork based on id provided
+func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
+	queryUrl := fmt.Sprintf("%s/objects/%d", m.BaseURL, id)
+	resp, err := http.Get(queryUrl)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result MetSingleArtwork
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	normalized := m.NormalizeArtwork(result)
+	return &normalized, nil
 }
