@@ -1,7 +1,9 @@
 package museums
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/demartinom/museum-passport/models"
 )
@@ -47,4 +49,21 @@ func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		ImageSmall:   "",
 		Museum:       "Harvard Art Museums",
 	}
+}
+
+// Makes an API call to Harvard to receive data on a single artwork based on id provided
+func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
+	queryUrl := fmt.Sprintf("%s/object/%d?apikey=%s", h.BaseURL, id, h.APIKey)
+
+	resp, err := http.Get(queryUrl)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result HarvardSingleArtwork
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	normalized := h.NormalizeArtwork(result)
+	return &normalized, nil
 }
