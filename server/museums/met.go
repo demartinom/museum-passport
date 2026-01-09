@@ -33,7 +33,7 @@ func NewMetClient() *MetClient {
 // Takes Object API response store in MetSingleArtwork and normalizes it into the models.Artwork struct
 func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.SingleArtwork {
 	return models.SingleArtwork{
-		ID:           receivedArt.ObjectID,
+		ID:           fmt.Sprintf("met-%d", receivedArt.ObjectID),
 		ArtworkTitle: receivedArt.ObjectName,
 		ArtistName:   receivedArt.ArtistDisplayName,
 		DateCreated:  receivedArt.ObjectDate,

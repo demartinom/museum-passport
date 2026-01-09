@@ -1,6 +1,10 @@
 package museums
 
-import "github.com/demartinom/museum-passport/models"
+import (
+	"fmt"
+
+	"github.com/demartinom/museum-passport/models"
+)
 
 // Client for handling calls to the Harvard API
 type HarvardClient struct {
@@ -29,7 +33,7 @@ func NewHarvardClient(key string) *HarvardClient {
 // Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct
 func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
 	return models.SingleArtwork{
-		ID:           receivedArt.ID,
+		ID:           fmt.Sprintf("harvard-%d", receivedArt.ID),
 		ArtworkTitle: receivedArt.Title,
 		ArtistName:   receivedArt.People.DisplayName,
 		DateCreated:  receivedArt.Dated,
