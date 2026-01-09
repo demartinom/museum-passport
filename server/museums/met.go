@@ -30,6 +30,11 @@ func NewMetClient() *MetClient {
 	return &MetClient{BaseURL: "https://collectionapi.metmuseum.org/public/collection/v1"}
 }
 
+// Allows for Met Client to fall under museum interface
+func (m *MetClient) GetMuseumName() string {
+	return "Metropolitan Museum of Art"
+}
+
 // Takes Object API response store in MetSingleArtwork and normalizes it into the models.Artwork struct
 func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.SingleArtwork {
 	return models.SingleArtwork{

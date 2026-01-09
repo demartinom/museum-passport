@@ -30,6 +30,11 @@ func NewHarvardClient(key string) *HarvardClient {
 	return &HarvardClient{BaseURL: "https://api.harvardartmuseums.org", APIKey: key}
 }
 
+// Allows for Harvard Client to fall under museum interface
+func (h *HarvardClient) GetMuseumName() string {
+	return "Harvard Art Museums"
+}
+
 // Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct
 func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
 	return models.SingleArtwork{
