@@ -47,7 +47,7 @@ func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		ArtMedium:    receivedArt.Medium,
 		ImageLarge:   receivedArt.Primaryimageurl,
 		ImageSmall:   "",
-		Museum:       "Harvard Art Museums",
+		Museum:       m.GetMuseumName(),
 	}
 }
 
