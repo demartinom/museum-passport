@@ -1,7 +1,7 @@
 package models
 
 type SingleArtwork struct {
-	ID           int
+	ID           string
 	ArtworkTitle string
 	ArtistName   string
 	DateCreated  string
