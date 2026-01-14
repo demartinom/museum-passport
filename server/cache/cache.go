@@ -21,7 +21,7 @@ func NewCache() *Cache {
 
 func (c *Cache) SetArtwork(id string, artwork models.SingleArtwork) {
 	c.mu.Lock()
-	defer c.mu.Lock()
+	defer c.mu.Unlock()
 
 	c.Data[id] = CachedItem{
 		Artwork: artwork,
