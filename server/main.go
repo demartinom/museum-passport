@@ -27,9 +27,11 @@ func main() {
 		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY"), cache),
 	}
 	ArtworkHandler := handlers.NewArtworkHandler(clients)
+	SearchHandler := handlers.NewSearchHandler(clients)
 
 	r := chi.NewRouter()
 	r.Get("/api/artwork/{id}", ArtworkHandler.GetArtwork)
+	r.Get("/api/search", SearchHandler.SearchArtwork)
 
 	port := os.Getenv("PORT")
 	fmt.Printf("Starting server at port%s\n", port)
