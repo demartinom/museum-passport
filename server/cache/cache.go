@@ -19,6 +19,8 @@ func NewCache() *Cache {
 	return &Cache{Data: make(map[string]CachedItem)}
 }
 
+// Adds artwork to site cache
+// Uses ID ("met-123") as key and artwork struct as value
 func (c *Cache) SetArtwork(id string, artwork models.SingleArtwork) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -28,6 +30,8 @@ func (c *Cache) SetArtwork(id string, artwork models.SingleArtwork) {
 	}
 }
 
+// Search cache for artwork
+// Returns false boolean if not in cache
 func (c *Cache) GetArtwork(id string) (models.SingleArtwork, bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()

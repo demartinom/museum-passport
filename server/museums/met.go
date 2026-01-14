@@ -28,6 +28,7 @@ type MetSingleArtwork struct {
 	PrimaryImageSmall string `json:"primaryImageSmall"`
 }
 
+// Struct for receiving search API response
 type MetSearchResponse struct {
 	Total     int   `json:"total"`
 	ObjectIDs []int `json:"objectIDs"`
@@ -80,6 +81,8 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
+// Search for artwork
+// Currently only uses title when searching
 func (m *MetClient) Search(params SearchParams) ([]int, error) {
 	var queryURL string
 

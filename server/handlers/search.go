@@ -16,6 +16,8 @@ func NewSearchHandler(clients map[string]museums.Client) *SearchHandler {
 	return &SearchHandler{Clients: clients}
 }
 
+// API endpoint for searching for artwork
+// Uses search function specific to museum specified
 func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	museum := r.URL.Query().Get("museum")
 	name := r.URL.Query().Get("name")
