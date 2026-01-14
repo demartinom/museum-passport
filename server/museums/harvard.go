@@ -76,3 +76,7 @@ func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 	normalized := h.NormalizeArtwork(result)
 	return &normalized, nil
 }
+
+func (h *HarvardClient) Search(params SearchParams) ([]int, error) {
+	return []int{}, nil
+}
