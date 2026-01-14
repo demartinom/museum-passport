@@ -27,6 +27,11 @@ type MetSingleArtwork struct {
 	PrimaryImageSmall string `json:"primaryImageSmall"`
 }
 
+type MetSearchResponse struct {
+	Total     int   `json:"total"`
+	ObjectIDs []int `json:"objectIDs"`
+}
+
 // Start up new Met Client
 func NewMetClient(cache *cache.Cache) *MetClient {
 	return &MetClient{BaseURL: "https://collectionapi.metmuseum.org/public/collection/v1", Cache: cache}
