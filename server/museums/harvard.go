@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
 )
 
@@ -12,6 +13,7 @@ import (
 type HarvardClient struct {
 	BaseURL string
 	APIKey  string
+	Cache   *cache.Cache
 }
 
 // Struct for receiving single artwork response from Harvard API
@@ -28,8 +30,8 @@ type HarvardSingleArtwork struct {
 }
 
 // Create new Harvard API client
-func NewHarvardClient(key string) *HarvardClient {
-	return &HarvardClient{BaseURL: "https://api.harvardartmuseums.org", APIKey: key}
+func NewHarvardClient(key string, cache *cache.Cache) *HarvardClient {
+	return &HarvardClient{BaseURL: "https://api.harvardartmuseums.org", APIKey: key, Cache: cache}
 }
 
 // Allows for Harvard Client to fall under museum interface
@@ -37,9 +39,9 @@ func (h *HarvardClient) GetMuseumName() string {
 	return "Harvard Art Museums"
 }
 
-// Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct
+// Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct and saves in cache
 func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
-	return models.SingleArtwork{
+	normalized := models.SingleArtwork{
 		ID:           fmt.Sprintf("harvard-%d", receivedArt.ID),
 		ArtworkTitle: receivedArt.Title,
 		ArtistName:   receivedArt.People.DisplayName,
@@ -49,6 +51,10 @@ func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		ImageSmall:   "",
 		Museum:       m.GetMuseumName(),
 	}
+	m.Cache.SetArtwork(normalized.ID, normalized)
+	fmt.Println(m.Cache)
+	return normalized
+
 }
 
 // Makes an API call to Harvard to receive data on a single artwork based on id provided

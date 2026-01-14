@@ -2,6 +2,8 @@ package museums
 
 import (
 	"testing"
+
+	"github.com/demartinom/museum-passport/cache"
 )
 
 func TestNormalizeMetArtwork(t *testing.T) {
@@ -15,7 +17,8 @@ func TestNormalizeMetArtwork(t *testing.T) {
 		PrimaryImage:      "https://images.metmuseum.org/CRDImages/ep/original/DP-13139-001.jpg",
 		PrimaryImageSmall: "https://images.metmuseum.org/CRDImages/ep/web-large/DP-13139-001.jpg",
 	}
-	client := NewMetClient()
+	cache := cache.NewCache()
+	client := NewMetClient(cache)
 	normalized := client.NormalizeArtwork(raw)
 
 	if normalized.ID != "met-436105" {
@@ -39,7 +42,9 @@ func TestNormalizeHarvardArtwork(t *testing.T) {
 		Primaryimageurl: "https://nrs.harvard.edu/urn-3:HUAM:38659_dynmc",
 		Title:           "When the Morning Stars Sang Together and All the Sons of God Shouted for Joy",
 	}
-	client := NewHarvardClient("test")
+	cache := cache.NewCache()
+
+	client := NewHarvardClient("test", cache)
 	normalized := client.NormalizeArtwork(raw)
 
 	if normalized.ID != "harvard-230120" {

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/handlers"
 	"github.com/demartinom/museum-passport/museums"
 	"github.com/go-chi/chi/v5"
@@ -17,13 +18,14 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+	// Initialize cache
+	cache := cache.NewCache()
 
-	//Creates map of museum clients to be used by different handlers
+	// Creates map of museum clients to be used by different handlers
 	clients := map[string]museums.Client{
-		"met":     museums.NewMetClient(),
-		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY")),
+		"met":     museums.NewMetClient(cache),
+		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY"), cache),
 	}
-
 	ArtworkHandler := handlers.NewArtworkHandler(clients)
 
 	r := chi.NewRouter()
