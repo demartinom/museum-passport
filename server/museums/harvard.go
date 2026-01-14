@@ -17,7 +17,7 @@ type HarvardClient struct {
 }
 
 // Struct for receiving single artwork response from Harvard API
-// Receives AAPI key from .env file
+// Receives API key from .env file
 type HarvardSingleArtwork struct {
 	ID     int    `json:"id"`
 	Dated  string `json:"dated"`
@@ -40,7 +40,7 @@ func (h *HarvardClient) GetMuseumName() string {
 }
 
 // Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct and saves in cache
-func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
+func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
 	normalized := models.SingleArtwork{
 		ID:           fmt.Sprintf("harvard-%d", receivedArt.ID),
 		ArtworkTitle: receivedArt.Title,
@@ -49,10 +49,9 @@ func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		ArtMedium:    receivedArt.Medium,
 		ImageLarge:   receivedArt.Primaryimageurl,
 		ImageSmall:   "",
-		Museum:       m.GetMuseumName(),
+		Museum:       h.GetMuseumName(),
 	}
-	m.Cache.SetArtwork(normalized.ID, normalized)
-	fmt.Println(m.Cache)
+	h.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
 
 }
