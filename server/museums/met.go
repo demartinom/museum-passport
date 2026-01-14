@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
@@ -77,4 +78,25 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 
 	normalized := m.NormalizeArtwork(result)
 	return &normalized, nil
+}
+
+func (m *MetClient) Search(params SearchParams) ([]int, error) {
+	var queryURL string
+
+	if params.Name != "" {
+		queryURL = fmt.Sprintf("%s/search?title=true&q=%s", m.BaseURL, url.QueryEscape(params.Name))
+	} else {
+		queryURL = fmt.Sprintf("%s/search", m.BaseURL)
+	}
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result MetSearchResponse
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	return result.ObjectIDs, nil
 }
