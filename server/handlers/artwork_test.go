@@ -26,6 +26,14 @@ func (m *MockMuseumClient) GetMuseumName() string {
 	return "Mock Museum"
 }
 
+func (m *MockMuseumClient) Search(params museums.SearchParams) ([]int, error) {
+	if m.err != nil {
+		return nil, m.err
+	}
+	// Return mock IDs for testing
+	return []int{123, 456, 789}, nil
+}
+
 func TestGetArtwork_Success(t *testing.T) {
 	handler := &ArtworkHandler{
 		Clients: map[string]museums.Client{
