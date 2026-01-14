@@ -59,6 +59,10 @@ func (m *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 
 // Makes an API call to Harvard to receive data on a single artwork based on id provided
 func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
+	artwork, exists := h.Cache.GetArtwork(fmt.Sprintf("harvard-%d", id))
+	if exists {
+		return &artwork, nil
+	}
 	queryUrl := fmt.Sprintf("%s/object/%d?apikey=%s", h.BaseURL, id, h.APIKey)
 
 	resp, err := http.Get(queryUrl)
