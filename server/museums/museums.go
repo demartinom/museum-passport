@@ -6,9 +6,15 @@ import "github.com/demartinom/museum-passport/models"
 type Client interface {
 	GetMuseumName() string
 	ArtworkbyID(int) (*models.SingleArtwork, error)
-	Search(SearchParams) ([]int, error)
+	Search(SearchParams) (*SearchResult, error)
 }
 
 type SearchParams struct {
 	Name string
+}
+
+// Temporary struct to keep interface
+type SearchResult struct {
+	Artworks []HarvardSingleArtwork
+	IDs      []int
 }

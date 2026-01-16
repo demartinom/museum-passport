@@ -83,7 +83,7 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 
 // Search for artwork
 // Currently only uses title when searching
-func (m *MetClient) Search(params SearchParams) ([]int, error) {
+func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 	var queryURL string
 
 	if params.Name != "" {
@@ -101,5 +101,5 @@ func (m *MetClient) Search(params SearchParams) ([]int, error) {
 	var result MetSearchResponse
 	json.NewDecoder(resp.Body).Decode(&result)
 
-	return result.ObjectIDs, nil
+	return &SearchResult{IDs: result.ObjectIDs}, nil
 }
