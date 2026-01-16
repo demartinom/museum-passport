@@ -34,11 +34,9 @@ func TestNormalizeHarvardArtwork(t *testing.T) {
 		ID:     230120,
 		Dated:  "c. 1884-1885",
 		Medium: "Pot metal, opalescent, and uncolored glass with vitreous paint",
-		People: struct {
+		People: []struct {
 			DisplayName string "json:\"displayname\""
-		}{
-			DisplayName: "John La Farge",
-		},
+		}{{DisplayName: "John La Farge"}},
 		Primaryimageurl: "https://nrs.harvard.edu/urn-3:HUAM:38659_dynmc",
 		Title:           "When the Morning Stars Sang Together and All the Sons of God Shouted for Joy",
 	}
