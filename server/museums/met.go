@@ -8,6 +8,7 @@ import (
 
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
+	"golang.org/x/sync/errgroup"
 )
 
 // Client for handling calls to the Met API
@@ -94,12 +95,44 @@ func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 
 	resp, err := http.Get(queryURL)
 	if err != nil {
-		return nil, err
+		return &SearchResult{}, err
 	}
 	defer resp.Body.Close()
 
 	var result MetSearchResponse
 	json.NewDecoder(resp.Body).Decode(&result)
 
-	return &SearchResult{IDs: result.ObjectIDs}, nil
+	currentSearch := result.ObjectIDs[:20]
+
+	ids := result.ObjectIDs
+	if len(ids) > 20 {
+		currentSearch = ids[:20]
+	}
+
+	artworks := make([]*models.SingleArtwork, len(currentSearch))
+
+	g := new(errgroup.Group)
+	g.SetLimit(10)
+
+	for i, id := range currentSearch {
+		g.Go(func() error {
+			artwork, err := m.ArtworkbyID(id)
+			if err != nil {
+				return err // Return the error to errgroup
+			}
+			artworks[i] = artwork
+			return nil
+		})
+	}
+	if err := g.Wait(); err != nil {
+		return nil, err
+	}
+
+	filtered := make([]*models.SingleArtwork, 0, len(artworks))
+	for _, artwork := range artworks {
+		if artwork != nil && artwork.ImageLarge != "" {
+			filtered = append(filtered, artwork)
+		}
+	}
+	return &SearchResult{Art: filtered}, nil
 }
