@@ -101,8 +101,13 @@ func (h *HarvardClient) Search(params SearchParams) (*SearchResult, error) {
 	}
 	defer resp.Body.Close()
 
-	var result HarvardSearchResponse
-	json.NewDecoder(resp.Body).Decode(&result)
+	var searchResult HarvardSearchResponse
+	json.NewDecoder(resp.Body).Decode(&searchResult)
 
-	return &SearchResult{Artworks: result.Records}, nil
+	var normalized []*models.SingleArtwork
+	for _, artwork := range searchResult.Records {
+		art := h.NormalizeArtwork(artwork)
+		normalized = append(normalized, &art)
+	}
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
