@@ -16,5 +16,5 @@ type SearchParams struct {
 // Temporary struct to keep interface
 type SearchResult struct {
 	Artworks []HarvardSingleArtwork
-	IDs      []int
+	Art      []*models.SingleArtwork
 }
