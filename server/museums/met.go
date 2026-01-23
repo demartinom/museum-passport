@@ -141,5 +141,5 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 			filtered = append(filtered, artwork)
 		}
 	}
-	return &SearchResult{ResultsLength: len(ids), Art: filtered}, nil
+	return &SearchResult{ResultsLength: len(searchIDs), Art: filtered}, nil
 }
