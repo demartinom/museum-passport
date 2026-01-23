@@ -119,6 +119,9 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 	g.SetLimit(10)
 
 	for i, id := range currentSearch {
+		i := i
+		id := id
+
 		g.Go(func() error {
 			artwork, err := m.ArtworkbyID(id)
 			if err != nil {
