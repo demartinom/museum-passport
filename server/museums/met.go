@@ -103,7 +103,7 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
-
+	// Returns full data for artwork IDs returned in API call
 	artObjects, err := m.SearchRequest(result.ObjectIDs, resultsLength)
 	if err != nil {
 		return nil, err
@@ -111,8 +111,10 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 	return artObjects, nil
 }
 
+// Handles full search of individual artworks
 func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchResult, error) {
 	var currentSearch []int
+	// Limits number of calls to resultsLength number
 	if len(searchIDs) > resultsLength {
 		currentSearch = searchIDs[:resultsLength]
 	} else {
@@ -120,17 +122,20 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 	}
 
 	artworks := make([]*models.SingleArtwork, len(currentSearch))
+
+	// Handles concurrent calls to Met API for returning full data objects on individual artworks
 	g := new(errgroup.Group)
 	g.SetLimit(10)
 
 	for i, id := range currentSearch {
+		// Fix for older versions of Go
 		i := i
 		id := id
 
 		g.Go(func() error {
 			artwork, err := m.ArtworkbyID(id)
 			if err != nil {
-				return err // Return the error to errgroup
+				return err
 			}
 			artworks[i] = artwork
 			return nil
@@ -140,6 +145,7 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 		return nil, err
 	}
 
+	// Filter out artwork that have no images
 	filtered := make([]*models.SingleArtwork, 0, len(artworks))
 	for _, artwork := range artworks {
 		if artwork != nil && artwork.ImageLarge != "" {
