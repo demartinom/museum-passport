@@ -26,6 +26,33 @@ func (m *MockMuseumClient) GetMuseumName() string {
 	return "Mock Museum"
 }
 
+func (m *MockMuseumClient) Search(params museums.SearchParams) (*museums.SearchResult, error) {
+	if m.err != nil {
+		return nil, m.err
+	}
+	// Return mock IDs for testing
+	return &museums.SearchResult{Art: []*models.SingleArtwork{{
+		ID:           "met-205423",
+		ArtworkTitle: "Dog kennel",
+		ArtistName:   "Claude I Sené",
+		DateCreated:  "ca. 1775–80",
+		ArtMedium:    "Gilded beech and pine; silk and velvet",
+		ImageLarge:   "https://images.metmuseum.org/CRDImages/es/original/DT241800.jpg",
+		ImageSmall:   "https://images.metmuseum.org/CRDImages/es/web-large/DT241800.jpg",
+		Museum:       "The Metropolitan Museum of Art",
+	},
+		{
+			ID:           "met-544519",
+			ArtworkTitle: "Mechanical Dog",
+			ArtistName:   "",
+			DateCreated:  "ca. 1390–1352 B.C.",
+			ArtMedium:    "Ivory (elephant)",
+			ImageLarge:   "https://images.metmuseum.org/CRDImages/eg/original/0227r2_SEC501K.jpg",
+			ImageSmall:   "https://images.metmuseum.org/CRDImages/eg/web-large/0227r2_SEC501K.jpg",
+			Museum:       "The Metropolitan Museum of Art",
+		}}}, nil
+}
+
 func TestGetArtwork_Success(t *testing.T) {
 	handler := &ArtworkHandler{
 		Clients: map[string]museums.Client{

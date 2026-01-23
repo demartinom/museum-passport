@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
@@ -22,11 +23,19 @@ type HarvardSingleArtwork struct {
 	ID     int    `json:"id"`
 	Dated  string `json:"dated"`
 	Medium string `json:"medium"`
-	People struct {
+	People []struct {
 		DisplayName string `json:"displayname"`
 	}
 	Primaryimageurl string `json:"primaryimageurl"`
 	Title           string `json:"title"`
+}
+
+type HarvardSearchResponse struct {
+	Info struct {
+		Totalrecordsperquery int `json:"totalrecordsperquery"`
+		Totalrecords         int `json:"totalrecords"`
+	} `json:"info"`
+	Records []HarvardSingleArtwork `json:"records"`
 }
 
 // Create new Harvard API client
@@ -44,7 +53,7 @@ func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 	normalized := models.SingleArtwork{
 		ID:           fmt.Sprintf("harvard-%d", receivedArt.ID),
 		ArtworkTitle: receivedArt.Title,
-		ArtistName:   receivedArt.People.DisplayName,
+		ArtistName:   receivedArt.People[0].DisplayName,
 		DateCreated:  receivedArt.Dated,
 		ArtMedium:    receivedArt.Medium,
 		ImageLarge:   receivedArt.Primaryimageurl,
@@ -75,4 +84,30 @@ func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 
 	normalized := h.NormalizeArtwork(result)
 	return &normalized, nil
+}
+
+func (h *HarvardClient) Search(params SearchParams) (*SearchResult, error) {
+	var queryURL string
+
+	if params.Name != "" {
+		queryURL = fmt.Sprintf("%s/object?size=40&title=%s&hasimage=1&person=any&apikey=%s", h.BaseURL, url.QueryEscape(params.Name), h.APIKey)
+	} else {
+		queryURL = fmt.Sprintf("%s/search", h.BaseURL)
+	}
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var searchResult HarvardSearchResponse
+	json.NewDecoder(resp.Body).Decode(&searchResult)
+
+	var normalized []*models.SingleArtwork
+	for _, artwork := range searchResult.Records {
+		art := h.NormalizeArtwork(artwork)
+		normalized = append(normalized, &art)
+	}
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }

@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
+	"golang.org/x/sync/errgroup"
 )
 
 // Client for handling calls to the Met API
@@ -25,6 +27,12 @@ type MetSingleArtwork struct {
 	Repository        string `json:"repository"`
 	PrimaryImage      string `json:"primaryImage"`
 	PrimaryImageSmall string `json:"primaryImageSmall"`
+}
+
+// Struct for receiving search API response
+type MetSearchResponse struct {
+	Total     int   `json:"total"`
+	ObjectIDs []int `json:"objectIDs"`
 }
 
 // Start up new Met Client
@@ -72,4 +80,59 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 
 	normalized := m.NormalizeArtwork(result)
 	return &normalized, nil
+}
+
+// Search for artwork
+// Currently only uses title when searching
+func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
+	var queryURL string
+
+	if params.Name != "" {
+		queryURL = fmt.Sprintf("%s/search?title=true&q=%s", m.BaseURL, url.QueryEscape(params.Name))
+	} else {
+		queryURL = fmt.Sprintf("%s/search", m.BaseURL)
+	}
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return &SearchResult{}, err
+	}
+	defer resp.Body.Close()
+
+	var result MetSearchResponse
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	currentSearch := result.ObjectIDs[:20]
+
+	ids := result.ObjectIDs
+	if len(ids) > 20 {
+		currentSearch = ids[:20]
+	}
+
+	artworks := make([]*models.SingleArtwork, len(currentSearch))
+
+	g := new(errgroup.Group)
+	g.SetLimit(10)
+
+	for i, id := range currentSearch {
+		g.Go(func() error {
+			artwork, err := m.ArtworkbyID(id)
+			if err != nil {
+				return err // Return the error to errgroup
+			}
+			artworks[i] = artwork
+			return nil
+		})
+	}
+	if err := g.Wait(); err != nil {
+		return nil, err
+	}
+
+	filtered := make([]*models.SingleArtwork, 0, len(artworks))
+	for _, artwork := range artworks {
+		if artwork != nil && artwork.ImageLarge != "" {
+			filtered = append(filtered, artwork)
+		}
+	}
+	return &SearchResult{ResultsLength: len(ids), Art: filtered}, nil
 }
