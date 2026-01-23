@@ -104,17 +104,22 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 		return nil, err
 	}
 
-	var currentSearch []int
+	artObjects, err := m.SearchRequest(result.ObjectIDs, resultsLength)
+	if err != nil {
+		return nil, err
+	}
+	return artObjects, nil
+}
 
-	ids := result.ObjectIDs
-	if len(ids) > resultsLength {
-		currentSearch = ids[:resultsLength]
+func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchResult, error) {
+	var currentSearch []int
+	if len(searchIDs) > resultsLength {
+		currentSearch = searchIDs[:resultsLength]
 	} else {
-		currentSearch = ids
+		currentSearch = searchIDs
 	}
 
 	artworks := make([]*models.SingleArtwork, len(currentSearch))
-
 	g := new(errgroup.Group)
 	g.SetLimit(10)
 
