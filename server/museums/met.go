@@ -100,7 +100,9 @@ func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 	defer resp.Body.Close()
 
 	var result MetSearchResponse
-	json.NewDecoder(resp.Body).Decode(&result)
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
 
 	currentSearch := result.ObjectIDs[:20]
 
