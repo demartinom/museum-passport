@@ -86,7 +86,7 @@ func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
-func (h *HarvardClient) Search(params SearchParams) (*SearchResult, error) {
+func (h *HarvardClient) Search(params SearchParams, _ int) (*SearchResult, error) {
 	var queryURL string
 
 	if params.Name != "" {

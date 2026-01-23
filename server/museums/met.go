@@ -84,7 +84,7 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 
 // Search for artwork
 // Currently only uses title when searching
-func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
+func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResult, error) {
 	var queryURL string
 
 	if params.Name != "" {
@@ -104,11 +104,11 @@ func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 		return nil, err
 	}
 
-	currentSearch := result.ObjectIDs[:20]
+	var currentSearch []int
 
 	ids := result.ObjectIDs
-	if len(ids) > 20 {
-		currentSearch = ids[:20]
+	if len(ids) > resultsLength {
+		currentSearch = ids[:resultsLength]
 	} else {
 		currentSearch = ids
 	}
