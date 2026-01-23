@@ -128,10 +128,6 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 	g.SetLimit(10)
 
 	for i, id := range currentSearch {
-		// Fix for older versions of Go
-		i := i
-		id := id
-
 		g.Go(func() error {
 			artwork, err := m.ArtworkbyID(id)
 			if err != nil {
