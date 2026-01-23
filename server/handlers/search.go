@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/demartinom/museum-passport/museums"
 )
@@ -21,8 +22,13 @@ func NewSearchHandler(clients map[string]museums.Client) *SearchHandler {
 func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	museum := r.URL.Query().Get("museum")
 	name := r.URL.Query().Get("name")
+	pageLength := r.URL.Query().Get("length")
 
-	artwork, err := s.Clients[museum].Search(museums.SearchParams{Name: name})
+	resultsLength, err := strconv.Atoi(pageLength)
+	if err != nil {
+		return
+	}
+	artwork, err := s.Clients[museum].Search(museums.SearchParams{Name: name}, resultsLength)
 	if err != nil {
 		fmt.Println("Error:", err)
 		http.Error(w, "Invalid search", http.StatusBadRequest)

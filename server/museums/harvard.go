@@ -86,11 +86,11 @@ func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
-func (h *HarvardClient) Search(params SearchParams, _ int) (*SearchResult, error) {
+func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
 	var queryURL string
 
 	if params.Name != "" {
-		queryURL = fmt.Sprintf("%s/object?size=40&title=%s&hasimage=1&person=any&apikey=%s", h.BaseURL, url.QueryEscape(params.Name), h.APIKey)
+		queryURL = fmt.Sprintf("%s/object?size=%d&title=%s&hasimage=1&person=any&apikey=%s", h.BaseURL, pageLength, url.QueryEscape(params.Name), h.APIKey)
 	} else {
 		queryURL = fmt.Sprintf("%s/search", h.BaseURL)
 	}
