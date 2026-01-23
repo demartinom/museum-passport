@@ -109,6 +109,8 @@ func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 	ids := result.ObjectIDs
 	if len(ids) > 20 {
 		currentSearch = ids[:20]
+	} else {
+		currentSearch = ids
 	}
 
 	artworks := make([]*models.SingleArtwork, len(currentSearch))
