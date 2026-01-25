@@ -85,13 +85,7 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 // Search for artwork
 // Currently only uses title when searching
 func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResult, error) {
-	var queryURL string
-
-	if params.Name != "" {
-		queryURL = fmt.Sprintf("%s/search?title=true&q=%s", m.BaseURL, url.QueryEscape(params.Name))
-	} else {
-		queryURL = fmt.Sprintf("%s/search", m.BaseURL)
-	}
+	queryURL := m.BuildURL(params)
 
 	resp, err := http.Get(queryURL)
 	if err != nil {
@@ -109,6 +103,17 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 		return nil, err
 	}
 	return artObjects, nil
+}
+
+// Build url for making API call
+// Parameter order matters
+func (m *MetClient) BuildURL(params SearchParams) string {
+	if params.Name != "" {
+		return fmt.Sprintf("%s/search?title=true&q=%s",
+			m.BaseURL, url.QueryEscape(params.Name))
+	}
+
+	return fmt.Sprintf("%s/search", m.BaseURL)
 }
 
 // Handles full search of individual artworks

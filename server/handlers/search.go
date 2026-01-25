@@ -28,6 +28,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+
 	artwork, err := s.Clients[museum].Search(museums.SearchParams{Name: name}, resultsLength)
 	if err != nil {
 		fmt.Println("Error:", err)
