@@ -26,7 +26,7 @@ func (m *MockMuseumClient) GetMuseumName() string {
 	return "Mock Museum"
 }
 
-func (m *MockMuseumClient) Search(params museums.SearchParams) (*museums.SearchResult, error) {
+func (m *MockMuseumClient) Search(params museums.SearchParams, _ int) (*museums.SearchResult, error) {
 	if m.err != nil {
 		return nil, m.err
 	}

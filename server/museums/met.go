@@ -84,7 +84,7 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 
 // Search for artwork
 // Currently only uses title when searching
-func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
+func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResult, error) {
 	var queryURL string
 
 	if params.Name != "" {
@@ -100,17 +100,30 @@ func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 	defer resp.Body.Close()
 
 	var result MetSearchResponse
-	json.NewDecoder(resp.Body).Decode(&result)
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	// Returns full data for artwork IDs returned in API call
+	artObjects, err := m.SearchRequest(result.ObjectIDs, resultsLength)
+	if err != nil {
+		return nil, err
+	}
+	return artObjects, nil
+}
 
-	currentSearch := result.ObjectIDs[:20]
-
-	ids := result.ObjectIDs
-	if len(ids) > 20 {
-		currentSearch = ids[:20]
+// Handles full search of individual artworks
+func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchResult, error) {
+	var currentSearch []int
+	// Limits number of calls to resultsLength number
+	if len(searchIDs) > resultsLength {
+		currentSearch = searchIDs[:resultsLength]
+	} else {
+		currentSearch = searchIDs
 	}
 
 	artworks := make([]*models.SingleArtwork, len(currentSearch))
 
+	// Handles concurrent calls to Met API for returning full data objects on individual artworks
 	g := new(errgroup.Group)
 	g.SetLimit(10)
 
@@ -118,7 +131,7 @@ func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 		g.Go(func() error {
 			artwork, err := m.ArtworkbyID(id)
 			if err != nil {
-				return err // Return the error to errgroup
+				return err
 			}
 			artworks[i] = artwork
 			return nil
@@ -128,11 +141,12 @@ func (m *MetClient) Search(params SearchParams) (*SearchResult, error) {
 		return nil, err
 	}
 
+	// Filter out artwork that have no images
 	filtered := make([]*models.SingleArtwork, 0, len(artworks))
 	for _, artwork := range artworks {
 		if artwork != nil && artwork.ImageLarge != "" {
 			filtered = append(filtered, artwork)
 		}
 	}
-	return &SearchResult{ResultsLength: len(ids), Art: filtered}, nil
+	return &SearchResult{ResultsLength: len(searchIDs), Art: filtered}, nil
 }
