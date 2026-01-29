@@ -112,6 +112,9 @@ func (m *MetClient) BuildURL(params SearchParams) string {
 		return fmt.Sprintf("%s/search?title=true&q=%s",
 			m.BaseURL, url.QueryEscape(params.Name))
 	}
+	if params.Artist != "" {
+		return fmt.Sprintf("%s/search?hasImages=true&artistOrCulture=true&q=%s", m.BaseURL, url.QueryEscape(params.Artist))
+	}
 
 	return fmt.Sprintf("%s/search", m.BaseURL)
 }
