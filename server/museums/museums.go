@@ -9,11 +9,13 @@ type Client interface {
 	Search(SearchParams, int) (*SearchResult, error)
 }
 
+// Used for translating search parameters from url for APIs
 type SearchParams struct {
-	Name string
+	Name   string
+	Artist string
 }
 
-// Temporary struct to keep interface
+// Struct for organizing returned data
 type SearchResult struct {
 	ResultsLength int
 	Art           []*models.SingleArtwork

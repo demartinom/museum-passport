@@ -87,13 +87,7 @@ func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 }
 
 func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
-	var queryURL string
-
-	if params.Name != "" {
-		queryURL = fmt.Sprintf("%s/object?size=%d&title=%s&hasimage=1&person=any&apikey=%s", h.BaseURL, pageLength, url.QueryEscape(params.Name), h.APIKey)
-	} else {
-		queryURL = fmt.Sprintf("%s/search", h.BaseURL)
-	}
+	queryURL := h.BuildURL(params, pageLength)
 
 	resp, err := http.Get(queryURL)
 	if err != nil {
@@ -110,4 +104,19 @@ func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResu
 		normalized = append(normalized, &art)
 	}
 	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+}
+
+func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
+	queryURL := url.Values{}
+
+	// set base values
+	queryURL.Set("size", fmt.Sprintf("%d", pageLength))
+	queryURL.Set("hasimage", "1")
+	queryURL.Set("person", "any")
+
+	if params.Name != "" {
+		queryURL.Set("title", params.Name)
+	}
+
+	return fmt.Sprintf("%s/object?%s&apikey=%s", h.BaseURL, queryURL.Encode(), h.APIKey)
 }
