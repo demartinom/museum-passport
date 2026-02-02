@@ -24,6 +24,7 @@ type MetSingleArtwork struct {
 	ArtistDisplayName string `json:"artistDisplayName"`
 	ObjectDate        string `json:"objectDate"`
 	Medium            string `json:"medium"`
+	PublicDomain      bool   `json:"isPublicDomain"`
 	Repository        string `json:"repository"`
 	PrimaryImage      string `json:"primaryImage"`
 	PrimaryImageSmall string `json:"primaryImageSmall"`
@@ -56,6 +57,7 @@ func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.Single
 		ImageLarge:   receivedArt.PrimaryImage,
 		ImageSmall:   receivedArt.PrimaryImageSmall,
 		Museum:       m.GetMuseumName(),
+		PublicDomain: receivedArt.PublicDomain,
 	}
 	m.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
@@ -149,10 +151,12 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 		return nil, err
 	}
 
-	// Filter out artwork that have no images
+	// Filter out public domain artworks that have no images
 	filtered := make([]*models.SingleArtwork, 0, len(artworks))
 	for _, artwork := range artworks {
-		if artwork != nil && artwork.ImageLarge != "" {
+		if artwork != nil && artwork.PublicDomain == true && artwork.ImageLarge != "" {
+			filtered = append(filtered, artwork)
+		} else if artwork.PublicDomain == false {
 			filtered = append(filtered, artwork)
 		}
 	}
