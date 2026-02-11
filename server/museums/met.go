@@ -158,9 +158,9 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 	// Filter out public domain artworks that have no images
 	filtered := make([]*models.SingleArtwork, 0, len(artworks))
 	for _, artwork := range artworks {
-		if artwork != nil && artwork.PublicDomain == true && artwork.ImageLarge != "" {
+		if artwork != nil && artwork.PublicDomain == true {
 			filtered = append(filtered, artwork)
-		} else if artwork.PublicDomain == false {
+		} else if artwork.PublicDomain == false && artwork.ImageLarge != "" {
 			filtered = append(filtered, artwork)
 		}
 	}
