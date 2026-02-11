@@ -11,8 +11,9 @@ type Client interface {
 
 // Used for translating search parameters from url for APIs
 type SearchParams struct {
-	Name   string
-	Artist string
+	Name        string
+	Artist      string
+	ArtworkType string
 }
 
 // Struct for organizing returned data

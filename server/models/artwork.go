@@ -10,4 +10,5 @@ type SingleArtwork struct {
 	ImageSmall   string
 	Museum       string
 	PublicDomain bool
+	ArtworkType  string
 }
