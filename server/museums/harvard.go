@@ -28,6 +28,7 @@ type HarvardSingleArtwork struct {
 	}
 	Primaryimageurl string `json:"primaryimageurl"`
 	Title           string `json:"title"`
+	Classification  string `json:"classification"`
 }
 
 type HarvardSearchResponse struct {
@@ -59,6 +60,7 @@ func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		ImageLarge:   receivedArt.Primaryimageurl,
 		ImageSmall:   "",
 		Museum:       h.GetMuseumName(),
+		ArtworkType:  receivedArt.Classification,
 	}
 	h.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized

@@ -28,6 +28,7 @@ type MetSingleArtwork struct {
 	Repository        string `json:"repository"`
 	PrimaryImage      string `json:"primaryImage"`
 	PrimaryImageSmall string `json:"primaryImageSmall"`
+	Classification    string `json:"classification"`
 }
 
 // Struct for receiving search API response
@@ -58,6 +59,7 @@ func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.Single
 		ImageSmall:   receivedArt.PrimaryImageSmall,
 		Museum:       m.GetMuseumName(),
 		PublicDomain: receivedArt.PublicDomain,
+		ArtworkType:  receivedArt.Classification,
 	}
 	m.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
@@ -85,7 +87,6 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 }
 
 // Search for artwork
-// Currently only uses title when searching
 func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResult, error) {
 	queryURL := m.BuildURL(params)
 
@@ -117,6 +118,9 @@ func (m *MetClient) BuildURL(params SearchParams) string {
 	if params.Artist != "" {
 		return fmt.Sprintf("%s/search?hasImages=true&artistOrCulture=true&q=%s", m.BaseURL, url.QueryEscape(params.Artist))
 	}
+	if params.ArtworkType != "" {
+		return fmt.Sprintf("%s/search?hasImages=true&medium=%s&q=*", m.BaseURL, url.QueryEscape(params.ArtworkType))
+	}
 
 	return fmt.Sprintf("%s/search", m.BaseURL)
 }
@@ -130,7 +134,6 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 	} else {
 		currentSearch = searchIDs
 	}
-
 	artworks := make([]*models.SingleArtwork, len(currentSearch))
 
 	// Handles concurrent calls to Met API for returning full data objects on individual artworks
@@ -154,9 +157,9 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 	// Filter out public domain artworks that have no images
 	filtered := make([]*models.SingleArtwork, 0, len(artworks))
 	for _, artwork := range artworks {
-		if artwork != nil && artwork.PublicDomain == true && artwork.ImageLarge != "" {
+		if artwork != nil && artwork.PublicDomain == true {
 			filtered = append(filtered, artwork)
-		} else if artwork.PublicDomain == false {
+		} else if artwork.PublicDomain == false && artwork.ImageLarge != "" {
 			filtered = append(filtered, artwork)
 		}
 	}
