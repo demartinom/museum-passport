@@ -87,7 +87,6 @@ func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 }
 
 // Search for artwork
-// Currently only uses title when searching
 func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResult, error) {
 	queryURL := m.BuildURL(params)
 
