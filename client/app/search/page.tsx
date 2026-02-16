@@ -9,6 +9,16 @@ import {
 } from "@/components/ui/select";
 
 const Search = () => {
+  async function handleSearch(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    const res = await fetch(
+      `http://localhost:3001/api/search?museum=met&${field}=${searchText}&length=80`,
+    );
+
+    const data = await res.json();
+    setResults(data);
+  }
   return (
     <div>
       <form className="w-1/4">
