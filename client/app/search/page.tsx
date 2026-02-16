@@ -21,23 +21,39 @@ const Search = () => {
   }
   return (
     <div>
-      <form className="w-1/4">
+      <form className="w-1/2">
         {/* Combobox instead? */}
+        {/* Also Field? */}
         <div className="flex">
-          <Select>
+          <Select
+            value={field}
+            onValueChange={(value) => {
+              setField(value);
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Field" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="art">Artwork</SelectItem>
+                <SelectItem value="name">Artwork</SelectItem>
                 <SelectItem value="artist">Artist</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="type">Medium</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
 
-          <Input type="text" id="input-search"></Input>
+          <Input
+            type="text"
+            id="input-search"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          ></Input>
+          <Button type="submit" onClick={handleSearch}>
+            Search
+          </Button>
         </div>
       </form>
     </div>
