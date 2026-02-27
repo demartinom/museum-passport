@@ -1,3 +1,6 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -7,8 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SearchResult } from "@/types/search";
+import Image from "next/image";
+import { useState } from "react";
 
 const Search = () => {
+  const [field, setField] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [results, setResults] = useState<SearchResult>();
+
   async function handleSearch(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
@@ -19,6 +29,7 @@ const Search = () => {
     const data = await res.json();
     setResults(data);
   }
+
   return (
     <div>
       <form className="w-1/2">
@@ -58,16 +69,18 @@ const Search = () => {
       </form>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {results?.Art.map((item) => (
-          <div
-            key={item.ID}
-            className="relative aspect-square overflow-hidden rounded-lg"
-          >
-            <Image
-              src={item.ImageSmall}
-              alt={item.ArtworkTitle}
-              fill
-              className="object-contain"
-            />
+          <div key={item.ID} className="space-y-2">
+            <div className="h-64 w-full relative overflow-hidden ">
+              {" "}
+              <Image
+                src={item.ImageSmall}
+                alt={item.ArtworkTitle}
+                fill
+                className="object-contain"
+              />
+            </div>
+            <h3 className="font-semibold text-sm">{item.ArtworkTitle}</h3>
+            <p className="text-xs text-gray-600">{item.ArtistName}</p>
           </div>
         ))}
       </div>
