@@ -74,8 +74,12 @@ const Search = () => {
                 className="object-contain"
               />
             </div>
-            <h3 className="font-semibold text-sm">{item.ArtworkTitle}</h3>
-            <p className="text-xs text-gray-600">{item.ArtistName}</p>
+            <h3 className="font-semibold text-sm">
+              {item.ArtworkTitle || "Untitled"}
+            </h3>
+            <p className="text-xs text-gray-600">
+              {item.ArtistName || "Artist Unknown"}
+            </p>
           </div>
         ))}
       </div>
