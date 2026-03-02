@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -19,7 +18,7 @@ const Search = () => {
   const [searchText, setSearchText] = useState("");
   const [results, setResults] = useState<SearchResult>();
 
-  async function handleSearch(e: React.MouseEvent<HTMLButtonElement>) {
+  async function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const res = await fetch(
@@ -32,7 +31,7 @@ const Search = () => {
 
   return (
     <div>
-      <form className="w-1/2">
+      <form className="w-1/2" onSubmit={handleSearch}>
         {/* Combobox instead? */}
         {/* Also Field? */}
         <div className="flex">
@@ -62,9 +61,6 @@ const Search = () => {
               setSearchText(e.target.value);
             }}
           ></Input>
-          <Button type="submit" onClick={handleSearch}>
-            Search
-          </Button>
         </div>
       </form>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
