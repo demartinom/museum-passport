@@ -71,7 +71,6 @@ const Search = () => {
         {results?.Art.map((item) => (
           <div key={item.ID} className="space-y-2">
             <div className="h-64 w-full relative overflow-hidden ">
-              {" "}
               <Image
                 src={item.ImageSmall}
                 alt={item.ArtworkTitle}
