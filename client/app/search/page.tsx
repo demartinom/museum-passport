@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { SearchResult } from "@/types/search";
 import Image from "next/image";
 import { useState } from "react";
@@ -17,9 +18,12 @@ const Search = () => {
   const [field, setField] = useState("");
   const [searchText, setSearchText] = useState("");
   const [results, setResults] = useState<SearchResult>();
+  const [searching, setSearching] = useState(false);
 
   async function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    setSearching(true);
+    setResults(undefined);
 
     const res = await fetch(
       `http://localhost:3001/api/search?museum=met&${field}=${searchText}&length=80`,
@@ -27,6 +31,7 @@ const Search = () => {
 
     const data = await res.json();
     setResults(data);
+    setSearching(false);
   }
 
   return (
@@ -63,7 +68,12 @@ const Search = () => {
           ></Input>
         </div>
       </form>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      {searching == true && (
+        <div>
+          <Spinner className="size-40" />
+        </div>
+      )}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-5 py-10">
         {results?.Art.map((item) => (
           <div key={item.ID} className="space-y-2">
             <div className="h-64 w-full relative overflow-hidden ">
