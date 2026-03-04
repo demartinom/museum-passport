@@ -22,6 +22,7 @@ const Search = () => {
 
   async function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!field || !searchText) return;
     setSearching(true);
     setResults(undefined);
 
