@@ -81,22 +81,24 @@ const Search = () => {
       )}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-5 py-10">
         {results?.Art.map((item) => (
-          <div key={item.ID} className="space-y-2">
-            <div className="h-64 w-full relative overflow-hidden ">
-              <Image
-                src={item.ImageSmall}
-                alt={item.ArtworkTitle}
-                fill
-                className="object-contain"
-              />
+          <a href={`http://localhost:3000/art/${item.ID}`} key={item.ID}>
+            <div className="space-y-2">
+              <div className="h-64 w-full relative overflow-hidden ">
+                <Image
+                  src={item.ImageSmall}
+                  alt={item.ArtworkTitle}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <h3 className="font-semibold text-sm">
+                {item.ArtworkTitle || "Untitled"}
+              </h3>
+              <p className="text-xs text-gray-600">
+                {item.ArtistName || "Artist Unknown"}
+              </p>
             </div>
-            <h3 className="font-semibold text-sm">
-              {item.ArtworkTitle || "Untitled"}
-            </h3>
-            <p className="text-xs text-gray-600">
-              {item.ArtistName || "Artist Unknown"}
-            </p>
-          </div>
+          </a>
         ))}
       </div>
     </div>
