@@ -10,6 +10,7 @@ import (
 	"github.com/demartinom/museum-passport/handlers"
 	"github.com/demartinom/museum-passport/museums"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -30,6 +31,15 @@ func main() {
 	SearchHandler := handlers.NewSearchHandler(clients)
 
 	r := chi.NewRouter()
+
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"}, // your Next app
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
+
 	r.Get("/api/artwork/{id}", ArtworkHandler.GetArtwork)
 	r.Get("/api/search", SearchHandler.SearchArtwork)
 
