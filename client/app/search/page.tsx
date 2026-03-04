@@ -73,7 +73,8 @@ const Search = () => {
         </div>
       </form>
       {searching == true && (
-        <div>
+        <div className="flex flex-col min-h-screen justify-center items-center -translate-y-25">
+          <h1 className="">Searching</h1>
           <Spinner className="size-40" />
         </div>
       )}
