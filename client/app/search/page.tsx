@@ -74,16 +74,16 @@ const Search = () => {
         </div>
       </form>
       {searching == true && (
-        <div className="flex flex-col min-h-screen justify-center items-center -translate-y-25">
+        <div className="flex min-h-screen -translate-y-25 flex-col items-center justify-center">
           <h1 className="">Searching</h1>
           <Spinner className="size-40" />
         </div>
       )}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-5 py-10">
+      <div className="grid grid-cols-2 gap-4 px-5 py-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {results?.Art.map((item) => (
           <a href={`http://localhost:3000/art/${item.ID}`} key={item.ID}>
             <div className="space-y-2">
-              <div className="h-64 w-full relative overflow-hidden ">
+              <div className="relative h-64 w-full overflow-hidden">
                 <Image
                   src={item.ImageSmall}
                   alt={item.ArtworkTitle}
@@ -91,7 +91,7 @@ const Search = () => {
                   className="object-contain"
                 />
               </div>
-              <h3 className="font-semibold text-sm">
+              <h3 className="text-sm font-semibold">
                 {item.ArtworkTitle || "Untitled"}
               </h3>
               <p className="text-xs text-gray-600">
