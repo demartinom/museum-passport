@@ -25,13 +25,20 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	artist := r.URL.Query().Get("artist")
 	artworktype := r.URL.Query().Get("type")
 	pageLength := r.URL.Query().Get("length")
+	general := r.URL.Query().Get("general")
 
 	resultsLength, err := strconv.Atoi(pageLength)
 	if err != nil {
 		return
 	}
+	var artwork *museums.SearchResult
 
-	artwork, err := s.Clients[museum].Search(museums.SearchParams{Name: name, Artist: artist, ArtworkType: artworktype}, resultsLength)
+	// general decides whether or not to search using specific criteria
+	if general != "" {
+		artwork, err = s.Clients[museum].GeneralSearch(general, 80)
+	} else {
+		artwork, err = s.Clients[museum].Search(museums.SearchParams{Name: name, Artist: artist, ArtworkType: artworktype}, resultsLength)
+	}
 	if err != nil {
 		fmt.Println("Error:", err)
 		http.Error(w, "Invalid search", http.StatusBadRequest)
