@@ -165,3 +165,27 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 	}
 	return &SearchResult{ResultsLength: len(searchIDs), Art: filtered}, nil
 }
+
+// if general is in URL query, searches the api using general search rather tahn searching by criteria (artist, medium, etc.)
+func (m *MetClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
+	queryURL := fmt.Sprintf("%s/search?q=%s", m.BaseURL, url.QueryEscape(query))
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return &SearchResult{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("met API returned %d", resp.StatusCode)
+	}
+
+	var result MetSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	artObjects, err := m.SearchRequest(result.ObjectIDs, resultsLength)
+	if err != nil {
+		return nil, err
+	}
+	return artObjects, nil
+}
