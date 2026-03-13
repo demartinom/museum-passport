@@ -22,7 +22,7 @@ export default function SearchPage() {
   const urlField = searchParams.get("field");
   const urlQuery = searchParams.get("q");
 
-  const [field, setField] = useState(urlField || "");
+  const [field, setField] = useState(urlField || "general");
   const [searchText, setSearchText] = useState(urlQuery || "");
   const [results, setResults] = useState<SearchResult>();
   const [searching, setSearching] = useState(false);
@@ -48,7 +48,7 @@ export default function SearchPage() {
     }
 
     fetchResults();
-  }, [urlField, urlQuery]);
+  }, [field, urlField, urlQuery]);
 
   function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
