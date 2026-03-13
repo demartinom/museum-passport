@@ -122,3 +122,7 @@ func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
 
 	return fmt.Sprintf("%s/object?%s&apikey=%s", h.BaseURL, queryURL.Encode(), h.APIKey)
 }
+
+func (h *HarvardClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
+	return &SearchResult{}, nil
+}
