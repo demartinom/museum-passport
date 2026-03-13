@@ -12,45 +12,56 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { SearchResult } from "@/types/search";
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const Search = () => {
-  const [field, setField] = useState("");
-  const [searchText, setSearchText] = useState("");
+export default function SearchPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const urlField = searchParams.get("field");
+  const urlQuery = searchParams.get("q");
+
+  const [field, setField] = useState(urlField || "");
+  const [searchText, setSearchText] = useState(urlQuery || "");
   const [results, setResults] = useState<SearchResult>();
   const [searching, setSearching] = useState(false);
 
-  async function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
+  useEffect(() => {
+    if (!urlField || !urlQuery) return;
+
+    async function fetchResults() {
+      setSearching(true);
+      setResults(undefined);
+
+      try {
+        const res = await fetch(
+          `http://localhost:3001/api/search?museum=met&${urlField}=${encodeURIComponent(urlQuery)}&length=80`,
+        );
+        const data = await res.json();
+        setResults(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setSearching(false);
+      }
+    }
+
+    fetchResults();
+  }, [urlField, urlQuery]);
+
+  function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!field || !searchText) return;
-    setSearching(true);
-    setResults(undefined);
 
-    try {
-      const res = await fetch(
-        `http://localhost:3001/api/search?museum=met&${field}=${encodeURIComponent(searchText)}&length=80`,
-      );
-      const data = await res.json();
-      setResults(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSearching(false);
-    }
+    router.push(`/search?field=${field}&q=${encodeURIComponent(searchText)}`);
   }
 
   return (
     <div>
       <form className="w-1/2" onSubmit={handleSearch}>
-        {/* Combobox instead? */}
-        {/* Also Field? */}
         <div className="flex">
-          <Select
-            value={field}
-            onValueChange={(value) => {
-              setField(value);
-            }}
-          >
+          <Select value={field} onValueChange={setField}>
             <SelectTrigger>
               <SelectValue placeholder="Field" />
             </SelectTrigger>
@@ -67,39 +78,43 @@ const Search = () => {
             type="text"
             id="input-search"
             value={searchText}
-            onChange={(e) => {
-              setSearchText(e.target.value);
-            }}
-          ></Input>
+            onChange={(e) => setSearchText(e.target.value)}
+          />
         </div>
       </form>
+
       {searching == true && (
-        <div className="flex flex-col min-h-screen justify-center items-center -translate-y-25">
+        <div className="flex min-h-screen -translate-y-25 flex-col items-center justify-center">
           <h1 className="">Searching</h1>
           <Spinner className="size-40" />
         </div>
       )}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-5 py-10">
+
+      <div className="grid grid-cols-2 gap-4 px-5 py-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {results?.Art.map((item) => (
-          <div key={item.ID} className="space-y-2">
-            <div className="h-64 w-full relative overflow-hidden ">
-              <Image
-                src={item.ImageSmall}
-                alt={item.ArtworkTitle}
-                fill
-                className="object-contain"
-              />
+          <a
+            href={`/art/${item.ID}?back=/search?field=${urlField}&q=${urlQuery}`}
+            key={item.ID}
+          >
+            <div className="space-y-2">
+              <div className="relative h-64 w-full overflow-hidden">
+                <Image
+                  src={item.ImageSmall}
+                  alt={item.ArtworkTitle}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <h3 className="text-sm font-semibold">
+                {item.ArtworkTitle || "Untitled"}
+              </h3>
+              <p className="text-xs text-gray-600">
+                {item.ArtistName || "Artist Unknown"}
+              </p>
             </div>
-            <h3 className="font-semibold text-sm">
-              {item.ArtworkTitle || "Untitled"}
-            </h3>
-            <p className="text-xs text-gray-600">
-              {item.ArtistName || "Artist Unknown"}
-            </p>
-          </div>
+          </a>
         ))}
       </div>
     </div>
   );
-};
-export default Search;
+}
