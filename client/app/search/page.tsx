@@ -48,7 +48,7 @@ export default function SearchPage() {
     }
 
     fetchResults();
-  }, [field, urlField, urlQuery]);
+  }, [urlField, urlQuery]);
 
   function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
