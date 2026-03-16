@@ -58,7 +58,7 @@ func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		DateCreated:  receivedArt.Dated,
 		ArtMedium:    receivedArt.Medium,
 		ImageLarge:   receivedArt.Primaryimageurl,
-		ImageSmall:   "",
+		ImageSmall:   fmt.Sprintf("%s?height=150&width=150", receivedArt.Primaryimageurl),
 		Museum:       h.GetMuseumName(),
 		ArtworkType:  receivedArt.Classification,
 	}
@@ -90,7 +90,6 @@ func (h *HarvardClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
 
 func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
 	queryURL := h.BuildURL(params, pageLength)
-
 	resp, err := http.Get(queryURL)
 	if err != nil {
 		return nil, err
@@ -102,9 +101,15 @@ func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResu
 
 	var normalized []*models.SingleArtwork
 	for _, artwork := range searchResult.Records {
+		// Skip artworks without primary image URL
+		if artwork.Primaryimageurl == "" {
+			continue
+		}
+
 		art := h.NormalizeArtwork(artwork)
 		normalized = append(normalized, &art)
 	}
+
 	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
 
