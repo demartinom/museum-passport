@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/demartinom/museum-passport/models"
 	"github.com/demartinom/museum-passport/museums"
 )
 
@@ -20,7 +21,7 @@ func NewSearchHandler(clients map[string]museums.Client) *SearchHandler {
 // API endpoint for searching for artwork
 // Uses search function specific to museum specified
 func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
-	museum := r.URL.Query().Get("museum")
+	// museum := r.URL.Query().Get("museum")
 	name := r.URL.Query().Get("name")
 	artist := r.URL.Query().Get("artist")
 	artworktype := r.URL.Query().Get("type")
@@ -31,18 +32,27 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	var artwork *museums.SearchResult
+	var artwork []*models.SingleArtwork
 
-	// general decides whether or not to search using specific criteria
-	if general != "" {
-		artwork, err = s.Clients[museum].GeneralSearch(general, 80)
-	} else {
-		artwork, err = s.Clients[museum].Search(museums.SearchParams{Name: name, Artist: artist, ArtworkType: artworktype}, resultsLength)
-	}
-	if err != nil {
-		fmt.Println("Error:", err)
-		http.Error(w, "Invalid search", http.StatusBadRequest)
-		return
+	for _, museum := range s.Clients {
+		var foundArtwork *museums.SearchResult
+		// general decides whether or not to search using specific criteria
+		if general != "" {
+			foundArtwork, err = museum.GeneralSearch(general, 80)
+			if err != nil {
+				fmt.Println("Error:", err)
+				continue // Skip this museum
+			}
+			artwork = append(artwork, foundArtwork.Art...)
+		} else {
+			foundArtwork, err = museum.Search(museums.SearchParams{Name: name, Artist: artist, ArtworkType: artworktype}, resultsLength)
+			artwork = append(artwork, foundArtwork.Art...)
+			if err != nil {
+				fmt.Println("Error:", err)
+				continue // Skip this museum
+			}
+		}
+
 	}
 
 	w.Header().Set("Content-Type", "application/json")
