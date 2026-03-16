@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { SearchResult } from "@/types/search";
+import { Art } from "@/types/search";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ export default function SearchPage() {
 
   const [field, setField] = useState(urlField || "general");
   const [searchText, setSearchText] = useState(urlQuery || "");
-  const [results, setResults] = useState<SearchResult>();
+  const [results, setResults] = useState<Array<Art>>([]);
   const [searching, setSearching] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function SearchPage() {
 
     async function fetchResults() {
       setSearching(true);
-      setResults(undefined);
+      setResults([]);
 
       try {
         const res = await fetch(
