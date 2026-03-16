@@ -36,7 +36,7 @@ export default function SearchPage() {
 
       try {
         const res = await fetch(
-          `http://localhost:3001/api/search?museum=met&${urlField}=${encodeURIComponent(urlQuery)}&length=80`,
+          `http://localhost:3001/api/search?${urlField}=${encodeURIComponent(urlQuery)}&length=80`,
         );
         const data = await res.json();
         setResults(data);
