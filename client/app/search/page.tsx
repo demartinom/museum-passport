@@ -108,10 +108,8 @@ export default function SearchPage() {
               <h3 className="text-sm font-semibold">
                 {item.ArtworkTitle || "Untitled"}
               </h3>
-              <p className="text-xs text-gray-600">
-                {item.ArtistName || "Artist Unknown"}
-              </p>
             </div>
+            <p className="text-xs text-gray-600">{item.Museum}</p>
           </a>
         ))}
       </div>
