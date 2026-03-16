@@ -91,7 +91,7 @@ export default function SearchPage() {
       )}
 
       <div className="grid grid-cols-2 gap-4 px-5 py-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {results?.Art.map((item) => (
+        {results.map((item) => (
           <a
             href={`/art/${item.ID}?back=/search?field=${urlField}&q=${urlQuery}`}
             key={item.ID}
