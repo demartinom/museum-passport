@@ -46,11 +46,11 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 			artwork = append(artwork, foundArtwork.Art...)
 		} else {
 			foundArtwork, err = museum.Search(museums.SearchParams{Name: name, Artist: artist, ArtworkType: artworktype}, resultsLength)
-			artwork = append(artwork, foundArtwork.Art...)
 			if err != nil {
 				fmt.Println("Error:", err)
 				continue // Skip this museum
 			}
+			artwork = append(artwork, foundArtwork.Art...)
 		}
 
 	}
