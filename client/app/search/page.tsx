@@ -60,9 +60,9 @@ export default function SearchPage() {
   const [searchText, setSearchText] = useState(
     isMediumSearch ? "" : urlQuery || "",
   );
-  const [selectedMedium, setSelectedMedium] = useState(
-    isMediumSearch ? urlQuery || "" : "",
-  );
+  // const [selectedMedium, setSelectedMedium] = useState(
+  //   isMediumSearch ? urlQuery || "" : "",
+  // );
   const [results, setResults] = useState<Array<Art>>([]);
   const [searching, setSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -113,7 +113,7 @@ export default function SearchPage() {
 
   function handleFieldChange(value: string) {
     setField(value);
-    setSelectedMedium("");
+    // setSelectedMedium("");
     setSearchText("");
   }
 
@@ -194,7 +194,7 @@ export default function SearchPage() {
           <p className="mt-3 text-xs text-stone-500">
             Showing results for{" "}
             <span className="font-semibold text-stone-700 capitalize">
-              "{urlQuery}"
+              {urlQuery}
             </span>
             {urlField && urlField !== "general" && (
               <>
