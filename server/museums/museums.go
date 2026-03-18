@@ -7,6 +7,7 @@ type Client interface {
 	GetMuseumName() string
 	ArtworkbyID(int) (*models.SingleArtwork, error)
 	Search(SearchParams, int) (*SearchResult, error)
+	GeneralSearch(string, int) (*SearchResult, error)
 }
 
 // Used for translating search parameters from url for APIs
