@@ -238,11 +238,7 @@ export default function SearchPage() {
           </p>
           <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {results.map((item) => (
-              <a
-                href={`/art/${item.ID}?back=/search?field=${urlField}&q=${urlQuery}`}
-                key={item.ID}
-                className="group"
-              >
+              <a href={`/art/${item.ID}`} key={item.ID} className="group">
                 <div className="space-y-2">
                   <div className="relative h-56 w-full overflow-hidden rounded-lg bg-stone-100">
                     <Image
