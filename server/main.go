@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/demartinom/museum-passport/ai"
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/handlers"
 	"github.com/demartinom/museum-passport/museums"
@@ -30,6 +31,10 @@ func main() {
 	ArtworkHandler := handlers.NewArtworkHandler(clients)
 	SearchHandler := handlers.NewSearchHandler(clients)
 
+	// Create AI client
+	summaryClient := ai.NewSummaryClient(os.Getenv("OPENAI_KEY"))
+	summaryHandler := handlers.NewSummaryHandler(summaryClient, cache, clients)
+
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
@@ -42,6 +47,7 @@ func main() {
 
 	r.Get("/api/artwork/{id}", ArtworkHandler.GetArtwork)
 	r.Get("/api/search", SearchHandler.SearchArtwork)
+	r.Get("/api/summary", summaryHandler.GenerateSummary)
 
 	port := os.Getenv("PORT")
 	fmt.Printf("Starting server at port%s\n", port)
