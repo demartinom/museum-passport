@@ -21,7 +21,7 @@ func NewSummaryClient(APIKey string) *SummaryClient {
 
 func (s *SummaryClient) GenerateSummary(artwork models.SingleArtwork) (string, error) {
 	prompt := fmt.Sprintf(
-		"Provide a brief, educational summary (2-3 paragraphs) about this artwork:\n\n"+
+		"Provide a brief, educational summary (1-2 paragraphs) about this artwork:\n\n"+
 			"Title: %s\n"+
 			"Artist: %s\n"+
 			"Date: %s\n"+
