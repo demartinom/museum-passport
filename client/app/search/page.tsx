@@ -65,8 +65,9 @@ export default function SearchPage() {
   // );
   const [results, setResults] = useState<Array<Art>>([]);
   const [searching, setSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
 
+  // Checks if there is an issue with searching
+  const hasSearched = !!urlQuery;
   const isMediumMode = field === "type";
   const activePlaceholder =
     FIELD_OPTIONS.find((o) => o.value === field)?.placeholder ?? "Search...";
@@ -76,7 +77,7 @@ export default function SearchPage() {
 
     async function fetchResults() {
       setSearching(true);
-      setHasSearched(true);
+
       setResults([]);
 
       try {
