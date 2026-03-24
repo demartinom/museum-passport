@@ -22,8 +22,8 @@ const SingleArtwork = async ({
   return (
     <div className="flex justify-center">
       <div className="container px-4 py-12">
-        <div className="grid grid-cols-1 items-start gap-20 lg:grid-cols-3">
-          <div className="pt-24">
+        <div className="grid grid-cols-1 items-start lg:grid-cols-[3fr_4fr]">
+          <div className="px-10 pt-10">
             <h1 className="mb-2 text-4xl font-bold">{data.ArtworkTitle}</h1>
             <p className="text-xl text-gray-600">
               {data.ArtistName || "Unknown Artist"}
@@ -47,7 +47,7 @@ const SingleArtwork = async ({
             </div>
           </div>
 
-          <div className="relative aspect-square translate-x-10 overflow-hidden rounded-lg bg-gray-100 lg:col-span-2">
+          <div className="relative aspect-square translate-x-10 overflow-hidden rounded-lg bg-gray-100">
             <Image
               src={data.ImageLarge}
               fill
