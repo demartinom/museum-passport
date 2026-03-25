@@ -51,10 +51,15 @@ func (h *HarvardClient) GetMuseumName() string {
 
 // Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct and saves in cache
 func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
+	artistName := "Unknown Artist"
+	if len(receivedArt.People) > 0 {
+		artistName = receivedArt.People[0].DisplayName
+	}
+
 	normalized := models.SingleArtwork{
 		ID:           fmt.Sprintf("harvard-%d", receivedArt.ID),
 		ArtworkTitle: receivedArt.Title,
-		ArtistName:   receivedArt.People[0].DisplayName,
+		ArtistName:   artistName,
 		DateCreated:  receivedArt.Dated,
 		ArtMedium:    receivedArt.Medium,
 		ImageLarge:   receivedArt.Primaryimageurl,
