@@ -217,14 +217,16 @@ export default function SearchPage() {
         </div>
       )}
 
-      {!searching && hasSearched && results.length === 0 && (
+      {/* No results */}
+      {!searching && searchText && results.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-2 py-32 text-stone-400">
           <p className="text-lg font-medium text-stone-600">No results found</p>
           <p className="text-sm">Try a different term or search field.</p>
         </div>
       )}
 
-      {!searching && !hasSearched && (
+      {/* Initial instruction */}
+      {!searching && !searchText && results.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-2 py-32 text-stone-400">
           <p className="text-sm">
             Enter a search above to explore the collection.
