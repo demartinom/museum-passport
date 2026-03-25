@@ -134,5 +134,29 @@ func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
 }
 
 func (h *HarvardClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
-	return &SearchResult{}, nil
+	queryURL := fmt.Sprintf("%s/object?hasimage=1&q=%s&size=%d&apikey=%s",
+		h.BaseURL, url.QueryEscape(query), resultsLength, h.APIKey)
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var searchResult HarvardSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&searchResult); err != nil {
+		return nil, err
+	}
+
+	var normalized []*models.SingleArtwork
+	for _, artwork := range searchResult.Records {
+		if artwork.Primaryimageurl == "" {
+			continue
+		}
+
+		art := h.NormalizeArtwork(artwork)
+		normalized = append(normalized, &art)
+	}
+
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
