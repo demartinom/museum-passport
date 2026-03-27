@@ -51,10 +51,15 @@ func (h *HarvardClient) GetMuseumName() string {
 
 // Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct and saves in cache
 func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
+	artistName := "Unknown Artist"
+	if len(receivedArt.People) > 0 {
+		artistName = receivedArt.People[0].DisplayName
+	}
+
 	normalized := models.SingleArtwork{
 		ID:           fmt.Sprintf("harvard-%d", receivedArt.ID),
 		ArtworkTitle: receivedArt.Title,
-		ArtistName:   receivedArt.People[0].DisplayName,
+		ArtistName:   artistName,
 		DateCreated:  receivedArt.Dated,
 		ArtMedium:    receivedArt.Medium,
 		ImageLarge:   receivedArt.Primaryimageurl,
@@ -128,6 +133,32 @@ func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
 	return fmt.Sprintf("%s/object?%s&apikey=%s", h.BaseURL, queryURL.Encode(), h.APIKey)
 }
 
+// if general is in URL query, searches the api using general search rather than
+// searching by criteria (artist, medium, etc.)
 func (h *HarvardClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
-	return &SearchResult{}, nil
+	queryURL := fmt.Sprintf("%s/object?hasimage=1&q=%s&size=%d&apikey=%s",
+		h.BaseURL, url.QueryEscape(query), resultsLength, h.APIKey)
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var searchResult HarvardSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&searchResult); err != nil {
+		return nil, err
+	}
+
+	var normalized []*models.SingleArtwork
+	for _, artwork := range searchResult.Records {
+		if artwork.Primaryimageurl == "" {
+			continue
+		}
+
+		art := h.NormalizeArtwork(artwork)
+		normalized = append(normalized, &art)
+	}
+
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }

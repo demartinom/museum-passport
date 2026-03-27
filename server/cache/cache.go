@@ -7,16 +7,21 @@ import (
 )
 
 type Cache struct {
-	Data map[string]CachedItem
-	mu   sync.RWMutex
+	Data      map[string]CachedItem
+	summaries map[string]CachedSummary
+	mu        sync.RWMutex
 }
 
 type CachedItem struct {
 	Artwork models.SingleArtwork
 }
 
+type CachedSummary struct {
+	Summary string
+}
+
 func NewCache() *Cache {
-	return &Cache{Data: make(map[string]CachedItem)}
+	return &Cache{Data: make(map[string]CachedItem), summaries: make(map[string]CachedSummary)}
 }
 
 // Adds artwork to site cache
@@ -41,4 +46,25 @@ func (c *Cache) GetArtwork(id string) (models.SingleArtwork, bool) {
 		return models.SingleArtwork{}, false
 	}
 	return artwork.Artwork, true
+}
+
+func (c *Cache) GetSummary(artworkID string) (string, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	item, exists := c.summaries[artworkID]
+	if !exists {
+		return "", false
+	}
+
+	return item.Summary, true
+}
+
+func (c *Cache) SetSummary(artworkID, summary string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.summaries[artworkID] = CachedSummary{
+		Summary: summary,
+	}
 }
