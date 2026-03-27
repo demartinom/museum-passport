@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,29 +15,35 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	// Load .env locally; ignore error in production
+	if err := godotenv.Load(); err != nil {
+		log.Println(".env file not found, continuing...")
 	}
+
 	// Initialize cache
 	cache := cache.NewCache()
 
-	// Creates map of museum clients to be used by different handlers
+	// Create museum clients
 	clients := map[string]museums.Client{
 		"met":     museums.NewMetClient(cache),
 		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY"), cache),
 	}
+
 	ArtworkHandler := handlers.NewArtworkHandler(clients)
 	SearchHandler := handlers.NewSearchHandler(clients)
 
 	// Create AI client
-	summaryClient := ai.NewSummaryClient(os.Getenv("OPENAI_KEY"))
+	openAIKey := os.Getenv("OPENAI_KEY")
+	if openAIKey == "" {
+		log.Fatal("OPENAI_KEY is not set")
+	}
+	summaryClient := ai.NewSummaryClient(openAIKey)
 	summaryHandler := handlers.NewSummaryHandler(summaryClient, cache, clients)
 
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"}, // your Next app
+		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: false,
@@ -49,7 +54,12 @@ func main() {
 	r.Get("/api/search", SearchHandler.SearchArtwork)
 	r.Get("/api/summary", summaryHandler.GenerateSummary)
 
+	// Fly assigns a dynamic port
 	port := os.Getenv("PORT")
-	fmt.Printf("Starting server at port%s\n", port)
-	http.ListenAndServe(port, r)
+	if port == "" {
+		port = "3001" // local fallback
+	}
+
+	log.Printf("Listening on port %s", port)
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
