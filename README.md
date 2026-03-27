@@ -120,7 +120,6 @@ go test ./...
 
 - **Data Normalization**: Museum APIs return inconsistent data formats. Solved by creating a unified `Artwork` struct and museum-specific normalization functions.
 - **Performance**: Concurrent goroutines for parallel API calls significantly reduced response times.
-- **Cost Optimization**: AI summaries are cached for 30 days to minimize OpenAI API costs.
 
 ## Future Features
 
