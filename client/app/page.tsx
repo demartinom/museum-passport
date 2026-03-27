@@ -1,5 +1,5 @@
 "use client";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -76,8 +76,8 @@ export default function SearchPage() {
   // Checks if there is an issue with searching
   const isMediumMode = field === "type";
   const hasSearched = !!urlQuery;
-  const activePlaceholder =
-    FIELD_OPTIONS.find((o) => o.value === field)?.placeholder ?? "Search...";
+  // const activePlaceholder =
+  //   FIELD_OPTIONS.find((o) => o.value === field)?.placeholder ?? "Search...";
 
   useEffect(() => {
     if (!urlField || !urlQuery) return;
@@ -157,7 +157,8 @@ export default function SearchPage() {
               </SelectContent>
             </Select>
 
-            {!isMediumMode ? (
+            {/* Search by Medium. Currently disabled 
+            {/* {!isMediumMode ? (
               <>
                 <Input
                   type="text"
@@ -178,9 +179,9 @@ export default function SearchPage() {
               <div className="flex flex-1 items-center px-4 text-sm text-stone-400 select-none">
                 Select a medium below
               </div>
-            )}
+            )} */}
           </div>
-          {/* Search by Medium. Currently disabled */}
+          {/* Search by Medium. Currently disabled 
           {/* {isMediumMode && (
           <div className="mt-3 flex flex-wrap gap-2">
             {MEDIUM_OPTIONS.map((opt) => {
