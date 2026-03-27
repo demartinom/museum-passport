@@ -100,9 +100,7 @@ export default function SearchPage() {
   function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!field || !searchText.trim()) return;
-    router.push(
-      `/search?field=${field}&q=${encodeURIComponent(searchText.trim())}`,
-    );
+    router.push(`/?field=${field}&q=${encodeURIComponent(searchText.trim())}`);
   }
 
   // Search by Medium. Currently disabled
