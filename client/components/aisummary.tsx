@@ -9,7 +9,9 @@ export const AISummary = ({ id }: { id: string }) => {
   useEffect(() => {
     async function fetchSummary() {
       try {
-        const res = await fetch(`http://localhost:3001/api/summary?id=${id}`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/summary?id=${id}`,
+        );
         const data = await res.json();
         setSummary(data.summary);
       } catch (err) {
