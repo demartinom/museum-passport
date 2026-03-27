@@ -65,7 +65,7 @@ export default function SearchPage() {
 
       try {
         const res = await fetch(
-          `http://localhost:3001/api/search?${urlField}=${encodeURIComponent(
+          `${process.env.NEXT_PUBLIC_API_URL}/search?${urlField}=${encodeURIComponent(
             urlQuery!,
           )}&length=80`,
         );
