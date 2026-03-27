@@ -13,6 +13,11 @@ import { Art } from "@/types/search";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Fraunces } from "next/font/google";
+
+const fraunces = Fraunces({
+  weight: ["400", "700"],
+});
 
 const FIELD_OPTIONS = [
   {
@@ -144,6 +149,11 @@ export default function SearchPage() {
               </SelectGroup>
             </SelectContent>
           </Select>
+    <div>
+      <div className="flex justify-center">
+        <h1 className={`my-6 ${fraunces.className} text-7xl font-bold`}>
+          Museum Passport
+        </h1>
 
           {!isMediumMode ? (
             <>
