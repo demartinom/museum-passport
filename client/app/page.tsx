@@ -25,7 +25,7 @@ const FIELD_OPTIONS = [
   {
     value: "general",
     label: "All",
-    placeholder: "Search artworks, artists, mediums...",
+    placeholder: "Search artworks, artists...",
   },
   {
     value: "name",
