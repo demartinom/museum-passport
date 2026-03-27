@@ -62,7 +62,7 @@ export default function SearchPage() {
       try {
         const res = await fetch(
           `http://localhost:3001/api/search?${urlField}=${encodeURIComponent(
-            urlQuery,
+            urlQuery!,
           )}&length=80`,
         );
         const data = await res.json();
