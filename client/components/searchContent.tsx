@@ -52,7 +52,7 @@ export function SearchContent() {
       setResults([]);
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/search?${urlField}=${encodeURIComponent(urlQuery!)}&length=80`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/search?${urlField}=${encodeURIComponent(urlQuery!)}&length=80`,
         );
         const data = await res.json();
         setResults(data || []);

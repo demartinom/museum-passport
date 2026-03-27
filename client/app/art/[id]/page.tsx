@@ -11,7 +11,9 @@ const SingleArtwork = async ({
 
   let data: Art;
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/artwork/${id}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/artwork/${id}`,
+    );
 
     data = await res.json();
   } catch (err) {

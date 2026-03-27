@@ -10,7 +10,7 @@ export const AISummary = ({ id }: { id: string }) => {
     async function fetchSummary() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/summary?id=${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/summary?id=${id}`,
         );
         const data = await res.json();
         setSummary(data.summary);
