@@ -27,7 +27,6 @@ export const AISummary = ({ id }: { id: string }) => {
   return (
     <div>
       {/* Artwork display */}
-
       <div className="mt-6 rounded-lg bg-gray-50 p-2">
         <h3 className="mb-2 font-semibold">About this artwork</h3>
         {loadingSummary ? (
