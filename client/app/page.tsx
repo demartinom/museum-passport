@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { Input } from "@/components/ui/input";
 import {
   Select,
