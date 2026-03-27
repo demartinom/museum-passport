@@ -5,10 +5,18 @@ WORKDIR /usr/src/app
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY . .
+# Build the binary
 RUN go build -v -o /run-app .
 
+# Final Stage
+FROM debian:bookworm-slim
 
-FROM debian:bookworm
+# Install the CA certificates so your app can talk to HTTPS APIs
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /run-app /usr/local/bin/
+
+# Ensure the binary is executable
+RUN chmod +x /usr/local/bin/run-app
+
 CMD ["run-app"]
