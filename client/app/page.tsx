@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Fraunces } from "next/font/google";
+import Link from "next/link";
 
 // Enable use of Fraunces font
 const fraunces = Fraunces({
@@ -91,13 +92,22 @@ export default function SearchPage() {
     setSearchText("");
   }
 
+  function searchReset() {
+    setResults([]);
+    setSearchText("");
+  }
+
   return (
     <div>
-      <div className="flex justify-center">
+      <Link
+        href="/"
+        className="flex justify-center"
+        onClick={() => searchReset()}
+      >
         <h1 className={`my-6 ${fraunces.className} text-7xl font-bold`}>
           Museum Passport
         </h1>
-      </div>
+      </Link>
 
       <div className="min-h-screen px-6 py-10">
         {/* Search bar */}
