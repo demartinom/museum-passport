@@ -77,7 +77,7 @@ export default function SearchPage() {
     fetchResults();
   }, [urlField, urlQuery]);
 
-  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
+  function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!field || !searchText.trim()) return;
     router.push(`/?field=${field}&q=${encodeURIComponent(searchText.trim())}`);
