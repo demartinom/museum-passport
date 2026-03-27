@@ -15,10 +15,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Fraunces } from "next/font/google";
 
+// Enable use of Fraunces font
 const fraunces = Fraunces({
   weight: ["400", "700"],
 });
 
+// Specific search fields
 const FIELD_OPTIONS = [
   {
     value: "general",
@@ -57,6 +59,7 @@ export default function SearchPage() {
 
     async function fetchResults() {
       setSearching(true);
+      // Resets results before api call
       setResults([]);
 
       try {
