@@ -15,9 +15,11 @@ import (
 )
 
 func main() {
-	// Load .env locally; ignore error in production
-	if err := godotenv.Load(); err != nil {
-		log.Println(".env file not found, continuing...")
+	if os.Getenv("DOCKER_ENV") == "" {
+		if err := godotenv.Load(); err != nil {
+			// Only log this if we aren't in a container
+			log.Println("Running in local mode without .env file")
+		}
 	}
 
 	// Initialize cache
