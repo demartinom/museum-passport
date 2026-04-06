@@ -1,4 +1,4 @@
-import { AISummary } from "@/components/aiSummary";
+import { AISummary } from "@/components/aisummary";
 import { Art } from "@/types/search";
 import Image from "next/image";
 
