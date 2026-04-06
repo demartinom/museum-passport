@@ -1,4 +1,4 @@
-import { AISummary } from "@/components/aisummary";
+import { AISummary } from "@/components/aiSummary";
 import { Art } from "@/types/search";
 import Image from "next/image";
 
@@ -11,9 +11,7 @@ const SingleArtwork = async ({
 
   let data: Art;
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/artwork/${id}`,
-    );
+    const res = await fetch(`${process.env.API_URL}/api/artwork/${id}`);
 
     data = await res.json();
   } catch (err) {
@@ -55,7 +53,6 @@ const SingleArtwork = async ({
               fill
               alt={data.ArtworkTitle}
               className="object-contain"
-              unoptimized
             />
           </div>
         </div>

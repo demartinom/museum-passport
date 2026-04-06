@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 
 export const AISummary = ({ id }: { id: string }) => {
@@ -9,9 +8,7 @@ export const AISummary = ({ id }: { id: string }) => {
   useEffect(() => {
     async function fetchSummary() {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/summary?id=${id}`,
-        );
+        const res = await fetch(`/api/summary?id=${id}`);
         const data = await res.json();
         setSummary(data.summary);
       } catch (err) {
@@ -20,7 +17,6 @@ export const AISummary = ({ id }: { id: string }) => {
         setLoadingSummary(false);
       }
     }
-
     fetchSummary();
   }, [id]);
 
