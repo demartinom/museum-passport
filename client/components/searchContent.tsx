@@ -52,7 +52,7 @@ export function SearchContent() {
       setResults([]);
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/search?${urlField}=${encodeURIComponent(urlQuery!)}&length=80`,
+          `/api/search?${urlField}=${encodeURIComponent(urlQuery!)}&length=80`,
         );
         const data = await res.json();
         setResults(data || []);
@@ -133,6 +133,9 @@ export function SearchContent() {
               <h3 className="mt-2 truncate text-sm font-semibold">
                 {item.ArtworkTitle || "Untitled"}
               </h3>
+              <p className="mt-0.5 truncate text-xs text-stone-400">
+                {item.Museum}
+              </p>
             </a>
           ))}
         </div>
