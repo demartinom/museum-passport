@@ -1,7 +1,7 @@
 import { AISummary } from "@/components/aisummary";
 import { Art } from "@/types/search";
 import Image from "next/image";
-
+import BackButton from "@/components/backbutton";
 const SingleArtwork = async ({
   params,
 }: {
@@ -20,7 +20,8 @@ const SingleArtwork = async ({
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="relative flex justify-center">
+      <BackButton />
       <div className="container px-4 py-12">
         <div className="grid grid-cols-1 items-start lg:grid-cols-[3fr_4fr]">
           <div className="px-10 pt-10">

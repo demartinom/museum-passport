@@ -1,13 +1,8 @@
 import { Suspense } from "react";
-import { Fraunces } from "next/font/google";
+import { fraunces } from "../lib/fonts";
 import Link from "next/link";
 import { SearchContent } from "@/components/searchContent";
 import { Spinner } from "@/components/ui/spinner";
-
-const fraunces = Fraunces({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-});
 
 export default function SearchPage() {
   return (
