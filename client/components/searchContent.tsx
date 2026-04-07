@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
+import Link from "next/link";
 
 const FIELD_OPTIONS = [
   {
@@ -121,7 +122,7 @@ export function SearchContent() {
       ) : results.length > 0 ? (
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {results.map((item) => (
-            <a href={`/art/${item.ID}`} key={item.ID} className="group">
+            <Link href={`/art/${item.ID}`} key={item.ID} className="group">
               <div className="relative h-56 w-full overflow-hidden rounded-lg bg-stone-100">
                 <Image
                   src={item.ImageSmall}
@@ -136,7 +137,7 @@ export function SearchContent() {
               <p className="mt-0.5 truncate text-xs text-stone-400">
                 {item.Museum}
               </p>
-            </a>
+            </Link>
           ))}
         </div>
       ) : (
