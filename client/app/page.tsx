@@ -1,10 +1,31 @@
-import { Suspense } from "react";
 import { fraunces } from "../lib/fonts";
 import Link from "next/link";
 import { SearchContent } from "@/components/searchContent";
-import { Spinner } from "@/components/ui/spinner";
 
-export default function SearchPage() {
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; field?: string }>;
+}) {
+  const params = await searchParams;
+  const query = params.q || "";
+  const field = params.field || "general";
+
+  let initialResults = [];
+
+  if (query) {
+    try {
+      const apiUrl = `${process.env.API_URL}/api/search?${field}=${encodeURIComponent(query)}&length=80`;
+
+      const res = await fetch(apiUrl, {
+        next: { revalidate: 3600 }, // Caches the result on the server for 1 hour
+      });
+
+      initialResults = await res.json();
+    } catch (err) {
+      console.error("Server-side fetch error:", err);
+    }
+  }
   return (
     <div>
       <Link href="/" className="flex justify-center">
@@ -15,15 +36,11 @@ export default function SearchPage() {
         </h1>
       </Link>
 
-      <Suspense
-        fallback={
-          <div className="flex justify-center py-32">
-            <Spinner className="size-10 text-stone-300" />
-          </div>
-        }
-      >
-        <SearchContent />
-      </Suspense>
+      <SearchContent
+        initialResults={initialResults || []}
+        initialQuery={query}
+        initialField={field}
+      />
     </div>
   );
 }
