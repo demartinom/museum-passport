@@ -111,6 +111,7 @@ export function SearchContent({
                       src={item.ImageSmall}
                       alt={item.ArtworkTitle}
                       fill
+                      unoptimized
                       className="object-contain transition-transform group-hover:scale-105"
                     />
                   </div>
