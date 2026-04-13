@@ -36,11 +36,7 @@ export default async function SearchPage({
         </h1>
       </Link>
 
-      <SearchContent
-        initialResults={initialResults || []}
-        initialQuery={query}
-        initialField={field}
-      />
+      <SearchContent initialResults={initialResults || []} />
     </div>
   );
 }

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -14,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
-import Link from "next/link";
 
 const FIELD_OPTIONS = [
   { value: "general", label: "All" },
@@ -24,37 +25,54 @@ const FIELD_OPTIONS = [
 
 interface SearchContentProps {
   initialResults: Art[];
-  initialQuery: string;
-  initialField: string;
 }
 
-export function SearchContent({
-  initialResults,
-  initialQuery,
-  initialField,
-}: SearchContentProps) {
+export function SearchContent({ initialResults }: SearchContentProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  const [field, setField] = useState(initialField);
-  const [searchText, setSearchText] = useState(initialQuery);
+  // URL is source of truth for committed state
+  const urlQuery = searchParams.get("q") || "";
+  const urlField = searchParams.get("field") || "general";
+
+  // Local state is ONLY for typing
+  const [searchText, setSearchText] = useState(urlQuery);
+
+  // Sync input when URL changes (back/forward or navigation)
+  useEffect(() => {
+    setSearchText(urlQuery);
+  }, [urlQuery]);
 
   function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!searchText.trim()) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("q", searchText.trim());
+    params.set("field", urlField);
 
     startTransition(() => {
-      router.push(
-        `/?field=${field}&q=${encodeURIComponent(searchText.trim())}`,
-      );
+      router.push(`/?${params.toString()}`);
     });
   }
 
   return (
     <div className="min-h-screen px-6 py-10">
+      {/* SEARCH BAR */}
       <form onSubmit={handleSearch} className="mx-auto mb-4 max-w-2xl">
         <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
-          <Select value={field} onValueChange={setField}>
+          {/* FIELD SELECT */}
+          <Select
+            value={urlField}
+            onValueChange={(value) => {
+              const params = new URLSearchParams(searchParams.toString());
+              params.set("field", value);
+
+              startTransition(() => {
+                router.push(`/?${params.toString()}`);
+              });
+            }}
+          >
             <SelectTrigger className="w-32 shrink-0 border-0 border-r border-stone-200 bg-stone-50 text-sm focus:ring-0">
               <SelectValue placeholder="Field" />
             </SelectTrigger>
@@ -69,12 +87,15 @@ export function SearchContent({
             </SelectContent>
           </Select>
 
+          {/* INPUT */}
           <Input
             type="text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             className="flex-1 border-0 focus-visible:ring-0"
+            placeholder="Search artworks..."
           />
+
           <button
             type="submit"
             className="bg-stone-900 px-5 text-white disabled:opacity-50"
@@ -85,7 +106,7 @@ export function SearchContent({
         </div>
       </form>
 
-      {/* Results Area */}
+      {/* RESULTS */}
       <div className="relative mt-10">
         {/* Loading Overlay: Only visible when isPending is true */}
         {isPending && (
@@ -94,7 +115,6 @@ export function SearchContent({
           </div>
         )}
 
-        {/* Results Container: Dims when pending to show background activity */}
         <div
           className={
             isPending
@@ -115,7 +135,8 @@ export function SearchContent({
                       className="object-contain transition-transform group-hover:scale-105"
                     />
                   </div>
-                  <h3 className="mt-2 truncate text-sm font-semibold">
+
+                  <h3 className="mt-2 text-sm font-semibold">
                     {item.ArtworkTitle}
                   </h3>
                   <p className="text-xs text-stone-400">{item.Museum}</p>
@@ -123,9 +144,9 @@ export function SearchContent({
               ))}
             </div>
           ) : (
-            initialQuery && (
+            urlQuery && (
               <p className="py-32 text-center text-stone-500">
-                No results found for `&quot;`{initialQuery}`&quot;`.
+                No results found for “{urlQuery}”.
               </p>
             )
           )}
