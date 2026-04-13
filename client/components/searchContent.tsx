@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,73 +17,45 @@ import { Art } from "@/types/search";
 import Link from "next/link";
 
 const FIELD_OPTIONS = [
-  {
-    value: "general",
-    label: "All",
-    placeholder: "Search artworks, artists...",
-  },
-  { value: "name", label: "Artwork", placeholder: "e.g. Starry Night..." },
-  {
-    value: "artist",
-    label: "Artist",
-    placeholder: "e.g. Monet, Frida Kahlo...",
-  },
+  { value: "general", label: "All" },
+  { value: "name", label: "Artwork" },
+  { value: "artist", label: "Artist" },
 ];
 
-export function SearchContent() {
+interface SearchContentProps {
+  initialResults: Art[];
+  initialQuery: string;
+  initialField: string;
+}
+
+export function SearchContent({
+  initialResults,
+  initialQuery,
+  initialField,
+}: SearchContentProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const urlField = searchParams.get("field");
-  const urlQuery = searchParams.get("q");
+  const [isPending, startTransition] = useTransition();
 
-  const [field, setField] = useState(urlField || "general");
-  const [searchText, setSearchText] = useState(urlQuery || "");
-  const [results, setResults] = useState<Array<Art>>([]);
-  const [searching, setSearching] = useState(false);
-
-  const hasSearched = !!urlQuery;
-  const activePlaceholder =
-    FIELD_OPTIONS.find((o) => o.value === field)?.placeholder ?? "Search...";
-
-  useEffect(() => {
-    if (!urlField || !urlQuery) return;
-
-    async function fetchResults() {
-      setSearching(true);
-      setResults([]);
-      try {
-        const res = await fetch(
-          `/api/search?${urlField}=${encodeURIComponent(urlQuery!)}&length=80`,
-        );
-        const data = await res.json();
-        setResults(data || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setSearching(false);
-      }
-    }
-    fetchResults();
-  }, [urlField, urlQuery]);
+  const [field, setField] = useState(initialField);
+  const [searchText, setSearchText] = useState(initialQuery);
 
   function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!field || !searchText.trim()) return;
-    router.push(`/?field=${field}&q=${encodeURIComponent(searchText.trim())}`);
+    if (!searchText.trim()) return;
+
+    startTransition(() => {
+      router.push(
+        `/?field=${field}&q=${encodeURIComponent(searchText.trim())}`,
+      );
+    });
   }
 
   return (
     <div className="min-h-screen px-6 py-10">
       <form onSubmit={handleSearch} className="mx-auto mb-4 max-w-2xl">
-        <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm transition-all focus-within:border-stone-500 focus-within:ring-2 focus-within:ring-stone-200">
-          <Select
-            value={field}
-            onValueChange={(val) => {
-              setField(val);
-              setSearchText("");
-            }}
-          >
-            <SelectTrigger className="w-32 shrink-0 rounded-none border-0 border-r border-stone-200 bg-stone-50 px-3 text-sm font-medium text-stone-600 focus:ring-0">
+        <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
+          <Select value={field} onValueChange={setField}>
+            <SelectTrigger className="w-32 shrink-0 border-0 border-r border-stone-200 bg-stone-50 text-sm focus:ring-0">
               <SelectValue placeholder="Field" />
             </SelectTrigger>
             <SelectContent>
@@ -101,50 +73,64 @@ export function SearchContent() {
             type="text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            placeholder={activePlaceholder}
-            className="flex-1 rounded-none border-0 bg-white px-4 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="flex-1 border-0 focus-visible:ring-0"
           />
           <button
             type="submit"
-            disabled={!searchText.trim()}
-            className="shrink-0 bg-stone-900 px-5 text-sm font-medium text-white transition-colors hover:bg-stone-700 disabled:opacity-40"
+            className="bg-stone-900 px-5 text-white disabled:opacity-50"
+            disabled={isPending}
           >
-            Search
+            {isPending ? "..." : "Search"}
           </button>
         </div>
       </form>
 
-      {/* Results Logic */}
-      {searching ? (
-        <div className="flex flex-col items-center justify-center py-32">
-          <Spinner className="size-10" />
-        </div>
-      ) : results.length > 0 ? (
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {results.map((item) => (
-            <Link href={`/art/${item.ID}`} key={item.ID} className="group">
-              <div className="relative h-56 w-full overflow-hidden rounded-lg bg-stone-100">
-                <Image
-                  src={item.ImageSmall}
-                  alt={item.ArtworkTitle}
-                  fill
-                  className="object-contain transition-transform group-hover:scale-105"
-                />
-              </div>
-              <h3 className="mt-2 truncate text-sm font-semibold">
-                {item.ArtworkTitle || "Untitled"}
-              </h3>
-              <p className="mt-0.5 truncate text-xs text-stone-400">
-                {item.Museum}
+      {/* Results Area */}
+      <div className="relative mt-10">
+        {/* Loading Overlay: Only visible when isPending is true */}
+        {isPending && (
+          <div className="absolute inset-0 z-10 flex items-start justify-center bg-white/40 pt-20 backdrop-blur-[1px]">
+            <Spinner className="size-15 text-stone-900" />
+          </div>
+        )}
+
+        {/* Results Container: Dims when pending to show background activity */}
+        <div
+          className={
+            isPending
+              ? "pointer-events-none opacity-30 transition-opacity"
+              : "opacity-100"
+          }
+        >
+          {initialResults?.length > 0 ? (
+            <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {initialResults.map((item) => (
+                <Link href={`/art/${item.ID}`} key={item.ID} className="group">
+                  <div className="relative h-56 w-full overflow-hidden rounded-lg bg-stone-100">
+                    <Image
+                      src={item.ImageSmall}
+                      alt={item.ArtworkTitle}
+                      fill
+                      unoptimized
+                      className="object-contain transition-transform group-hover:scale-105"
+                    />
+                  </div>
+                  <h3 className="mt-2 truncate text-sm font-semibold">
+                    {item.ArtworkTitle}
+                  </h3>
+                  <p className="text-xs text-stone-400">{item.Museum}</p>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            initialQuery && (
+              <p className="py-32 text-center text-stone-500">
+                No results found for `&quot;`{initialQuery}`&quot;`.
               </p>
-            </Link>
-          ))}
+            )
+          )}
         </div>
-      ) : (
-        hasSearched && (
-          <p className="py-32 text-center text-stone-500">No results found.</p>
-        )
-      )}
+      </div>
     </div>
   );
 }
