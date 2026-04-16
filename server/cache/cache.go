@@ -1,15 +1,12 @@
 package cache
 
 import (
-	"sync"
 
 	"github.com/demartinom/museum-passport/models"
 )
 
 type Cache struct {
-	Data      map[string]CachedItem
-	summaries map[string]CachedSummary
-	mu        sync.RWMutex
+	client *redis.Client
 }
 
 type CachedItem struct {
