@@ -9,13 +9,6 @@ type Cache struct {
 	client *redis.Client
 }
 
-type CachedItem struct {
-	Artwork models.SingleArtwork
-}
-
-type CachedSummary struct {
-	Summary string
-}
 
 func NewCache() *Cache {
 	return &Cache{Data: make(map[string]CachedItem), summaries: make(map[string]CachedSummary)}
