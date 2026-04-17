@@ -32,7 +32,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 
 	resultsLength, err := strconv.Atoi(pageLength)
 	if err != nil {
-		return
+		resultsLength = 40
 	}
 	var artwork []*models.SingleArtwork
 
@@ -40,7 +40,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 		var foundArtwork *museums.SearchResult
 		// general decides whether or not to search using specific criteria
 		if general != "" {
-			foundArtwork, err = museum.GeneralSearch(general, 80/len(s.Clients))
+			foundArtwork, err = museum.GeneralSearch(general, resultsLength/len(s.Clients))
 			if err != nil {
 				fmt.Println("Error:", err)
 				continue // Skip this museum
