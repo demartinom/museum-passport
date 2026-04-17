@@ -37,8 +37,8 @@ func main() {
 		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY"), cache),
 	}
 
-	ArtworkHandler := handlers.NewArtworkHandler(clients)
-	SearchHandler := handlers.NewSearchHandler(clients)
+	ArtworkHandler := handlers.NewArtworkHandler(clients, cache)
+	SearchHandler := handlers.NewSearchHandler(clients, cache)
 
 	// Create AI client
 	openAIKey := os.Getenv("OPENAI_KEY")
