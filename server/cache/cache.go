@@ -62,5 +62,7 @@ func (c *Cache) GetSummary(artworkID string) (string, bool) {
 
 func (c *Cache) SetSummary(artworkID, summary string) {
 	key := "summary:" + artworkID
-	c.client.Set(ctx, key, summary, 0)
+	c.client.Set(ctx, key, summary, 60*24*time.Hour)
+}
+
 }
