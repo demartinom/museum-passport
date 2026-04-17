@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
 
 	"github.com/demartinom/museum-passport/cache"
@@ -57,6 +58,22 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	artwork = s.SortArtwork(artwork)
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(artwork)
+}
+
+func (s *SearchHandler) SortArtwork(artResults []*models.SingleArtwork) []*models.SingleArtwork {
+	// Fetch all scores in one pass
+	scores := make(map[string]float64, len(artResults))
+	for _, art := range artResults {
+		score, _ := s.Cache.GetScore(art.ID)
+		scores[art.ID] = score
+	}
+
+	sort.Slice(artResults, func(i, j int) bool {
+		return scores[artResults[i].ID] > scores[artResults[j].ID]
+	})
+	return artResults
 }
