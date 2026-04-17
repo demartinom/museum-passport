@@ -22,7 +22,7 @@ func NewCache(rdb *redis.Client) *Cache {
 // Adds artwork to site cache
 // Uses "artwork" + ID ("met-123") as key and artwork struct as value
 func (c *Cache) SetArtwork(id string, artwork models.SingleArtwork) {
-	key := "artwork" + id
+	key := "artwork:" + id
 
 	data, err := json.Marshal(artwork)
 	if err != nil {
@@ -36,7 +36,7 @@ func (c *Cache) SetArtwork(id string, artwork models.SingleArtwork) {
 // Search cache for artwork
 // Returns false boolean if not in cache
 func (c *Cache) GetArtwork(id string) (models.SingleArtwork, bool) {
-	key := "artwork" + id
+	key := "artwork:" + id
 
 	val, err := c.client.Get(ctx, key).Result()
 	if err != nil {
