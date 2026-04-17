@@ -2,6 +2,8 @@ import { fraunces } from "../lib/fonts";
 import Link from "next/link";
 import { SearchContent } from "@/components/searchContent";
 
+export const dynamic = "force-dynamic";
+
 export default async function SearchPage({
   searchParams,
 }: {
@@ -18,7 +20,7 @@ export default async function SearchPage({
       const apiUrl = `${process.env.API_URL}/api/search?${field}=${encodeURIComponent(query)}&length=80`;
 
       const res = await fetch(apiUrl, {
-        next: { revalidate: 3600 }, // Caches the result on the server for 1 hour
+        next: { revalidate: 60 }, // Caches the result on the server for 1 minute
       });
 
       initialResults = await res.json();
