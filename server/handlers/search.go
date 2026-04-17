@@ -6,16 +6,18 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
 	"github.com/demartinom/museum-passport/museums"
 )
 
 type SearchHandler struct {
 	Clients map[string]museums.Client
+	Cache   *cache.Cache
 }
 
-func NewSearchHandler(clients map[string]museums.Client) *SearchHandler {
-	return &SearchHandler{Clients: clients}
+func NewSearchHandler(clients map[string]museums.Client, c *cache.Cache) *SearchHandler {
+	return &SearchHandler{Clients: clients, Cache: c}
 }
 
 // API endpoint for searching for artwork
