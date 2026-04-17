@@ -12,6 +12,7 @@ func NewRedisClient() (*redis.Client, error) {
 		Addr:     os.Getenv("REDIS_ADD"),
 		Password: os.Getenv("REDIS_PASS"),
 		DB:       0,
+		PoolSize: 20,
 	})
 
 	// Ping to test connection
