@@ -65,4 +65,19 @@ func (c *Cache) SetSummary(artworkID, summary string) {
 	c.client.Set(ctx, key, summary, 60*24*time.Hour)
 }
 
+func (c *Cache) RecordView(id string) {
+	redisID := "artwork:" + id
+
+	go c.client.ZIncrBy(ctx, "artwork_popularity", 1, redisID)
+}
+
+func (c *Cache) GetScore(id string) (float64, error) {
+	redisID := "artwork:" + id
+
+	score, err := c.client.ZScore(ctx, "artwork_popularity", redisID).Result()
+	if err == redis.Nil {
+		return 0, nil
+	}
+
+	return score, nil
 }
