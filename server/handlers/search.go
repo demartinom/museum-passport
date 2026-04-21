@@ -4,18 +4,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
 
+	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
 	"github.com/demartinom/museum-passport/museums"
 )
 
 type SearchHandler struct {
 	Clients map[string]museums.Client
+	Cache   *cache.Cache
 }
 
-func NewSearchHandler(clients map[string]museums.Client) *SearchHandler {
-	return &SearchHandler{Clients: clients}
+func NewSearchHandler(clients map[string]museums.Client, c *cache.Cache) *SearchHandler {
+	return &SearchHandler{Clients: clients, Cache: c}
 }
 
 // API endpoint for searching for artwork
@@ -30,7 +33,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 
 	resultsLength, err := strconv.Atoi(pageLength)
 	if err != nil {
-		return
+		resultsLength = 40
 	}
 	var artwork []*models.SingleArtwork
 
@@ -38,7 +41,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 		var foundArtwork *museums.SearchResult
 		// general decides whether or not to search using specific criteria
 		if general != "" {
-			foundArtwork, err = museum.GeneralSearch(general, 80/len(s.Clients))
+			foundArtwork, err = museum.GeneralSearch(general, resultsLength/len(s.Clients))
 			if err != nil {
 				fmt.Println("Error:", err)
 				continue // Skip this museum
@@ -55,6 +58,22 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	artwork = s.SortArtwork(artwork)
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(artwork)
+}
+
+func (s *SearchHandler) SortArtwork(artResults []*models.SingleArtwork) []*models.SingleArtwork {
+	// Fetch all scores in one pass
+	scores := make(map[string]float64, len(artResults))
+	for _, art := range artResults {
+		score, _ := s.Cache.GetScore(art.ID)
+		scores[art.ID] = score
+	}
+
+	sort.Slice(artResults, func(i, j int) bool {
+		return scores[artResults[i].ID] > scores[artResults[j].ID]
+	})
+	return artResults
 }

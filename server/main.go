@@ -8,6 +8,7 @@ import (
 	"github.com/demartinom/museum-passport/ai"
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/handlers"
+	"github.com/demartinom/museum-passport/internal/database"
 	"github.com/demartinom/museum-passport/museums"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -22,8 +23,13 @@ func main() {
 		}
 	}
 
+	rdb, err := database.NewRedisClient()
+	if err != nil {
+		log.Fatalf("Could not connect to Redis: %v", err)
+	}
+
 	// Initialize cache
-	cache := cache.NewCache()
+	cache := cache.NewCache(rdb)
 
 	// Create museum clients
 	clients := map[string]museums.Client{
@@ -31,8 +37,8 @@ func main() {
 		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY"), cache),
 	}
 
-	ArtworkHandler := handlers.NewArtworkHandler(clients)
-	SearchHandler := handlers.NewSearchHandler(clients)
+	ArtworkHandler := handlers.NewArtworkHandler(clients, cache)
+	SearchHandler := handlers.NewSearchHandler(clients, cache)
 
 	// Create AI client
 	openAIKey := os.Getenv("OPENAI_KEY")

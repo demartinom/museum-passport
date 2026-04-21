@@ -6,16 +6,18 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/museums"
 )
 
 // Handler for artwork related routes
 type ArtworkHandler struct {
 	Clients map[string]museums.Client
+	Cache   *cache.Cache
 }
 
-func NewArtworkHandler(clients map[string]museums.Client) *ArtworkHandler {
-	return &ArtworkHandler{Clients: clients}
+func NewArtworkHandler(clients map[string]museums.Client, c *cache.Cache) *ArtworkHandler {
+	return &ArtworkHandler{Clients: clients, Cache: c}
 }
 
 // Returns a single artwork from a singular museum API in the normalized Artwork struct
@@ -46,6 +48,8 @@ func (a *ArtworkHandler) GetArtwork(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "No artwork found", http.StatusNotFound)
 		return
 	}
+
+	a.Cache.RecordView(id)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(artwork)
