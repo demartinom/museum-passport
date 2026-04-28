@@ -40,3 +40,19 @@ func (a *ArticClient) BuildImageURL(imageID string, width int) string {
 	)
 }
 
+func (a *ArticClient) NormalizeArtwork(receivedArt ArticSingleArtwork) models.SingleArtwork {
+	normalized := models.SingleArtwork{
+		ID:           fmt.Sprintf("artic-%d", receivedArt.Id),
+		ArtworkTitle: receivedArt.Title,
+		DateCreated:  receivedArt.Date,
+		ArtMedium:    receivedArt.Medium,
+		PublicDomain: receivedArt.PublicDomain,
+		ImageLarge:   a.BuildImageURL(receivedArt.ImageID, 843),
+		ImageSmall:   a.BuildImageURL(receivedArt.ImageID, 400),
+		Museum:       a.GetMuseumName(),
+	}
+	a.Cache.SetArtwork(normalized.ID, normalized)
+
+	return normalized
+}
+
