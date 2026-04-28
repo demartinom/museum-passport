@@ -47,15 +47,18 @@ docker compose up --build
 ### Backend
 
 - **Language:** Go 1.25+ (Standard library + Chi Router)
-- **Concurrency:** Uses Goroutines to fetch data from multiple museum APIs (The Met & Harvard) in parallel, reducing latency by ~60%.
+- **Concurrency:** Uses Goroutines to fetch data from multiple museum APIs (The Met & Harvard) in parallel, reducing latency.
 - **Intelligence:** OpenAI GPT-4o-mini integration for generating historical `AISummaries`.
 - **Infrastructure:** Dockerized with multi-stage builds to keep production images lightweight and secure.
+- **Caching & Performance:** Redis is used to cache external museum API responses and reduce redundant network calls, significantly improving response times and API reliability under load.
+- **Ranking System:** Redis tracks artwork view counts in real-time, enabling dynamic ranking of search results based on popularity and engagement.
+
 
 ### Frontend
 
 - **Framework:** Next.js 15 (App Router)
 - **Rendering:** Server-Side Rendering (SSR) for artwork pages to optimize SEO and initial load speed.
-- **Styling:** Tailwind CSS + shadcn/ui for a minimalist, museum-grade aesthetic.
+- **Styling:** Tailwind CSS + shadcn/ui.
 
 ---
 
@@ -93,6 +96,18 @@ cd frontend && npm run dev
 **Challenge:** Differences in case-sensitivity between macOS (development) and Linux/Docker (production) caused build-time "Module Not Found" errors.
 
 **Solution:** Enforced a strict casing convention for all React components and leveraged Docker to validate build integrity before deploying to production.
+
+### 3. External API Latency & Rate Limits
+
+**Challenge:** Museum APIs can be slow and occasionally rate-limited, which impacted search performance and user experience.
+
+**Solution:** Introduced Redis caching to store previously fetched artwork and search results. This reduced redundant API calls and significantly improved response consistency.
+
+### 4. Real-time Engagement Tracking
+
+**Challenge:** Needed a lightweight way to track popularity of artworks without introducing a heavy analytics system.
+
+**Solution:** Implemented Redis-based counters to track artwork views in real time, enabling fast aggregation for ranking search results without impacting core database performance.
 
 ---
 
