@@ -23,3 +23,8 @@ type ArticSearchResponse struct {
 func NewArticClient(key string, cache *cache.Cache) *ArticClient {
 	return &ArticClient{BaseURL: "https://api.artic.edu/api/v1/artworks", Cache: cache}
 }
+// Allows for Artic client to fall under museum interface
+func (a *ArticClient) GetMuseumName() string {
+	return "Art Institute of Chicago"
+}
+
