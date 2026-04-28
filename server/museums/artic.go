@@ -28,3 +28,15 @@ func (a *ArticClient) GetMuseumName() string {
 	return "Art Institute of Chicago"
 }
 
+// Takes imageID from api call and creates image URL
+// Input width for different sized images
+func (a *ArticClient) BuildImageURL(imageID string, width int) string {
+	if imageID == "" {
+		return ""
+	}
+	return fmt.Sprintf(
+		"https://www.artic.edu/iiif/2/%s/full/%d,/0/default.jpg",
+		imageID, width,
+	)
+}
+
