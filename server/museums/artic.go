@@ -1,6 +1,13 @@
 package museums
 
-import "github.com/demartinom/museum-passport/cache"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/demartinom/museum-passport/cache"
+	"github.com/demartinom/museum-passport/models"
+)
 
 type ArticClient struct {
 	BaseURL string
@@ -23,6 +30,7 @@ type ArticSearchResponse struct {
 func NewArticClient(key string, cache *cache.Cache) *ArticClient {
 	return &ArticClient{BaseURL: "https://api.artic.edu/api/v1/artworks", Cache: cache}
 }
+
 // Allows for Artic client to fall under museum interface
 func (a *ArticClient) GetMuseumName() string {
 	return "Art Institute of Chicago"
@@ -56,3 +64,28 @@ func (a *ArticClient) NormalizeArtwork(receivedArt ArticSingleArtwork) models.Si
 	return normalized
 }
 
+func (a *ArticClient) GenerealSearch(query string, resultsLength int) (*SearchResult, error) {
+	queryURL := fmt.Sprintf("%s/search?q=%s&size=%d&fields=id,title,image_id,medium_display,date_start,is_public_domain", a.BaseURL, query, resultsLength)
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var searchResult ArticSearchResponse
+
+	if err := json.NewDecoder(resp.Body).Decode(&searchResult); err != nil {
+		return nil, err
+	}
+
+	var normalized []*models.SingleArtwork
+	for _, artwork := range searchResult.Data {
+
+		art := a.NormalizeArtwork(artwork)
+		normalized = append(normalized, &art)
+	}
+
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+
+}
