@@ -7,14 +7,14 @@ type ArticClient struct {
 	Cache   *cache.Cache
 }
 type ArticSingleArtwork struct {
-	ID           int    `json:"id"`
-	DateStart    int    `json:"date_start"`
-	Medium       string `json:"medium_display"`
+	ID        int    `json:"id"`
+	DateStart int    `json:"date_start"`
+	Medium    string `json:"medium_display"`
 	// Pointer to account for null value
 	Artist       *string `json:"artist_title"`
-	ImageID      string `json:"image_id"`
-	Title        string `json:"title"`
-	PublicDomain bool   `json:"is_public_domain"`
+	ImageID      string  `json:"image_id"`
+	Title        string  `json:"title"`
+	PublicDomain bool    `json:"is_public_domain"`
 }
 
 func NewArticClient(cache *cache.Cache) *ArticClient {
