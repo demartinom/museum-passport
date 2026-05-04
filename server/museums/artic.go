@@ -1,6 +1,11 @@
 package museums
 
-import "github.com/demartinom/museum-passport/cache"
+import (
+	"fmt"
+
+	"github.com/demartinom/museum-passport/cache"
+	"github.com/demartinom/museum-passport/models"
+)
 
 type ArticClient struct {
 	BaseURL string
@@ -23,6 +28,27 @@ func NewArticClient(cache *cache.Cache) *ArticClient {
 
 func (a *ArticClient) GetMuseumName() string {
 	return "Art Institute of Chicago"
+}
+
+func (a *ArticClient) NormalizeArtwork(receivedArt ArticSingleArtwork) models.SingleArtwork {
+	artistName := "Unknown Artist"
+
+	if receivedArt.Artist != nil {
+		artistName = *receivedArt.Artist
+	}
+
+	normalized := models.SingleArtwork{
+		ID:           fmt.Sprintf("artic-%d", receivedArt.ID),
+		ArtworkTitle: receivedArt.Title,
+		ArtistName:   artistName,
+		ArtMedium:    receivedArt.Medium,
+		ImageLarge:   a.BuildImageURL(receivedArt.ImageID, 843),
+		ImageSmall:   a.BuildImageURL(receivedArt.ImageID, 400),
+		Museum:       a.GetMuseumName(),
+	}
+
+	a.Cache.SetArtwork(normalized.ID, normalized)
+	return normalized
 }
 
 // Takes imageID from api call and creates image URL
