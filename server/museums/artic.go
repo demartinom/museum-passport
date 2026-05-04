@@ -20,3 +20,7 @@ type ArticSingleArtwork struct {
 	Title        string `json:"title"`
 	PublicDomain bool   `json:"is_public_domain"`
 }
+
+func (a *ArticClient) GetMuseumName() string {
+	return "Art Institute of Chicago"
+}
