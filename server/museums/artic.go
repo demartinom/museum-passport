@@ -6,11 +6,6 @@ type ArticClient struct {
 	BaseURL string
 	Cache   *cache.Cache
 }
-
-func NewArticClient(cache *cache.Cache) *ArticClient {
-	return &ArticClient{BaseURL: "https://api.artic.edu/api/v1/artworks", Cache: cache}
-}
-
 type ArticSingleArtwork struct {
 	ID           int    `json:"id"`
 	DateStart    int    `json:"date_start"`
@@ -19,6 +14,10 @@ type ArticSingleArtwork struct {
 	ImageID      string `json:"image_id"`
 	Title        string `json:"title"`
 	PublicDomain bool   `json:"is_public_domain"`
+}
+
+func NewArticClient(cache *cache.Cache) *ArticClient {
+	return &ArticClient{BaseURL: "https://api.artic.edu/api/v1/artworks", Cache: cache}
 }
 
 func (a *ArticClient) GetMuseumName() string {
