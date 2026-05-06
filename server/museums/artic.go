@@ -20,6 +20,9 @@ type ArticSingleArtwork struct {
 	ImageID      string  `json:"image_id"`
 	Title        string  `json:"title"`
 	PublicDomain bool    `json:"is_public_domain"`
+
+type ArticSearchResponse struct {
+	Data []ArticSingleArtwork `json:"data"`
 }
 
 func NewArticClient(cache *cache.Cache) *ArticClient {
