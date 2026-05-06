@@ -30,6 +30,10 @@ type ArticSearchResponse struct {
 	Data []ArticSingleArtwork `json:"data"`
 }
 
+type ArticSingleArtworkResponse struct {
+	Data ArticSingleArtwork `json:"data"`
+}
+
 func NewArticClient(cache *cache.Cache) *ArticClient {
 	return &ArticClient{BaseURL: "https://api.artic.edu/api/v1/artworks", Cache: cache}
 }
