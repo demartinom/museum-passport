@@ -20,6 +20,8 @@ type ArticSingleArtwork struct {
 	ImageID      string  `json:"image_id"`
 	Title        string  `json:"title"`
 	PublicDomain bool    `json:"is_public_domain"`
+	Score        int     `json:"_score"`
+}
 
 type ArticSearchResponse struct {
 	Data []ArticSingleArtwork `json:"data"`
