@@ -43,7 +43,7 @@ func (a *ArtworkHandler) GetArtwork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	artwork, err := client.ArtworkbyID(IDNum)
+	artwork, err := client.ArtworkByID(IDNum)
 	if err != nil {
 		http.Error(w, "No artwork found", http.StatusNotFound)
 		return

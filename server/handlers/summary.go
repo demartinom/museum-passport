@@ -57,7 +57,7 @@ func (h *SummaryHandler) GenerateSummary(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	artwork, err := client.ArtworkbyID(artworkIDNum)
+	artwork, err := client.ArtworkByID(artworkIDNum)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
