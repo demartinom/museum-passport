@@ -1,7 +1,10 @@
 package museums
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
 
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
@@ -66,4 +69,33 @@ func (a *ArticClient) BuildImageURL(imageID string, width int) string {
 		"https://www.artic.edu/iiif/2/%s/full/%d,/0/default.jpg",
 		imageID, width,
 	)
+}
+
+func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
+	queryURL := fmt.Sprintf("%s/search?q=%s&limit=%d&fields=id,title,image_id,medium_display,date_start,is_public_domain", a.BaseURL, url.QueryEscape(query), resultsLength)
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var searchResult ArticSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&searchResult); err != nil {
+		return nil, err
+	}
+	filtered := []ArticSingleArtwork{}
+
+	for _, artwork := range searchResult.Data {
+		if artwork.Score >= 1 {
+			filtered = append(filtered, artwork)
+		}
+	}
+	var normalized []*models.SingleArtwork
+	for _, artwork := range filtered {
+		art := a.NormalizeArtwork(artwork)
+		normalized = append(normalized, &art)
+	}
+
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
