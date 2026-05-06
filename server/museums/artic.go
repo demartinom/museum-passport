@@ -59,7 +59,9 @@ func (a *ArticClient) NormalizeArtwork(receivedArt ArticSingleArtwork) models.Si
 		Museum:       a.GetMuseumName(),
 	}
 
-	a.Cache.SetArtwork(normalized.ID, normalized)
+	if a.Cache != nil {
+		a.Cache.SetArtwork(normalized.ID, normalized)
+	}
 	return normalized
 }
 
