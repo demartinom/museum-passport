@@ -77,6 +77,30 @@ func (a *ArticClient) BuildImageURL(imageID string, width int) string {
 	)
 }
 
+func (a *ArticClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
+	if a.Cache != nil {
+		artwork, exists := a.Cache.GetArtwork(fmt.Sprintf("artic-%d", id))
+
+		if exists {
+			return &artwork, nil
+		}
+	}
+
+	queryUrl := fmt.Sprintf("%s/%d", a.BaseURL, id)
+
+	resp, err := http.Get(queryUrl)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result ArticSingleArtworkResponse
+	json.NewDecoder(resp.Body).Decode(&result)
+	normalized := a.NormalizeArtwork(result.Data)
+
+	return &normalized, nil
+}
+
 func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
 	queryURL := fmt.Sprintf("%s/search?q=%s&limit=%d&fields=id,title,image_id,medium_display,date_start,is_public_domain", a.BaseURL, url.QueryEscape(query), resultsLength)
 
