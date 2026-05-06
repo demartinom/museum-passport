@@ -49,7 +49,9 @@ func (a *ArtworkHandler) GetArtwork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a.Cache.RecordView(id)
+	if a.Cache != nil {
+		a.Cache.RecordView(id)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(artwork)
