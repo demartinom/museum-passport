@@ -101,7 +101,7 @@ func (a *ArticClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 }
 
 func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
-	queryURL := fmt.Sprintf("%s/search?q=%s&limit=%d&fields=id,title,image_id,medium_display,date_start,is_public_domain", a.BaseURL, url.QueryEscape(query), resultsLength)
+	queryURL := fmt.Sprintf("%s/search?q=%s&limit=%d&fields=id,title,artist_title,image_id,medium_display,date_start,is_public_domain", a.BaseURL, url.QueryEscape(query), resultsLength)
 
 	resp, err := http.Get(queryURL)
 	if err != nil {
