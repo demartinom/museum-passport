@@ -129,3 +129,8 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchRes
 
 	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
+
+func (a *ArticClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
+
+	return &SearchResult{}, nil
+}
