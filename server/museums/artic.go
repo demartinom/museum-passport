@@ -23,7 +23,7 @@ type ArticSingleArtwork struct {
 	ImageID      string  `json:"image_id"`
 	Title        string  `json:"title"`
 	PublicDomain bool    `json:"is_public_domain"`
-	Score        int     `json:"_score"`
+	Score        float64 `json:"_score"`
 }
 
 type ArticSearchResponse struct {
@@ -97,7 +97,6 @@ func (a *ArticClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	var result ArticSingleArtworkResponse
 	json.NewDecoder(resp.Body).Decode(&result)
 	normalized := a.NormalizeArtwork(result.Data)
-
 	return &normalized, nil
 }
 
