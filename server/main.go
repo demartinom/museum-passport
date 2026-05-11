@@ -35,6 +35,7 @@ func main() {
 	clients := map[string]museums.Client{
 		"met":     museums.NewMetClient(cache),
 		"harvard": museums.NewHarvardClient(os.Getenv("HARVARD_KEY"), cache),
+		"artic":   museums.NewArticClient(cache),
 	}
 
 	ArtworkHandler := handlers.NewArtworkHandler(clients, cache)
