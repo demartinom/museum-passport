@@ -116,7 +116,7 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchRes
 	filtered := []ArticSingleArtwork{}
 
 	for _, artwork := range searchResult.Data {
-		if artwork.Score >= 1 {
+		if artwork.Score >= 1.0 && artwork.ImageID != "" {
 			filtered = append(filtered, artwork)
 		}
 	}
