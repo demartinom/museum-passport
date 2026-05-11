@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.harvard.edu", // Wildcard for all Harvard subdomains
       },
+      { protocol: "https", hostname: "www.artic.edu" }, //wildcard for Art Institute of Chicago
     ],
   },
 };
