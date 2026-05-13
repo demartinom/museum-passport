@@ -1,6 +1,7 @@
 package museums
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -30,8 +31,19 @@ type ArticSearchResponse struct {
 	Data []ArticSingleArtwork `json:"data"`
 }
 
+// Type for receiving single artwork from API
 type ArticSingleArtworkResponse struct {
 	Data ArticSingleArtwork `json:"data"`
+}
+
+type ElasticPayload struct {
+	Query  ElasticQuery `json:"query"`
+	Fields []string     `json:"fields"`
+	Limit  int          `json:"limit"`
+}
+
+type ElasticQuery struct {
+	Match map[string]string `json:"match"`
 }
 
 func NewArticClient(cache *cache.Cache) *ArticClient {
@@ -132,4 +144,34 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchRes
 func (a *ArticClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
 
 	return &SearchResult{}, nil
+}
+
+func (a *ArticClient) SearchByField(field string, fieldValue string, length int) (*SearchResult, error) {
+	body := ElasticPayload{Query: ElasticQuery{Match: map[string]string{field: fieldValue}},
+		Fields: []string{"id", "title", "artist_title", "image_id", "medium_display", "date_start", "is_public_domain"},
+		Limit:  length}
+
+	jsonData, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := http.Post(fmt.Sprintf("%s/search", a.BaseURL), "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	var searchResult ArticSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&searchResult); err != nil {
+		return nil, err
+	}
+	var normalized []*models.SingleArtwork
+	for _, artwork := range searchResult.Data {
+		art := a.NormalizeArtwork(artwork)
+		normalized = append(normalized, &art)
+	}
+
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+
 }
