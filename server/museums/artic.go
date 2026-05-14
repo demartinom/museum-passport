@@ -142,8 +142,14 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchRes
 }
 
 func (a *ArticClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
+	if params.Name != "" {
+		return a.SearchByField("title", params.Name, pageLength)
+	}
+	if params.Artist != "" {
+		return a.SearchByField("artist_title", params.Artist, pageLength)
+	}
 
-	return &SearchResult{}, nil
+	return nil, fmt.Errorf("no search parameters provided")
 }
 
 func (a *ArticClient) SearchByField(field string, fieldValue string, length int) (*SearchResult, error) {
