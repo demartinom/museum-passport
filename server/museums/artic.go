@@ -104,10 +104,16 @@ func (a *ArticClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	if err != nil {
 		return nil, err
 	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("artic API error: %s", resp.Status)
+	}
 	defer resp.Body.Close()
 
 	var result ArticSingleArtworkResponse
-	json.NewDecoder(resp.Body).Decode(&result)
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+
 	normalized := a.NormalizeArtwork(result.Data)
 	return &normalized, nil
 }
@@ -118,6 +124,9 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchRes
 	resp, err := http.Get(queryURL)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("artic API error: %s", resp.Status)
 	}
 	defer resp.Body.Close()
 
@@ -164,6 +173,9 @@ func (a *ArticClient) SearchByField(field string, fieldValue string, length int)
 	resp, err := http.Post(fmt.Sprintf("%s/search", a.BaseURL), "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("artic API error: %s", resp.Status)
 	}
 
 	defer resp.Body.Close()
