@@ -123,5 +123,5 @@ cd frontend && npm run dev
 
 ## 📜 License & Acknowledgments
 
-- **Data Providers:** [The Metropolitan Museum of Art Open Access API](https://metmuseum.github.io/) and [Harvard Art Museums API](https://github.com/harvardartmuseums/api-docs).
+- **Data Providers:** [The Metropolitan Museum of Art Open Access API](https://metmuseum.github.io/), [Harvard Art Museums API](https://github.com/harvardartmuseums/api-docs), and [Art Institute of Chicago API](https://api.artic.edu/docs/).
 - **License:** MIT
