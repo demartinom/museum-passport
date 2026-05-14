@@ -66,7 +66,7 @@ func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.Single
 }
 
 // Makes an API call to the Met to receive data on a single artwork based on id provided
-func (m *MetClient) ArtworkbyID(id int) (*models.SingleArtwork, error) {
+func (m *MetClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	artwork, exists := m.Cache.GetArtwork(fmt.Sprintf("met-%d", id))
 	if exists {
 		return &artwork, nil
@@ -142,7 +142,7 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 
 	for i, id := range currentSearch {
 		g.Go(func() error {
-			artwork, err := m.ArtworkbyID(id)
+			artwork, err := m.ArtworkByID(id)
 			if err != nil {
 				return err
 			}

@@ -54,6 +54,7 @@ const SingleArtwork = async ({
               fill
               alt={data.ArtworkTitle}
               className="object-contain"
+              unoptimized
             />
           </div>
         </div>
