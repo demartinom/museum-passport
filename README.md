@@ -47,7 +47,7 @@ docker compose up --build
 ### Backend
 
 - **Language:** Go 1.25+ (Standard library + Chi Router)
-- **Concurrency:** Uses Goroutines to fetch data from multiple museum APIs (The Met & Harvard) in parallel, reducing latency.
+- **Concurrency:** Uses Goroutines to fetch data from multiple museum APIs in parallel, reducing latency.
 - **Intelligence:** OpenAI GPT-4o-mini integration for generating historical `AISummaries`.
 - **Infrastructure:** Dockerized with multi-stage builds to keep production images lightweight and secure.
 - **Caching & Performance:** Redis is used to cache external museum API responses and reduce redundant network calls, significantly improving response times and API reliability under load.
@@ -87,7 +87,7 @@ cd frontend && npm run dev
 
 ### 1. Data Normalization
 
-**Challenge:** Museum APIs (Met vs. Harvard) return vastly different JSON structures for `Artist` and `Medium` fields.
+**Challenge:** Museum APIs return vastly different JSON structures for `Artist` and `Medium` fields.
 
 **Solution:** Implemented a unified `Art` struct in Go. Each museum client includes a custom "Mapper" function that cleans and translates raw API responses into a consistent internal schema.
 
