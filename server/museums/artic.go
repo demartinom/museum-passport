@@ -186,10 +186,11 @@ func (a *ArticClient) SearchByField(field string, fieldValue string, length int)
 	}
 	var normalized []*models.SingleArtwork
 	for _, artwork := range searchResult.Data {
-		art := a.NormalizeArtwork(artwork)
-		normalized = append(normalized, &art)
+		if artwork.Score >= 1.0 && artwork.ImageID != "" {
+			art := a.NormalizeArtwork(artwork)
+			normalized = append(normalized, &art)
+		}
 	}
 
 	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
-
 }
