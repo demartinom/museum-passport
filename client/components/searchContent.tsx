@@ -36,20 +36,25 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   const urlQuery = searchParams.get("q") || "";
   const urlField = searchParams.get("field") || "general";
 
-  // Local state is ONLY for typing
+  // Local state is ONLY for typing. nothing fires until form submit
   const [searchText, setSearchText] = useState(urlQuery);
+  const [searchField, setSearchField] = useState(urlField);
 
-  // Sync input when URL changes (back/forward or navigation)
+  // Sync inputs when URL changes (back/forward or navigation)
   useEffect(() => {
     setSearchText(urlQuery);
   }, [urlQuery]);
 
-  function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
+  useEffect(() => {
+    setSearchField(urlField);
+  }, [urlField]);
+
+  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const params = new URLSearchParams(searchParams.toString());
     params.set("q", searchText.trim());
-    params.set("field", urlField);
+    params.set("field", searchField);
 
     startTransition(() => {
       router.push(`/?${params.toString()}`);
@@ -63,15 +68,8 @@ export function SearchContent({ initialResults }: SearchContentProps) {
         <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
           {/* FIELD SELECT */}
           <Select
-            value={urlField}
-            onValueChange={(value) => {
-              const params = new URLSearchParams(searchParams.toString());
-              params.set("field", value);
-
-              startTransition(() => {
-                router.push(`/?${params.toString()}`);
-              });
-            }}
+            value={searchField}
+            onValueChange={(value) => setSearchField(value)}
           >
             <SelectTrigger className="w-32 shrink-0 border-0 border-r border-stone-200 bg-stone-50 text-sm focus:ring-0">
               <SelectValue placeholder="Field" />
@@ -146,7 +144,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
           ) : (
             urlQuery && (
               <p className="py-32 text-center text-stone-500">
-                No results found for “{urlQuery}”.
+                No results found for `&quot;`{urlQuery}`&quot;`.
               </p>
             )
           )}
