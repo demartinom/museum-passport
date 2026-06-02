@@ -3,3 +3,4 @@ client/Reference
 client/.prettierrc
 server/.todo
 server/dump.rdb
+/client/.todo
