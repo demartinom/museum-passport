@@ -30,6 +30,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	artworktype := r.URL.Query().Get("type")
 	pageLength := r.URL.Query().Get("length")
 	general := r.URL.Query().Get("general")
+	page := r.URL.Query().Get("page")
 
 	resultsLength, err := strconv.Atoi(pageLength)
 	if err != nil {
@@ -41,7 +42,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 		var foundArtwork *museums.SearchResult
 		// general decides whether or not to search using specific criteria
 		if general != "" {
-			foundArtwork, err = museum.GeneralSearch(general, resultsLength/len(s.Clients))
+			foundArtwork, err = museum.GeneralSearch(general, resultsLength/len(s.Clients), page)
 			if err != nil {
 				fmt.Println("Error:", err)
 				continue // Skip this museum
