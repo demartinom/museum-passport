@@ -136,7 +136,7 @@ func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
 
 // if general is in URL query, searches the api using general search rather than
 // searching by criteria (artist, medium, etc.)
-func (h *HarvardClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
+func (h *HarvardClient) GeneralSearch(query string, resultsLength int, page string) (*SearchResult, error) {
 	queryURL := fmt.Sprintf("%s/object?hasimage=1&q=%s&size=%d&apikey=%s",
 		h.BaseURL, url.QueryEscape(query), resultsLength, h.APIKey)
 
