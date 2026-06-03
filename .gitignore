@@ -4,3 +4,6 @@ client/.prettierrc
 server/.todo
 server/dump.rdb
 /client/.todo
+/client/todo.md
+server/todo.md
+server/.vscode/settings.json
