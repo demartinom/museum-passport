@@ -35,6 +35,7 @@ type HarvardSearchResponse struct {
 	Info struct {
 		Totalrecordsperquery int `json:"totalrecordsperquery"`
 		Totalrecords         int `json:"totalrecords"`
+		Page                 int `json:"page"`
 	} `json:"info"`
 	Records []HarvardSingleArtwork `json:"records"`
 }
