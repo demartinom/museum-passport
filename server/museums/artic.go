@@ -28,7 +28,11 @@ type ArticSingleArtwork struct {
 }
 
 type ArticSearchResponse struct {
-	Data []ArticSingleArtwork `json:"data"`
+	Pagination Pagination           `json:"pagination"`
+	Data       []ArticSingleArtwork `json:"data"`
+}
+type Pagination struct {
+	CurrentPage int `json:"current_page"`
 }
 
 // Type for receiving single artwork from API
