@@ -31,6 +31,8 @@ type ArticSearchResponse struct {
 	Pagination Pagination           `json:"pagination"`
 	Data       []ArticSingleArtwork `json:"data"`
 }
+
+// Returns pagination information for API call to artic
 type Pagination struct {
 	CurrentPage int `json:"current_page"`
 }
