@@ -87,7 +87,7 @@ func (m *MetClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 }
 
 // Search for artwork
-func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResult, error) {
+func (m *MetClient) Search(params SearchParams, resultsLength int, pageNumber int) (*SearchResult, error) {
 	queryURL := m.BuildURL(params)
 
 	resp, err := http.Get(queryURL)
@@ -100,8 +100,21 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
+
+	// Calculates beginning and end of slice for search
+	pageStart := (pageNumber - 1) * resultsLength
+	pageEnd := pageStart + resultsLength
+
+	// Handling for page number issues
+	if pageStart >= len(result.ObjectIDs) {
+		return &SearchResult{ResultsLength: 0, Art: []*models.SingleArtwork{}}, nil
+	}
+	if pageEnd > len(result.ObjectIDs) {
+		pageEnd = len(result.ObjectIDs)
+	}
+
 	// Returns full data for artwork IDs returned in API call
-	artObjects, err := m.SearchRequest(result.ObjectIDs, resultsLength)
+	artObjects, err := m.SearchRequest(result.ObjectIDs[pageStart:pageEnd], resultsLength)
 	if err != nil {
 		return nil, err
 	}

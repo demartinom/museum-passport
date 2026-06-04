@@ -94,7 +94,7 @@ func (h *HarvardClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
-func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
+func (h *HarvardClient) Search(params SearchParams, pageLength int, pageNumber int) (*SearchResult, error) {
 	queryURL := h.BuildURL(params, pageLength)
 	resp, err := http.Get(queryURL)
 	if err != nil {

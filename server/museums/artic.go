@@ -156,7 +156,7 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int, pageNumber 
 	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
 
-func (a *ArticClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
+func (a *ArticClient) Search(params SearchParams, pageLength int, pagNumber int) (*SearchResult, error) {
 	if params.Name != "" {
 		return a.SearchByField("title", params.Name, pageLength)
 	}
