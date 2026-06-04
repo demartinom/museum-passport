@@ -184,8 +184,23 @@ func (m *MetClient) GeneralSearch(query string, resultsLength int, pageNumber in
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
+
+	// Calculates beginning and end of slice for search
+	pageStart := (pageNumber - 1) * resultsLength
+	pageEnd := pageStart + resultsLength
+
+	// Handling for page number issues
+	if pageStart >= len(result.ObjectIDs) {
+		return &SearchResult{ResultsLength: 0, Art: []*models.SingleArtwork{}}, nil
+	}
+	if pageEnd > len(result.ObjectIDs) {
+		pageEnd = len(result.ObjectIDs)
+	}
+
+	artObjects, err := m.SearchRequest(result.ObjectIDs[pageStart:pageEnd], resultsLength)
 	if err != nil {
 		return nil, err
 	}
+
 	return artObjects, nil
 }
