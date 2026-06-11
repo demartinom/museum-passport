@@ -18,7 +18,7 @@ export default async function SearchPage({
 
   if (query) {
     try {
-      const apiUrl = `${process.env.API_URL}/api/search?${field}=${encodeURIComponent(query)}&length=80&page${page}`;
+      const apiUrl = `${process.env.API_URL}/api/search?${field}=${encodeURIComponent(query)}&length=80&page=${page}`;
 
       const res = await fetch(apiUrl, {
         next: { revalidate: 60 }, // Caches the result on the server for 1 minute
