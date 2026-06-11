@@ -35,10 +35,12 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   // URL is source of truth for committed state
   const urlQuery = searchParams.get("q") || "";
   const urlField = searchParams.get("field") || "general";
+  const urlPage = searchParams.get("page") || "1";
 
   // Local state is ONLY for typing. nothing fires until form submit
   const [searchText, setSearchText] = useState(urlQuery);
   const [searchField, setSearchField] = useState(urlField);
+  const [searchPage, setSearchPage] = useState(urlPage);
 
   // Sync inputs when URL changes (back/forward or navigation)
   useEffect(() => {
@@ -55,6 +57,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("q", searchText.trim());
     params.set("field", searchField);
+    params.set("page", searchPage);
 
     startTransition(() => {
       router.push(`/?${params.toString()}`);
