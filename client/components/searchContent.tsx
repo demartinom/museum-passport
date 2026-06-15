@@ -14,6 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
 
