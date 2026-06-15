@@ -61,13 +61,20 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     setSearchField(urlField);
   }, [urlField]);
 
+  // Function for initial search, defaulting to page 1
   function initialSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const params = new URLSearchParams(searchParams.toString());
     params.set("q", searchText.trim());
     params.set("field", searchField);
-    params.set("page", searchPage);
+    params.set("page", "1");
+
+    startTransition(() => {
+      router.push(`/?${params.toString()}`);
+    });
+  }
+
 
     startTransition(() => {
       router.push(`/?${params.toString()}`);
