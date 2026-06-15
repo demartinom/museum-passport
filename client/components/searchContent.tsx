@@ -51,7 +51,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     setSearchField(urlField);
   }, [urlField]);
 
-  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
+  function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const params = new URLSearchParams(searchParams.toString());
