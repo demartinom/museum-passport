@@ -75,6 +75,12 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     });
   }
 
+  // Go to page number specified in URL
+  function goToPage(newPage: number) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("q", searchText.trim());
+    params.set("field", searchField);
+    params.set("page", String(newPage));
 
     startTransition(() => {
       router.push(`/?${params.toString()}`);
