@@ -44,6 +44,10 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   const urlField = searchParams.get("field") || "general";
   const urlPage = searchParams.get("page") || "1";
 
+  // Converts pageNumber into integer
+  const pageNumber = Number(urlPage);
+  // Max page user is allowed to go to
+  const maxPageNext = 100;
   // Local state is ONLY for typing. nothing fires until form submit
   const [searchText, setSearchText] = useState(urlQuery);
   const [searchField, setSearchField] = useState(urlField);
