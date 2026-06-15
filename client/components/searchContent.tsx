@@ -48,6 +48,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   const pageNumber = Number(urlPage);
   // Max page user is allowed to go to
   const maxPageNext = 100;
+
   // Local state is ONLY for typing. nothing fires until form submit
   const [searchText, setSearchText] = useState(urlQuery);
   const [searchField, setSearchField] = useState(urlField);
@@ -176,6 +177,40 @@ export function SearchContent({ initialResults }: SearchContentProps) {
           )}
         </div>
       </div>
+      <Pagination className="mt-10">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (pageNumber > 1) {
+                  goToPage(pageNumber - 1);
+                }
+              }}
+              className={
+                pageNumber <= 1 ? "pointer-events-none opacity-50" : ""
+              }
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (pageNumber < maxPageNext) {
+                  goToPage(pageNumber + 1);
+                }
+              }}
+              className={
+                pageNumber == maxPageNext
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }
