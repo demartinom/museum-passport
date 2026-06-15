@@ -5,15 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -23,12 +14,7 @@ import {
 } from "./ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
-
-const FIELD_OPTIONS = [
-  { value: "general", label: "All" },
-  { value: "name", label: "Artwork" },
-  { value: "artist", label: "Artist" },
-];
+import SearchBar from "./ui/searchBar";
 
 interface SearchContentProps {
   initialResults: Art[];
@@ -62,23 +48,6 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     setSearchField(urlField);
   }, [urlField]);
 
-  // Function for initial search, defaulting to page 1
-  function initialSearch(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    // Ensures search text isn't empty
-    if (!searchText.trim()) return;
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("q", searchText.trim());
-    params.set("field", searchField);
-    params.set("page", "1");
-
-    startTransition(() => {
-      router.push(`/?${params.toString()}`);
-    });
-  }
-
   // Go to page number specified in URL
   function goToPage(newPage: number) {
     const params = new URLSearchParams(searchParams.toString());
@@ -91,49 +60,31 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     });
   }
 
+  // Function for initial search. Defaults to page 1
+  function initialSearch() {
+    if (!searchText.trim()) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("q", searchText.trim());
+    params.set("field", searchField);
+    params.set("page", "1");
+
+    startTransition(() => {
+      router.push(`/?${params.toString()}`);
+    });
+  }
+
   return (
     <div className="min-h-screen px-6 py-10">
-      {/* SEARCH BAR */}
-      <form onSubmit={initialSearch} className="mx-auto mb-4 max-w-2xl">
-        <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
-          {/* FIELD SELECT */}
-          <Select
-            value={searchField}
-            onValueChange={(value) => setSearchField(value)}
-          >
-            <SelectTrigger className="w-32 shrink-0 border-0 border-r border-stone-200 bg-stone-50 text-sm focus:ring-0">
-              <SelectValue placeholder="Field" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {FIELD_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-
-          {/* INPUT */}
-          <Input
-            type="text"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="flex-1 border-0 focus-visible:ring-0"
-            placeholder="Search artworks..."
-          />
-
-          <button
-            type="submit"
-            className="bg-stone-900 px-5 text-white disabled:opacity-50"
-            disabled={isPending}
-          >
-            {isPending ? "..." : "Search"}
-          </button>
-        </div>
-      </form>
-
+      <SearchBar
+        searchText={searchText}
+        searchField={searchField}
+        setSearchText={setSearchText}
+        setSearchField={setSearchField}
+        onSubmit={initialSearch}
+        isPending={isPending}
+      />
       {/* RESULTS */}
       <div className="relative mt-10">
         {/* Loading Overlay: Only visible when isPending is true */}
