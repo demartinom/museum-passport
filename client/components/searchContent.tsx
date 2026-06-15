@@ -177,40 +177,42 @@ export function SearchContent({ initialResults }: SearchContentProps) {
           )}
         </div>
       </div>
-      <Pagination className="mt-10">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                if (pageNumber > 1) {
-                  goToPage(pageNumber - 1);
+      {initialResults?.length > 0 && (
+        <Pagination className="mt-10">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (pageNumber > 1) {
+                    goToPage(pageNumber - 1);
+                  }
+                }}
+                className={
+                  pageNumber <= 1 ? "pointer-events-none opacity-50" : ""
                 }
-              }}
-              className={
-                pageNumber <= 1 ? "pointer-events-none opacity-50" : ""
-              }
-            />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                if (pageNumber < maxPageNext) {
-                  goToPage(pageNumber + 1);
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (pageNumber < maxPageNext) {
+                    goToPage(pageNumber + 1);
+                  }
+                }}
+                className={
+                  pageNumber == maxPageNext
+                    ? "pointer-events-none opacity-50"
+                    : ""
                 }
-              }}
-              className={
-                pageNumber == maxPageNext
-                  ? "pointer-events-none opacity-50"
-                  : ""
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }
