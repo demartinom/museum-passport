@@ -51,7 +51,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     setSearchField(urlField);
   }, [urlField]);
 
-  function handleSearch(e: React.SubmitEvent<HTMLFormElement>) {
+  function initialSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const params = new URLSearchParams(searchParams.toString());
@@ -67,7 +67,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   return (
     <div className="min-h-screen px-6 py-10">
       {/* SEARCH BAR */}
-      <form onSubmit={handleSearch} className="mx-auto mb-4 max-w-2xl">
+      <form onSubmit={initialSearch} className="mx-auto mb-4 max-w-2xl">
         <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
           {/* FIELD SELECT */}
           <Select
