@@ -66,6 +66,9 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   function initialSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    // Ensures search text isn't empty
+    if (!searchText.trim()) return;
+
     const params = new URLSearchParams(searchParams.toString());
     params.set("q", searchText.trim());
     params.set("field", searchField);
@@ -204,7 +207,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
                   }
                 }}
                 className={
-                  pageNumber == maxPageNext
+                  pageNumber >= maxPageNext
                     ? "pointer-events-none opacity-50"
                     : ""
                 }
