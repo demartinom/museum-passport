@@ -14,6 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
 
@@ -37,10 +44,14 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   const urlField = searchParams.get("field") || "general";
   const urlPage = searchParams.get("page") || "1";
 
+  // Converts pageNumber into integer
+  const pageNumber = Number(urlPage);
+  // Max page user is allowed to go to
+  const maxPageNext = 100;
+
   // Local state is ONLY for typing. nothing fires until form submit
   const [searchText, setSearchText] = useState(urlQuery);
   const [searchField, setSearchField] = useState(urlField);
-  const [searchPage, setSearchPage] = useState(urlPage);
 
   // Sync inputs when URL changes (back/forward or navigation)
   useEffect(() => {
@@ -51,13 +62,26 @@ export function SearchContent({ initialResults }: SearchContentProps) {
     setSearchField(urlField);
   }, [urlField]);
 
-  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
+  // Function for initial search, defaulting to page 1
+  function initialSearch(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const params = new URLSearchParams(searchParams.toString());
     params.set("q", searchText.trim());
     params.set("field", searchField);
-    params.set("page", searchPage);
+    params.set("page", "1");
+
+    startTransition(() => {
+      router.push(`/?${params.toString()}`);
+    });
+  }
+
+  // Go to page number specified in URL
+  function goToPage(newPage: number) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("q", searchText.trim());
+    params.set("field", searchField);
+    params.set("page", String(newPage));
 
     startTransition(() => {
       router.push(`/?${params.toString()}`);
@@ -67,7 +91,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   return (
     <div className="min-h-screen px-6 py-10">
       {/* SEARCH BAR */}
-      <form onSubmit={handleSearch} className="mx-auto mb-4 max-w-2xl">
+      <form onSubmit={initialSearch} className="mx-auto mb-4 max-w-2xl">
         <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
           {/* FIELD SELECT */}
           <Select
@@ -153,6 +177,42 @@ export function SearchContent({ initialResults }: SearchContentProps) {
           )}
         </div>
       </div>
+      {initialResults?.length > 0 && (
+        <Pagination className="mt-10">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (pageNumber > 1) {
+                    goToPage(pageNumber - 1);
+                  }
+                }}
+                className={
+                  pageNumber <= 1 ? "pointer-events-none opacity-50" : ""
+                }
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (pageNumber < maxPageNext) {
+                    goToPage(pageNumber + 1);
+                  }
+                }}
+                className={
+                  pageNumber == maxPageNext
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }
