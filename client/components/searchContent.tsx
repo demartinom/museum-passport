@@ -51,7 +51,6 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   // Local state is ONLY for typing. nothing fires until form submit
   const [searchText, setSearchText] = useState(urlQuery);
   const [searchField, setSearchField] = useState(urlField);
-  const [searchPage, setSearchPage] = useState(urlPage);
 
   // Sync inputs when URL changes (back/forward or navigation)
   useEffect(() => {
