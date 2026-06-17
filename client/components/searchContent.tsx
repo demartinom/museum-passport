@@ -26,7 +26,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
   // Converts pageNumber into integer
   const pageNumber = Number(urlPage);
   // Max page user is allowed to go to
-  const maxPageNext = 100;
+  const maxPageNext = 10;
 
   // Local state is ONLY for typing. nothing fires until form submit
   const [searchText, setSearchText] = useState(urlQuery);
