@@ -4,17 +4,10 @@ import { useState, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "./ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
 import SearchBar from "./ui/searchBar";
+import SearchPagination from "./ui/searchPagination";
 
 interface SearchContentProps {
   initialResults: Art[];
@@ -132,40 +125,11 @@ export function SearchContent({ initialResults }: SearchContentProps) {
         </div>
       </div>
       {initialResults?.length > 0 && (
-        <Pagination className="mt-10">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (pageNumber > 1) {
-                    goToPage(pageNumber - 1);
-                  }
-                }}
-                className={
-                  pageNumber <= 1 ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (pageNumber < maxPageNext) {
-                    goToPage(pageNumber + 1);
-                  }
-                }}
-                className={
-                  pageNumber >= maxPageNext
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <SearchPagination
+          pageNumber={pageNumber}
+          goToPage={goToPage}
+          maxPageNext={maxPageNext}
+        />
       )}
     </div>
   );
