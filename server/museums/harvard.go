@@ -162,5 +162,5 @@ func (h *HarvardClient) GeneralSearch(query string, resultsLength int, pageNumbe
 		normalized = append(normalized, &art)
 	}
 
-	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized, TotalPages: searchResult.Info.Pages}, nil
 }
