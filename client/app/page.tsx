@@ -1,6 +1,7 @@
 import { fraunces } from "../lib/fonts";
 import Link from "next/link";
 import { SearchContent } from "@/components/searchContent";
+import { SearchResult } from "@/types/search";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export default async function SearchPage({
   const field = params.field || "general";
   const page = params.page || "1";
 
-  let initialResults = [];
+  let initialResults: SearchResult = { totalPages: 0, results: [] };
 
   if (query) {
     try {
@@ -39,7 +40,7 @@ export default async function SearchPage({
         </h1>
       </Link>
 
-      <SearchContent initialResults={initialResults || []} />
+      <SearchContent searchResult={initialResults.results || []} />
     </div>
   );
 }
