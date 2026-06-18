@@ -43,6 +43,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 		resultsLength = 40
 	}
 	var artwork []*models.SingleArtwork
+	maxTotalPages := 0
 
 	for _, museum := range s.Clients {
 		var foundArtwork *museums.SearchResult
@@ -63,12 +64,23 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 			artwork = append(artwork, foundArtwork.Art...)
 		}
 
+		if err != nil {
+			fmt.Println("Error:", err)
+			continue
+		}
+		if foundArtwork.TotalPages > maxTotalPages {
+			maxTotalPages = foundArtwork.TotalPages
+		}
+		artwork = append(artwork, foundArtwork.Art...)
 	}
 
 	artwork = s.SortArtwork(artwork)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(artwork)
+	json.NewEncoder(w).Encode(map[string]any{
+		"results":    artwork,
+		"totalPages": maxTotalPages,
+	})
 }
 
 func (s *SearchHandler) SortArtwork(artResults []*models.SingleArtwork) []*models.SingleArtwork {
