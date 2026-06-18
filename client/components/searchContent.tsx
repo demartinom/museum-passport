@@ -10,10 +10,10 @@ import SearchBar from "./ui/searchBar";
 import SearchPagination from "./ui/searchPagination";
 
 interface SearchContentProps {
-  initialResults: Art[];
+  searchResult: Art[];
 }
 
-export function SearchContent({ initialResults }: SearchContentProps) {
+export function SearchContent({ searchResult }: SearchContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -94,9 +94,9 @@ export function SearchContent({ initialResults }: SearchContentProps) {
               : "opacity-100"
           }
         >
-          {initialResults?.length > 0 ? (
+          {searchResult?.length > 0 ? (
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {initialResults.map((item) => (
+              {searchResult.map((item) => (
                 <Link href={`/art/${item.ID}`} key={item.ID} className="group">
                   <div className="relative h-56 w-full overflow-hidden rounded-lg bg-stone-100">
                     <Image
@@ -124,7 +124,7 @@ export function SearchContent({ initialResults }: SearchContentProps) {
           )}
         </div>
       </div>
-      {initialResults?.length > 0 && (
+      {searchResult?.length > 0 && (
         <SearchPagination
           pageNumber={pageNumber}
           goToPage={goToPage}
