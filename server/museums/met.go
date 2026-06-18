@@ -176,7 +176,8 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 			filtered = append(filtered, artwork)
 		}
 	}
-	return &SearchResult{ResultsLength: len(searchIDs), Art: filtered}, nil
+	totalPages := len(filtered) / resultsLength
+	return &SearchResult{ResultsLength: len(searchIDs), Art: filtered, TotalPages: totalPages}, nil
 }
 
 // if general is in URL query, searches the api using general search rather than

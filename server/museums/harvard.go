@@ -36,6 +36,7 @@ type HarvardSearchResponse struct {
 		Totalrecordsperquery int `json:"totalrecordsperquery"`
 		Totalrecords         int `json:"totalrecords"`
 		Page                 int `json:"page"`
+		Pages                int `json:"pages"`
 	} `json:"info"`
 	Records []HarvardSingleArtwork `json:"records"`
 }
@@ -116,7 +117,7 @@ func (h *HarvardClient) Search(params SearchParams, pageLength int, pageNumber i
 		normalized = append(normalized, &art)
 	}
 
-	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized, TotalPages: searchResult.Info.Pages}, nil
 }
 
 func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {

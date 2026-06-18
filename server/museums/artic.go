@@ -35,6 +35,7 @@ type ArticSearchResponse struct {
 // Returns pagination information for API call to artic
 type Pagination struct {
 	CurrentPage int `json:"current_page"`
+	TotalPages  int `json:"total_pages"`
 }
 
 // Type for receiving single artwork from API
@@ -153,7 +154,7 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int, pageNumber 
 		normalized = append(normalized, &art)
 	}
 
-	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized, TotalPages: searchResult.Pagination.TotalPages}, nil
 }
 
 func (a *ArticClient) Search(params SearchParams, pageLength int, pagNumber int) (*SearchResult, error) {

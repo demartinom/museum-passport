@@ -21,4 +21,5 @@ type SearchParams struct {
 type SearchResult struct {
 	ResultsLength int
 	Art           []*models.SingleArtwork
+	TotalPages    int
 }
