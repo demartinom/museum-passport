@@ -1,6 +1,6 @@
 export interface SearchResult {
-  ResultsLength: number;
-  Art: Art[];
+  totalPages: number;
+  results: Art[];
 }
 
 export interface Art {

@@ -35,6 +35,8 @@ type HarvardSearchResponse struct {
 	Info struct {
 		Totalrecordsperquery int `json:"totalrecordsperquery"`
 		Totalrecords         int `json:"totalrecords"`
+		Page                 int `json:"page"`
+		Pages                int `json:"pages"`
 	} `json:"info"`
 	Records []HarvardSingleArtwork `json:"records"`
 }
@@ -93,7 +95,7 @@ func (h *HarvardClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
-func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
+func (h *HarvardClient) Search(params SearchParams, pageLength int, pageNumber int) (*SearchResult, error) {
 	queryURL := h.BuildURL(params, pageLength)
 	resp, err := http.Get(queryURL)
 	if err != nil {
@@ -115,7 +117,7 @@ func (h *HarvardClient) Search(params SearchParams, pageLength int) (*SearchResu
 		normalized = append(normalized, &art)
 	}
 
-	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized, TotalPages: searchResult.Info.Pages}, nil
 }
 
 func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
@@ -135,9 +137,9 @@ func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
 
 // if general is in URL query, searches the api using general search rather than
 // searching by criteria (artist, medium, etc.)
-func (h *HarvardClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
-	queryURL := fmt.Sprintf("%s/object?hasimage=1&q=%s&size=%d&apikey=%s",
-		h.BaseURL, url.QueryEscape(query), resultsLength, h.APIKey)
+func (h *HarvardClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
+	queryURL := fmt.Sprintf("%s/object?hasimage=1&q=%s&size=%d&page=%s&apikey=%s",
+		h.BaseURL, url.QueryEscape(query), resultsLength, pageNumber, h.APIKey)
 
 	resp, err := http.Get(queryURL)
 	if err != nil {

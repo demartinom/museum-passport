@@ -87,7 +87,7 @@ func (m *MetClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 }
 
 // Search for artwork
-func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResult, error) {
+func (m *MetClient) Search(params SearchParams, resultsLength int, pageNumber int) (*SearchResult, error) {
 	queryURL := m.BuildURL(params)
 
 	resp, err := http.Get(queryURL)
@@ -100,8 +100,21 @@ func (m *MetClient) Search(params SearchParams, resultsLength int) (*SearchResul
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
+
+	// Calculates beginning and end of slice for search
+	pageStart := (pageNumber - 1) * resultsLength
+	pageEnd := pageStart + resultsLength
+
+	// Handling for page number issues
+	if pageStart >= len(result.ObjectIDs) {
+		return &SearchResult{ResultsLength: 0, Art: []*models.SingleArtwork{}}, nil
+	}
+	if pageEnd > len(result.ObjectIDs) {
+		pageEnd = len(result.ObjectIDs)
+	}
+
 	// Returns full data for artwork IDs returned in API call
-	artObjects, err := m.SearchRequest(result.ObjectIDs, resultsLength)
+	artObjects, err := m.SearchRequest(result.ObjectIDs[pageStart:pageEnd], resultsLength)
 	if err != nil {
 		return nil, err
 	}
@@ -163,12 +176,13 @@ func (m *MetClient) SearchRequest(searchIDs []int, resultsLength int) (*SearchRe
 			filtered = append(filtered, artwork)
 		}
 	}
-	return &SearchResult{ResultsLength: len(searchIDs), Art: filtered}, nil
+	totalPages := len(filtered) / resultsLength
+	return &SearchResult{ResultsLength: len(searchIDs), Art: filtered, TotalPages: totalPages}, nil
 }
 
 // if general is in URL query, searches the api using general search rather than
 // searching by criteria (artist, medium, etc.)
-func (m *MetClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
+func (m *MetClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
 	queryURL := fmt.Sprintf("%s/search?q=%s", m.BaseURL, url.QueryEscape(query))
 	resp, err := http.Get(queryURL)
 	if err != nil {
@@ -184,9 +198,23 @@ func (m *MetClient) GeneralSearch(query string, resultsLength int) (*SearchResul
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
-	artObjects, err := m.SearchRequest(result.ObjectIDs, resultsLength)
+
+	// Calculates beginning and end of slice for search
+	pageStart := (pageNumber - 1) * resultsLength
+	pageEnd := pageStart + resultsLength
+
+	// Handling for page number issues
+	if pageStart >= len(result.ObjectIDs) {
+		return &SearchResult{ResultsLength: 0, Art: []*models.SingleArtwork{}}, nil
+	}
+	if pageEnd > len(result.ObjectIDs) {
+		pageEnd = len(result.ObjectIDs)
+	}
+
+	artObjects, err := m.SearchRequest(result.ObjectIDs[pageStart:pageEnd], resultsLength)
 	if err != nil {
 		return nil, err
 	}
+
 	return artObjects, nil
 }

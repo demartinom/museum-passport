@@ -28,7 +28,14 @@ type ArticSingleArtwork struct {
 }
 
 type ArticSearchResponse struct {
-	Data []ArticSingleArtwork `json:"data"`
+	Pagination Pagination           `json:"pagination"`
+	Data       []ArticSingleArtwork `json:"data"`
+}
+
+// Returns pagination information for API call to artic
+type Pagination struct {
+	CurrentPage int `json:"current_page"`
+	TotalPages  int `json:"total_pages"`
 }
 
 // Type for receiving single artwork from API
@@ -118,8 +125,8 @@ func (a *ArticClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
-func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchResult, error) {
-	queryURL := fmt.Sprintf("%s/search?q=%s&limit=%d&fields=id,title,artist_title,image_id,medium_display,date_start,is_public_domain", a.BaseURL, url.QueryEscape(query), resultsLength)
+func (a *ArticClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
+	queryURL := fmt.Sprintf("%s/search?q=%s&limit=%d&page=%s&fields=id,title,artist_title,image_id,medium_display,date_start,is_public_domain", a.BaseURL, url.QueryEscape(query), resultsLength, pageNumber)
 
 	resp, err := http.Get(queryURL)
 	if err != nil {
@@ -147,10 +154,10 @@ func (a *ArticClient) GeneralSearch(query string, resultsLength int) (*SearchRes
 		normalized = append(normalized, &art)
 	}
 
-	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized, TotalPages: searchResult.Pagination.TotalPages}, nil
 }
 
-func (a *ArticClient) Search(params SearchParams, pageLength int) (*SearchResult, error) {
+func (a *ArticClient) Search(params SearchParams, pageLength int, pagNumber int) (*SearchResult, error) {
 	if params.Name != "" {
 		return a.SearchByField("title", params.Name, pageLength)
 	}

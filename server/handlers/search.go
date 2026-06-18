@@ -30,25 +30,33 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	artworktype := r.URL.Query().Get("type")
 	pageLength := r.URL.Query().Get("length")
 	general := r.URL.Query().Get("general")
+	page := r.URL.Query().Get("page")
+
+	// Converts page string into int
+	pageNumber, err := strconv.Atoi(page)
+	if err != nil || pageNumber < 1 {
+		pageNumber = 1
+	}
 
 	resultsLength, err := strconv.Atoi(pageLength)
 	if err != nil {
 		resultsLength = 40
 	}
 	var artwork []*models.SingleArtwork
+	maxTotalPages := 0
 
 	for _, museum := range s.Clients {
 		var foundArtwork *museums.SearchResult
 		// general decides whether or not to search using specific criteria
 		if general != "" {
-			foundArtwork, err = museum.GeneralSearch(general, resultsLength/len(s.Clients))
+			foundArtwork, err = museum.GeneralSearch(general, resultsLength/len(s.Clients), pageNumber)
 			if err != nil {
 				fmt.Println("Error:", err)
 				continue // Skip this museum
 			}
 			artwork = append(artwork, foundArtwork.Art...)
 		} else {
-			foundArtwork, err = museum.Search(museums.SearchParams{Name: name, Artist: artist, ArtworkType: artworktype}, resultsLength)
+			foundArtwork, err = museum.Search(museums.SearchParams{Name: name, Artist: artist, ArtworkType: artworktype}, resultsLength, pageNumber)
 			if err != nil {
 				fmt.Println("Error:", err)
 				continue // Skip this museum
@@ -56,12 +64,22 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 			artwork = append(artwork, foundArtwork.Art...)
 		}
 
+		if err != nil {
+			fmt.Println("Error:", err)
+			continue
+		}
+		if foundArtwork.TotalPages > maxTotalPages {
+			maxTotalPages = foundArtwork.TotalPages
+		}
 	}
 
 	artwork = s.SortArtwork(artwork)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(artwork)
+	json.NewEncoder(w).Encode(map[string]any{
+		"results":    artwork,
+		"totalPages": maxTotalPages,
+	})
 }
 
 func (s *SearchHandler) SortArtwork(artResults []*models.SingleArtwork) []*models.SingleArtwork {
