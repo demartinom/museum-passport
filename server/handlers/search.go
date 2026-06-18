@@ -71,7 +71,6 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 		if foundArtwork.TotalPages > maxTotalPages {
 			maxTotalPages = foundArtwork.TotalPages
 		}
-		artwork = append(artwork, foundArtwork.Art...)
 	}
 
 	artwork = s.SortArtwork(artwork)
