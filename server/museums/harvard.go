@@ -131,6 +131,9 @@ func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
 	if params.Name != "" {
 		queryURL.Set("title", params.Name)
 	}
+	if params.Artist != "" {
+		queryURL.Set("person", params.Artist)
+	}
 
 	return fmt.Sprintf("%s/object?%s&apikey=%s", h.BaseURL, queryURL.Encode(), h.APIKey)
 }
