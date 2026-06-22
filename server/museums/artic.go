@@ -76,6 +76,7 @@ func (a *ArticClient) NormalizeArtwork(receivedArt ArticSingleArtwork) models.Si
 		ImageLarge:   a.BuildImageURL(receivedArt.ImageID, 843),
 		ImageSmall:   a.BuildImageURL(receivedArt.ImageID, 400),
 		Museum:       a.GetMuseumName(),
+		AOTD:         false,
 	}
 
 	if a.Cache != nil {

@@ -60,6 +60,7 @@ func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.Single
 		Museum:       m.GetMuseumName(),
 		PublicDomain: receivedArt.PublicDomain,
 		ArtworkType:  receivedArt.Classification,
+		AOTD:         false,
 	}
 	m.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized

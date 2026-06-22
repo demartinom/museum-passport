@@ -68,6 +68,7 @@ func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		ImageSmall:   fmt.Sprintf("%s?height=300&width=300", receivedArt.Primaryimageurl),
 		Museum:       h.GetMuseumName(),
 		ArtworkType:  receivedArt.Classification,
+		AOTD:         false,
 	}
 	h.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
