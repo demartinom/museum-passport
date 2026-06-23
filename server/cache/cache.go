@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/demartinom/museum-passport/models"
@@ -81,6 +82,7 @@ func (c *Cache) GetScore(id string) (float64, error) {
 
 	return score, nil
 }
+
 // Sets the next Artwork of the Day.
 // Chosen by artwork with highest view count that hasn't been selected before
 func (c *Cache) SetAOTD() (string, error) {
@@ -135,4 +137,27 @@ func (c *Cache) MarkAsChosen(id string) error {
 	}).Err()
 
 	return err
+}
+
+// Returns information on current AOTD
+func (c *Cache) GetCurrentAOTD() (*models.SingleArtwork, error) {
+	// Get current AOTD ID
+	currentID, err := c.client.Get(ctx, "aotd:current").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get artwork information for AOTD
+	val, err := c.client.Get(ctx, "artwork:"+currentID).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return artwork
+	var artwork models.SingleArtwork
+	if err := json.Unmarshal([]byte(val), &artwork); err != nil {
+		return nil, err
+	}
+
+	return &artwork, nil
 }
