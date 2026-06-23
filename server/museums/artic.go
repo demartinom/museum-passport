@@ -200,5 +200,5 @@ func (a *ArticClient) SearchByField(field string, fieldValue string, length int)
 		}
 	}
 
-	return &SearchResult{ResultsLength: len(normalized), Art: normalized, TotalPages: searchResult.Pagination.TotalPages}, nil
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
