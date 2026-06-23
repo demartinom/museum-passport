@@ -81,3 +81,16 @@ func (c *Cache) GetScore(id string) (float64, error) {
 
 	return score, nil
 }
+// Marks artwork found by SetAOTD as having been an AOTD
+func (c *Cache) MarkAsChosen(id string) error {
+	// 1. Get the current time as a Unix timestamp (seconds)
+	now := float64(time.Now().Unix())
+
+	// 2. Add it to a Sorted Set
+	err := c.client.ZAdd(ctx, "aotd:history", redis.Z{
+		Score:  now,
+		Member: id,
+	}).Err()
+
+	return err
+}
