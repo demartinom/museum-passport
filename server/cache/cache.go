@@ -161,3 +161,16 @@ func (c *Cache) GetCurrentAOTD() (*models.SingleArtwork, error) {
 
 	return &artwork, nil
 }
+
+func (c *Cache) RemoveOldAOTD() error {
+	// Calculate 30 days as hour
+	thirtyDaysAgo := time.Now().Add(-30 * 24 * time.Hour).Unix()
+
+	// Convert time to string
+	maxScore := fmt.Sprintf("%d", thirtyDaysAgo)
+
+	// Delete anything with a score from 0 up to 30 days ago
+	err := c.client.ZRemRangeByScore(ctx, "aotd:history", "-inf", maxScore).Err()
+
+	return err
+}
