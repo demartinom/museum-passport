@@ -8,6 +8,16 @@ type PrincetonClient struct {
 	Cache   *cache.Cache
 }
 
+// Struct for receiving single artwork response from Princeton API
+type PrincetonSingleArtwork struct {
+	ID           int    `json:"objectid"`
+	Dated        string `json:"displaydate"`
+	Medium       string `json:"medium"`
+	People       string `json:"displaymaker"`
+	PrimaryImage string `json:"primaryimage"`
+	Title        string `json:"displaytitle"`
+}
+
 func NewPrincetonClient(cache *cache.Cache) *PrincetonClient {
 	return &PrincetonClient{BaseURL: "https://data.artmuseum.princeton.edu", Cache: cache}
 }
