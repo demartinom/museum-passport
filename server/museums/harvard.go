@@ -51,7 +51,8 @@ func (h *HarvardClient) GetMuseumName() string {
 	return "Harvard Art Museums"
 }
 
-// Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct and saves in cache
+// Takes Object API response store in HarvardSingleArtwork
+// Normalizes response into the models.Artwork struct and saves in cache
 func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
 	artistName := "Unknown Artist"
 	if len(receivedArt.People) > 0 {
