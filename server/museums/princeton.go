@@ -9,7 +9,7 @@ type PrincetonClient struct {
 }
 
 func NewPrincetonClient(cache *cache.Cache) *PrincetonClient {
-	return &PrincetonClient{BaseURL: "https://data.artmuseum.princeton.edu/objects/32221", Cache: cache}
+	return &PrincetonClient{BaseURL: "https://data.artmuseum.princeton.edu", Cache: cache}
 }
 
 // Allows for Princeton client to fall under museum interface
