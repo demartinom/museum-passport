@@ -13,7 +13,7 @@ type PrincetonSingleArtwork struct {
 	ID           int    `json:"objectid"`
 	Dated        string `json:"displaydate"`
 	Medium       string `json:"medium"`
-	People       string `json:"displaymaker"`
+	Artist       string `json:"displaymaker"`
 	PrimaryImage string `json:"primaryimage"`
 	Title        string `json:"displaytitle"`
 }
