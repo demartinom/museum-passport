@@ -18,6 +18,7 @@ type PrincetonSingleArtwork struct {
 	Title        string `json:"displaytitle"`
 }
 
+// Create new Princeton API client
 func NewPrincetonClient(cache *cache.Cache) *PrincetonClient {
 	return &PrincetonClient{BaseURL: "https://data.artmuseum.princeton.edu", Cache: cache}
 }
