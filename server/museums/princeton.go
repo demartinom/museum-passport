@@ -2,6 +2,7 @@ package museums
 
 import "github.com/demartinom/museum-passport/cache"
 
+// Client for handling calls to the Princeton API
 type PrincetonClient struct {
 	BaseURL string
 	Cache   *cache.Cache
