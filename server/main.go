@@ -40,6 +40,7 @@ func main() {
 
 	ArtworkHandler := handlers.NewArtworkHandler(clients, cache)
 	SearchHandler := handlers.NewSearchHandler(clients, cache)
+	AOTDHandler := handlers.NewAOTDHandler(cache)
 
 	// Create AI client
 	openAIKey := os.Getenv("OPENAI_KEY")
@@ -62,6 +63,7 @@ func main() {
 	r.Get("/api/artwork/{id}", ArtworkHandler.GetArtwork)
 	r.Get("/api/search", SearchHandler.SearchArtwork)
 	r.Get("/api/summary", summaryHandler.GenerateSummary)
+	r.Post("/api/internal/update-aotd", AOTDHandler.UpdateAOTD)
 
 	// Fly assigns a dynamic port
 	port := os.Getenv("PORT")
