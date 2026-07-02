@@ -17,12 +17,12 @@ type PrincetonClient struct {
 
 // Struct for receiving single artwork response from Princeton API
 type PrincetonSingleArtwork struct {
-	ID           int    `json:"objectid"`
-	Dated        string `json:"displaydate"`
-	Medium       string `json:"medium"`
-	Artist       string `json:"displaymaker"`
-	PrimaryImage string `json:"primaryimage"`
-	Title        string `json:"displaytitle"`
+	ID           int      `json:"objectid"`
+	Dated        string   `json:"displaydate"`
+	Medium       string   `json:"medium"`
+	Artist       string   `json:"displaymaker"`
+	PrimaryImage []string `json:"primaryimage"`
+	Title        string   `json:"displaytitle"`
 }
 
 // Create new Princeton API client
@@ -43,8 +43,8 @@ func (p *PrincetonClient) NormalizeArtwork(receivedArt PrincetonSingleArtwork) m
 		ArtworkTitle: receivedArt.Title,
 		ArtistName:   receivedArt.Artist,
 		ArtMedium:    receivedArt.Medium,
-		ImageLarge:   fmt.Sprintf("%s/full/max/0/default.jpg", receivedArt.PrimaryImage),
-		ImageSmall:   fmt.Sprintf("%s/full/800,/0/default.jpg", receivedArt.PrimaryImage),
+		ImageLarge:   fmt.Sprintf("%s/full/max/0/default.jpg", receivedArt.PrimaryImage[0]),
+		ImageSmall:   fmt.Sprintf("%s/full/800,/0/default.jpg", receivedArt.PrimaryImage[0]),
 		Museum:       p.GetMuseumName(),
 	}
 	p.Cache.SetArtwork(normalized.ID, normalized)
