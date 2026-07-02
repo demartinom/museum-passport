@@ -143,7 +143,7 @@ func (h *HarvardClient) BuildURL(params SearchParams, pageLength int) string {
 // if general is in URL query, searches the api using general search rather than
 // searching by criteria (artist, medium, etc.)
 func (h *HarvardClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
-	queryURL := fmt.Sprintf("%s/object?hasimage=1&q=%s&size=%d&page=%s&apikey=%s",
+	queryURL := fmt.Sprintf("%s/object?hasimage=1&q=%s&size=%d&page=%d&apikey=%s",
 		h.BaseURL, url.QueryEscape(query), resultsLength, pageNumber, h.APIKey)
 
 	resp, err := http.Get(queryURL)
