@@ -1,7 +1,9 @@
 package museums
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
@@ -47,4 +49,27 @@ func (p *PrincetonClient) NormalizeArtwork(receivedArt PrincetonSingleArtwork) m
 	}
 	p.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
+}
+
+// Makes an API call to Princeton to receive data on a single artwork based on id provided
+func (p *PrincetonClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
+	artwork, exists := p.Cache.GetArtwork(fmt.Sprintf("princeton-%d", id))
+	if exists {
+		return &artwork, nil
+	}
+
+	queryURL := fmt.Sprintf("%s/objects/%d", p.BaseURL, id)
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result PrincetonSingleArtwork
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	normalized := p.NormalizeArtwork(result)
+	return &normalized, nil
 }
