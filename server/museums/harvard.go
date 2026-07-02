@@ -90,8 +90,9 @@ func (h *HarvardClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	defer resp.Body.Close()
 
 	var result HarvardSingleArtwork
-	json.NewDecoder(resp.Body).Decode(&result)
-
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
 	normalized := h.NormalizeArtwork(result)
 	return &normalized, nil
 }
