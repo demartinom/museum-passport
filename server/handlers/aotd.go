@@ -23,7 +23,9 @@ func (a AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = a.Cache.RemoveOldAOTD()
+	if err := a.Cache.RemoveOldAOTD(); err != nil {
+		log.Printf("ERROR: failed to prune old AOTD history: %v", err)
+	}
 
 	winner, err := a.Cache.SetAOTD()
 	if err != nil {
