@@ -131,19 +131,22 @@ func (c *Cache) MarkAsChosen(id string) error {
 	now := float64(time.Now().Unix())
 
 	// 2. Add it to a Sorted Set
-	err := c.client.ZAdd(ctx, "aotd:history", redis.Z{
+	if err := c.client.ZAdd(ctx, "aotd:history", redis.Z{
 		Score:  now,
 		Member: id,
-	}).Err()
-
-	return err
+	}).Err(); err != nil {
+		return err
+	}
+	return c.client.Set(ctx, "aotd:current", id, 0).Err()
 }
 
 // Returns information on current AOTD
 func (c *Cache) GetCurrentAOTD() (*models.SingleArtwork, error) {
 	// Get current AOTD ID
 	currentID, err := c.client.Get(ctx, "aotd:current").Result()
-	if err != nil {
+	if err == redis.Nil {
+		return nil, nil // Means no AOTD has been selected yet
+	} else if err != nil {
 		return nil, err
 	}
 
