@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +17,7 @@ func NewAOTDHandler(c *cache.Cache) *AOTDHandler {
 	return &AOTDHandler{Cache: c}
 }
 
-func (a AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
+func (a *AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
 	secretToken := r.Header.Get("Authorization")
 	if secretToken != os.Getenv("AOTD_PASS") {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -34,4 +35,20 @@ func (a AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successfully rotated AOTD to: " + winner))
+}
+
+func (a *AOTDHandler) GetAOTD(w http.ResponseWriter, r *http.Request) {
+	artwork, err := a.Cache.GetCurrentAOTD()
+	if err != nil {
+		http.Error(w, "failed to fetch AOTD", http.StatusInternalServerError)
+		return
+	}
+
+	if artwork == nil {
+		http.Error(w, "No artwork of the day seleected yet", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(artwork)
 }
