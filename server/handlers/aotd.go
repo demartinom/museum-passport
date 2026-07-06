@@ -20,7 +20,6 @@ func (a AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
 	secretToken := r.Header.Get("Authorization")
 	if secretToken != os.Getenv("AOTD_PASS") {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		log.Println("DEBUG: Token mismatch!") // <-- Add this too
 		return
 	}
 
