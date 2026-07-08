@@ -151,7 +151,7 @@ func (c *Cache) GetCurrentAOTD() (*models.SingleArtwork, error) {
 	}
 
 	// Get artwork information for AOTD
-	val, err := c.client.Get(ctx, "artwork:"+currentID).Result()
+	val, err := c.client.Get(ctx, currentID).Result()
 	if err != nil {
 		return nil, err
 	}
