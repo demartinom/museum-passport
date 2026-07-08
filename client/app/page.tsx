@@ -2,6 +2,7 @@ import { fraunces } from "../lib/fonts";
 import Link from "next/link";
 import { SearchContent } from "@/components/searchContent";
 import { SearchResult } from "@/types/search";
+import AOTD from "@/components/aotd";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,7 @@ export default async function SearchPage({
         </h1>
       </Link>
 
+      <AOTD />
       <SearchContent searchResult={initialResults.results || []} />
     </div>
   );
