@@ -63,7 +63,6 @@ func main() {
 	r.Get("/api/artwork/{id}", ArtworkHandler.GetArtwork)
 	r.Get("/api/search", SearchHandler.SearchArtwork)
 	r.Get("/api/summary", summaryHandler.GenerateSummary)
-	r.Get("/api/aotd", AOTDHandler.GetAOTD)
 	r.Post("/api/internal/update-aotd", AOTDHandler.UpdateAOTD)
 
 	// Fly assigns a dynamic port
