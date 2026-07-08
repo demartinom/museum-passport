@@ -45,7 +45,7 @@ func (a *AOTDHandler) GetAOTD(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if artwork == nil {
-		http.Error(w, "No artwork of the day seleected yet", http.StatusNotFound)
+		http.Error(w, "No artwork of the day selected yet", http.StatusNotFound)
 		return
 	}
 
