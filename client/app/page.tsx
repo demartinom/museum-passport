@@ -41,8 +41,8 @@ export default async function SearchPage({
         </h1>
       </Link>
 
-      <AOTD />
       <SearchContent searchResult={initialResults.results || []} />
+      <AOTD />
     </div>
   );
 }
