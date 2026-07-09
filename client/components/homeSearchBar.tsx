@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import SearchBar from "./searchBar";
+import { Spinner } from "@/components/ui/spinner";
 
 export function HomeSearchBar() {
   const router = useRouter();
@@ -24,13 +25,20 @@ export function HomeSearchBar() {
   }
 
   return (
-    <SearchBar
-      searchText={searchText}
-      searchField={searchField}
-      setSearchText={setSearchText}
-      setSearchField={setSearchField}
-      onSubmit={initialSearch}
-      isPending={isPending}
-    />
+    <div className="relative">
+      {isPending && (
+        <div className="absolute inset-0 z-10 flex items-start justify-center bg-white/40 pt-6 backdrop-blur-[1px]">
+          <Spinner className="size-8 text-stone-900" />
+        </div>
+      )}
+      <SearchBar
+        searchText={searchText}
+        searchField={searchField}
+        setSearchText={setSearchText}
+        setSearchField={setSearchField}
+        onSubmit={initialSearch}
+        isPending={isPending}
+      />
+    </div>
   );
 }
