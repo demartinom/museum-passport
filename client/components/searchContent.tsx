@@ -6,8 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
-import SearchBar from "./ui/searchBar";
-import SearchPagination from "./ui/searchPagination";
+import SearchBar from "./searchBar";
+import SearchPagination from "./searchPagination";
 
 interface SearchContentProps {
   searchResult: Art[];
