@@ -12,10 +12,10 @@ export default function HomePage() {
       </h1>
 
       <div className="px-6">
-        <HomeSearchBar />
+        <HomeSearchBar>
+          <AOTD />
+        </HomeSearchBar>
       </div>
-
-      <AOTD />
     </div>
   );
 }
