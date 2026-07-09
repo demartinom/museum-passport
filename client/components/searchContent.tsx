@@ -69,7 +69,7 @@ export function SearchContent({ searchResult }: SearchContentProps) {
   }
 
   return (
-    <div className="min-h-screen px-6 py-10">
+    <div className="px-6 pt-10">
       <SearchBar
         searchText={searchText}
         searchField={searchField}
