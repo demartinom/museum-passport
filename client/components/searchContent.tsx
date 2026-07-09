@@ -49,7 +49,7 @@ export function SearchContent({ searchResult }: SearchContentProps) {
     params.set("page", String(newPage));
 
     startTransition(() => {
-      router.push(`/?${params.toString()}`);
+      router.push(`/search?${params.toString()}`);
     });
   }
 
@@ -64,7 +64,7 @@ export function SearchContent({ searchResult }: SearchContentProps) {
     params.set("page", "1");
 
     startTransition(() => {
-      router.push(`/?${params.toString()}`);
+      router.push(`/search?${params.toString()}`);
     });
   }
 
