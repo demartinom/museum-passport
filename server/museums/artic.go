@@ -61,6 +61,10 @@ func (a *ArticClient) GetMuseumName() string {
 	return "Art Institute of Chicago"
 }
 
+func (a *ArticClient) ArtworkURL(id int) string {
+	return fmt.Sprintf("https://www.artic.edu/artworks/%d", id)
+}
+
 func (a *ArticClient) NormalizeArtwork(receivedArt ArticSingleArtwork) models.SingleArtwork {
 	artistName := "Unknown Artist"
 
@@ -76,7 +80,7 @@ func (a *ArticClient) NormalizeArtwork(receivedArt ArticSingleArtwork) models.Si
 		ImageLarge:   a.BuildImageURL(receivedArt.ImageID, 843),
 		ImageSmall:   a.BuildImageURL(receivedArt.ImageID, 400),
 		Museum:       a.GetMuseumName(),
-		AOTD:         false,
+		URL:          a.ArtworkURL(receivedArt.ID),
 	}
 
 	if a.Cache != nil {
