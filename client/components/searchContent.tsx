@@ -6,8 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
-import SearchBar from "./ui/searchBar";
-import SearchPagination from "./ui/searchPagination";
+import SearchBar from "./searchBar";
+import SearchPagination from "./searchPagination";
 
 interface SearchContentProps {
   searchResult: Art[];
@@ -49,7 +49,7 @@ export function SearchContent({ searchResult }: SearchContentProps) {
     params.set("page", String(newPage));
 
     startTransition(() => {
-      router.push(`/?${params.toString()}`);
+      router.push(`/search?${params.toString()}`);
     });
   }
 
@@ -64,12 +64,12 @@ export function SearchContent({ searchResult }: SearchContentProps) {
     params.set("page", "1");
 
     startTransition(() => {
-      router.push(`/?${params.toString()}`);
+      router.push(`/search?${params.toString()}`);
     });
   }
 
   return (
-    <div className="min-h-screen px-6 py-10">
+    <div className="px-6 pt-10">
       <SearchBar
         searchText={searchText}
         searchField={searchField}

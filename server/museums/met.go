@@ -47,6 +47,10 @@ func (m *MetClient) GetMuseumName() string {
 	return "The Metropolitan Museum of Art"
 }
 
+func (m *MetClient) ArtworkURL(id int) string {
+	return fmt.Sprintf("https://www.metmuseum.org/art/collection/search/%d", id)
+}
+
 // Takes Object API response store in MetSingleArtwork and normalizes it into the models.Artwork struct and saves in cache
 func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.SingleArtwork {
 	normalized := models.SingleArtwork{
@@ -60,7 +64,9 @@ func (m *MetClient) NormalizeArtwork(receivedArt MetSingleArtwork) models.Single
 		Museum:       m.GetMuseumName(),
 		PublicDomain: receivedArt.PublicDomain,
 		ArtworkType:  receivedArt.Classification,
+		URL:          m.ArtworkURL(receivedArt.ObjectID),
 	}
+
 	m.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
 }

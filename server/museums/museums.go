@@ -5,6 +5,7 @@ import "github.com/demartinom/museum-passport/models"
 // Interface for museum clients
 type Client interface {
 	GetMuseumName() string
+	ArtworkURL(int) string
 	ArtworkByID(int) (*models.SingleArtwork, error)
 	Search(SearchParams, int, int) (*SearchResult, error)
 	GeneralSearch(string, int, int) (*SearchResult, error)

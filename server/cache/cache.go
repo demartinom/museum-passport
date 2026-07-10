@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/demartinom/museum-passport/models"
@@ -80,4 +81,99 @@ func (c *Cache) GetScore(id string) (float64, error) {
 	}
 
 	return score, nil
+}
+
+// Sets the next Artwork of the Day.
+// Chosen by artwork with highest view count that hasn't been selected before
+func (c *Cache) SetAOTD() (string, error) {
+	// Returns viewed artwork by view count
+	topArtworks, err := c.client.ZRangeArgs(ctx, redis.ZRangeArgs{
+		Key:   "artwork_popularity",
+		Start: 0,
+		Stop:  49,
+		Rev:   true,
+	}).Result()
+	if err != nil {
+		return "", err
+	}
+
+	var winnerID string
+
+	// Loop through strings to see if artwork has already been AOTD
+	for _, id := range topArtworks {
+		err := c.client.ZScore(ctx, "aotd:history", id).Err()
+
+		if err == redis.Nil {
+			winnerID = id
+			break
+		} else if err != nil {
+			return "", err
+		}
+	}
+
+	// Fallback
+	if winnerID == "" {
+		return "", fmt.Errorf("could not find an unchosen artwork in the top 50")
+	}
+
+	// Adds winner to AOTD history
+	err = c.MarkAsChosen(winnerID)
+	if err != nil {
+		return "", err
+	}
+
+	return winnerID, nil
+}
+
+// Marks artwork found by SetAOTD as having been an AOTD
+func (c *Cache) MarkAsChosen(id string) error {
+	// 1. Get the current time as a Unix timestamp (seconds)
+	now := float64(time.Now().Unix())
+
+	// 2. Add it to a Sorted Set
+	if err := c.client.ZAdd(ctx, "aotd:history", redis.Z{
+		Score:  now,
+		Member: id,
+	}).Err(); err != nil {
+		return err
+	}
+	return c.client.Set(ctx, "aotd:current", id, 0).Err()
+}
+
+// Returns information on current AOTD
+func (c *Cache) GetCurrentAOTD() (*models.SingleArtwork, error) {
+	// Get current AOTD ID
+	currentID, err := c.client.Get(ctx, "aotd:current").Result()
+	if err == redis.Nil {
+		return nil, nil // Means no AOTD has been selected yet
+	} else if err != nil {
+		return nil, err
+	}
+
+	// Get artwork information for AOTD
+	val, err := c.client.Get(ctx, currentID).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return artwork
+	var artwork models.SingleArtwork
+	if err := json.Unmarshal([]byte(val), &artwork); err != nil {
+		return nil, err
+	}
+
+	return &artwork, nil
+}
+
+func (c *Cache) RemoveOldAOTD() error {
+	// Calculate 30 days as hour
+	thirtyDaysAgo := time.Now().Add(-30 * 24 * time.Hour).Unix()
+
+	// Convert time to string
+	maxScore := fmt.Sprintf("%d", thirtyDaysAgo)
+
+	// Delete anything with a score from 0 up to 30 days ago
+	err := c.client.ZRemRangeByScore(ctx, "aotd:history", "-inf", maxScore).Err()
+
+	return err
 }

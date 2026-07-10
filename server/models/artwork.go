@@ -11,4 +11,6 @@ type SingleArtwork struct {
 	Museum       string
 	PublicDomain bool
 	ArtworkType  string
+	AOTD         bool
+	URL          string
 }

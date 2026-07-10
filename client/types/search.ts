@@ -15,4 +15,5 @@ export interface Art {
   ImageSmall: string;
   Museum: string;
   PublicDomain: boolean;
+  URL: string;
 }
