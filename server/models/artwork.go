@@ -12,4 +12,5 @@ type SingleArtwork struct {
 	PublicDomain bool
 	ArtworkType  string
 	AOTD         bool
+	URL          string
 }
