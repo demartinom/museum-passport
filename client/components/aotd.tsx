@@ -44,7 +44,12 @@ export default async function AOTD() {
             <h3 className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
               Collection
             </h3>
-            <p className="mt-1 text-lg text-gray-800">{AOTD?.Museum}</p>
+            <Link
+              href={AOTD?.URL || ""}
+              className="text-blue-500 hover:underline"
+            >
+              <p className="mt-1 text-lg">{AOTD?.Museum}</p>
+            </Link>
           </div>
         </div>
       </div>
