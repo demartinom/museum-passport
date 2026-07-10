@@ -2,6 +2,7 @@ import { AISummary } from "@/components/aisummary";
 import { Art } from "@/types/search";
 import Image from "next/image";
 import BackButton from "@/components/backbutton";
+import Link from "next/link";
 const SingleArtwork = async ({
   params,
 }: {
@@ -42,7 +43,13 @@ const SingleArtwork = async ({
                 <h3 className="text-sm font-semibold text-gray-500 uppercase">
                   Collection
                 </h3>
-                <p className="text-lg">{data.Museum}</p>
+                <Link
+                  href={data.URL}
+                  target="_blank"
+                  className="text-blue-500 hover:underline"
+                >
+                  <p className="text-lg">{data.Museum}</p>
+                </Link>
               </div>
               <AISummary id={id} />
             </div>

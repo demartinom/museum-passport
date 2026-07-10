@@ -51,8 +51,11 @@ func (h *HarvardClient) GetMuseumName() string {
 	return "Harvard Art Museums"
 }
 
-// Takes Object API response store in HarvardSingleArtwork
-// Normalizes response into the models.Artwork struct and saves in cache
+func (h *HarvardClient) ArtworkURL(id int) string {
+	return fmt.Sprintf("https://harvardartmuseums.org/collections/object/%d", id)
+}
+
+// Takes Object API response store in HarvardSingleArtwork and normalizes it into the models.Artwork struct and saves in cache
 func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) models.SingleArtwork {
 	artistName := "Unknown Artist"
 	if len(receivedArt.People) > 0 {
@@ -69,6 +72,8 @@ func (h *HarvardClient) NormalizeArtwork(receivedArt HarvardSingleArtwork) model
 		ImageSmall:   fmt.Sprintf("%s?height=300&width=300", receivedArt.Primaryimageurl),
 		Museum:       h.GetMuseumName(),
 		ArtworkType:  receivedArt.Classification,
+		AOTD:         false,
+		URL:          h.ArtworkURL(receivedArt.ID),
 	}
 	h.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
@@ -167,5 +172,5 @@ func (h *HarvardClient) GeneralSearch(query string, resultsLength int, pageNumbe
 		normalized = append(normalized, &art)
 	}
 
-	return &SearchResult{ResultsLength: len(normalized), Art: normalized, TotalPages: searchResult.Info.Pages}, nil
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
