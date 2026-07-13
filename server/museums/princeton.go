@@ -52,6 +52,7 @@ type PrincetonSearchObject struct {
 	ObjectID     int      `json:"objectid"`
 }
 
+// Converts search object struct into singleartwork struct for data normalization
 func (o PrincetonSearchObject) ToSingleArtwork() PrincetonSingleArtwork {
 	artist := ""
 	if o.DisplayMaker != nil {
@@ -127,6 +128,7 @@ func (p *PrincetonClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 }
 
 func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
+	// Used for calculating the results "page"
 	from := (pageNumber - 1) * resultsLength
 	queryURL := fmt.Sprintf("%s/search?q=%s&type=all&size=%d&from=%d", p.BaseURL, url.QueryEscape(query), resultsLength, from)
 
