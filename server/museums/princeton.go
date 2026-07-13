@@ -52,6 +52,26 @@ type PrincetonSearchObject struct {
 	ObjectID     int      `json:"objectid"`
 	Dimensions   string   `json:"dimensions"`
 }
+func (o PrincetonSearchObject) ToSingleArtwork() PrincetonSingleArtwork {
+	artist := ""
+	if o.DisplayMaker != nil {
+		artist = *o.DisplayMaker
+	}
+	dated := ""
+	if o.DisplayDate != nil {
+		dated = *o.DisplayDate
+	}
+
+	return PrincetonSingleArtwork{
+		ID:           o.ObjectID,
+		Dated:        dated,
+		Medium:       o.Medium,
+		Artist:       artist,
+		PrimaryImage: o.PrimaryImage,
+		Title:        o.DisplayTitle,
+	}
+}
+
 // Create new Princeton API client
 func NewPrincetonClient(cache *cache.Cache) *PrincetonClient {
 	return &PrincetonClient{BaseURL: "https://data.artmuseum.princeton.edu", Cache: cache}
