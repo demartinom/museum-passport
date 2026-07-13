@@ -35,6 +35,10 @@ func (p *PrincetonClient) GetMuseumName() string {
 	return "Princeton University Art Museum"
 }
 
+func (p *PrincetonClient) ArtworkURL(id int) string {
+	return fmt.Sprintf("https://artmuseum.princeton.edu/art/collections/objects/%d", id)
+}
+
 // Takes Object API response store in PrincetonSingleArtwork
 // Normalizes response into the models.Artwork struct and saves in cache
 func (p *PrincetonClient) NormalizeArtwork(receivedArt PrincetonSingleArtwork) models.SingleArtwork {
@@ -46,6 +50,7 @@ func (p *PrincetonClient) NormalizeArtwork(receivedArt PrincetonSingleArtwork) m
 		ImageLarge:   fmt.Sprintf("%s/full/max/0/default.jpg", receivedArt.PrimaryImage[0]),
 		ImageSmall:   fmt.Sprintf("%s/full/800,/0/default.jpg", receivedArt.PrimaryImage[0]),
 		Museum:       p.GetMuseumName(),
+		URL:          p.ArtworkURL(receivedArt.ID),
 	}
 	p.Cache.SetArtwork(normalized.ID, normalized)
 	return normalized
