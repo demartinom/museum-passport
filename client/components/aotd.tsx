@@ -7,7 +7,7 @@ export default async function AOTD() {
   try {
     const apiURL = `${process.env.API_URL}/api/aotd`;
 
-    const res = await fetch(apiURL);
+    const res = await fetch(apiURL, { cache: "no-store" });
     AOTD = await res.json();
   } catch (err) {
     console.error("Server-side fetch error:", err);
