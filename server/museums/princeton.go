@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/models"
@@ -52,6 +53,7 @@ type PrincetonSearchObject struct {
 	ObjectID     int      `json:"objectid"`
 	Dimensions   string   `json:"dimensions"`
 }
+
 func (o PrincetonSearchObject) ToSingleArtwork() PrincetonSingleArtwork {
 	artist := ""
 	if o.DisplayMaker != nil {
@@ -124,4 +126,31 @@ func (p *PrincetonClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	}
 	normalized := p.NormalizeArtwork(result)
 	return &normalized, nil
+}
+
+func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
+	from := (pageNumber - 1) * resultsLength
+	queryURL := fmt.Sprintf("%s/search?q=%s&type=all&size=%d&from=%d", p.BaseURL, url.QueryEscape(query), resultsLength, from)
+
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return &SearchResult{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Princeton API returned %d", resp.StatusCode)
+	}
+	var result PrincetonSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+
+	var normalized []*models.SingleArtwork
+	for _, artwork := range result.Hits.Hits {
+		art := p.NormalizeArtwork(artwork.Source.ToSingleArtwork())
+		normalized = append(normalized, &art)
+	}
+
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
