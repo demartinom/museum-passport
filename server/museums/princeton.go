@@ -45,13 +45,11 @@ type PrincetonSearchResponse struct {
 type PrincetonSearchObject struct {
 	DisplayMaker *string  `json:"displaymaker"`
 	ObjectNumber string   `json:"objectnumber"`
-	CreditLine   string   `json:"creditline"`
 	DisplayDate  *string  `json:"displaydate"`
 	PrimaryImage []string `json:"primaryimage"`
 	Medium       string   `json:"medium"`
 	DisplayTitle string   `json:"displaytitle"`
 	ObjectID     int      `json:"objectid"`
-	Dimensions   string   `json:"dimensions"`
 }
 
 func (o PrincetonSearchObject) ToSingleArtwork() PrincetonSingleArtwork {
