@@ -25,6 +25,33 @@ type PrincetonSingleArtwork struct {
 	Title        string   `json:"displaytitle"`
 }
 
+// SearchResponse is the top-level response.
+type PrincetonSearchResponse struct {
+	Hits struct {
+		Total int `json:"total"`
+		Hits  []struct {
+			Index  string                `json:"_index"`
+			ID     string                `json:"_id"`
+			Score  float64               `json:"_score"`
+			Source PrincetonSearchObject `json:"_source"`
+			Type   string                `json:"_type"`
+		} `json:"hits"`
+	} `json:"hits"`
+}
+
+// ArtObject holds the actual art object fields. DisplayMaker and DisplayDate
+// can be null in the source data, so they're pointers.
+type PrincetonSearchObject struct {
+	DisplayMaker *string  `json:"displaymaker"`
+	ObjectNumber string   `json:"objectnumber"`
+	CreditLine   string   `json:"creditline"`
+	DisplayDate  *string  `json:"displaydate"`
+	PrimaryImage []string `json:"primaryimage"`
+	Medium       string   `json:"medium"`
+	DisplayTitle string   `json:"displaytitle"`
+	ObjectID     int      `json:"objectid"`
+	Dimensions   string   `json:"dimensions"`
+}
 // Create new Princeton API client
 func NewPrincetonClient(cache *cache.Cache) *PrincetonClient {
 	return &PrincetonClient{BaseURL: "https://data.artmuseum.princeton.edu", Cache: cache}
