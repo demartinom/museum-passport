@@ -52,6 +52,19 @@ type PrincetonSearchObject struct {
 	ObjectID     int      `json:"objectid"`
 }
 
+type PrincetonMakerSearch struct {
+	Hits struct {
+		Hits []struct {
+			Source PrincetonMakerStruct `json:"_source"`
+		} `json:"hits"`
+	} `json:"hits"`
+}
+
+type PrincetonMakerStruct struct {
+	MakerID     int    `json:"makerid"`
+	DisplayName string `json:"displayname"`
+}
+
 // Converts search object struct into singleartwork struct for data normalization
 func (o PrincetonSearchObject) ToSingleArtwork() PrincetonSingleArtwork {
 	artist := ""
