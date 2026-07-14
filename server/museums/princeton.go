@@ -166,6 +166,34 @@ func (p *PrincetonClient) FindMakerID(name string) (int, error) {
 	return result.Hits.Hits[0].Source.MakerID, nil
 }
 
+func (p *PrincetonClient) SearchArtistWorks(id int, resultslength int, pageNumber int) (*SearchResult, error) {
+	from := (pageNumber - 1) * resultslength
+	queryURL := fmt.Sprintf("%s/objects?maker=%d&size=%d&from=%d", p.BaseURL, id, resultslength, from)
+
+	resp, err := http.Get(queryURL)
+
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Princeton API returned %d", resp.StatusCode)
+	}
+	var result PrincetonSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+
+	var normalized []*models.SingleArtwork
+	for _, artwork := range result.Hits.Hits {
+		art := p.NormalizeArtwork(artwork.Source.ToSingleArtwork())
+		normalized = append(normalized, &art)
+	}
+
+	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
+}
+
 func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
 	// Used for calculating the results "page"
 	from := (pageNumber - 1) * resultsLength
