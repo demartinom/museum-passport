@@ -140,6 +140,32 @@ func (p *PrincetonClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
+// Returns the ID of artist searched to use API's maker search
+func (p *PrincetonClient) FindMakerID(name string) (int, error) {
+	queryURL := fmt.Sprintf("%s/search?q=%s&type=makers", p.BaseURL, name)
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		return 0, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return 0, fmt.Errorf("Princeton API returned %d", resp.StatusCode)
+	}
+
+	var result PrincetonMakerSearch
+	if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
+		return 0, err
+	}
+
+	if len(result.Hits.Hits) == 0 {
+		return 0, fmt.Errorf("No maker found matching %q", name)
+	}
+
+	return result.Hits.Hits[0].Source.MakerID, nil
+}
+
 func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
 	// Used for calculating the results "page"
 	from := (pageNumber - 1) * resultsLength
