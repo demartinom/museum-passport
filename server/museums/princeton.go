@@ -212,20 +212,23 @@ func (p *PrincetonClient) SearchArtistWorks(id int, resultslength int, pageNumbe
 	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
 
-func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
-	// Used for calculating the results "page"
+// search is the shared implementation behind GeneralSearch and SearchByArtwork.
+// artType corresponds to the API's `type` query param ("all", "artobjects", etc).
+func (p *PrincetonClient) search(query string, artType string, resultsLength int, pageNumber int) (*SearchResult, error) {
 	from := (pageNumber - 1) * resultsLength
-	queryURL := fmt.Sprintf("%s/search?q=%s&type=all&size=%d&from=%d", p.BaseURL, url.QueryEscape(query), resultsLength, from)
+	queryURL := fmt.Sprintf("%s/search?q=%s&type=%s&size=%d&from=%d",
+		p.BaseURL, url.QueryEscape(query), artType, resultsLength, from)
 
 	resp, err := http.Get(queryURL)
 	if err != nil {
-		return &SearchResult{}, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("Princeton API returned %d", resp.StatusCode)
 	}
+
 	var result PrincetonSearchResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
@@ -239,3 +242,9 @@ func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNum
 
 	return &SearchResult{ResultsLength: len(normalized), Art: normalized}, nil
 }
+
+// GeneralSearch searches across all Princeton data types.
+func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
+	return p.search(query, "all", resultsLength, pageNumber)
+}
+
