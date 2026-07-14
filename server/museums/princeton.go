@@ -140,6 +140,7 @@ func (p *PrincetonClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	return &normalized, nil
 }
 
+// Searchs API based on params ("Artist, Artwork title")
 func (p *PrincetonClient) Search(params SearchParams, pageLength int, pageNumber int) (*SearchResult, error) {
 	if params.Artist != "" {
 		artistID, err := p.FindMakerID(params.Artist)
@@ -182,6 +183,7 @@ func (p *PrincetonClient) FindMakerID(name string) (int, error) {
 	return result.Hits.Hits[0].Source.MakerID, nil
 }
 
+// Takes artist ID and returns works by artist
 func (p *PrincetonClient) SearchArtistWorks(id int, resultslength int, pageNumber int) (*SearchResult, error) {
 	from := (pageNumber - 1) * resultslength
 	queryURL := fmt.Sprintf("%s/objects?maker=%d&size=%d&from=%d", p.BaseURL, id, resultslength, from)
