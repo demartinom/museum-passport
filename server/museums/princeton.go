@@ -153,7 +153,13 @@ func (p *PrincetonClient) Search(params SearchParams, pageLength int, pageNumber
 		}
 		return artworks, nil
 	}
-
+	if params.Name != "" {
+		artworks, err := p.SearchByArtwork(params.Name, pageLength, pageNumber)
+		if err != nil {
+			return nil, err
+		}
+		return artworks, nil
+	}
 	return nil, fmt.Errorf("no search parameters provided")
 }
 
@@ -248,3 +254,7 @@ func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNum
 	return p.search(query, "all", resultsLength, pageNumber)
 }
 
+// SearchByArtwork restricts the search to art objects only.
+func (p *PrincetonClient) SearchByArtwork(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
+	return p.search(query, "artobjects", resultsLength, pageNumber)
+}
