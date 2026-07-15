@@ -29,8 +29,7 @@ type PrincetonSingleArtwork struct {
 // SearchResponse is the top-level response.
 type PrincetonSearchResponse struct {
 	Hits struct {
-		Total int `json:"total"`
-		Hits  []struct {
+		Hits []struct {
 			Index  string                `json:"_index"`
 			ID     string                `json:"_id"`
 			Score  float64               `json:"_score"`
