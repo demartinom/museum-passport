@@ -178,7 +178,7 @@ func (p *PrincetonClient) FindMakerID(name string) (int, error) {
 	}
 
 	var result PrincetonMakerSearch
-	if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return 0, err
 	}
 
