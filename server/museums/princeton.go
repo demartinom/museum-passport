@@ -165,7 +165,7 @@ func (p *PrincetonClient) Search(params SearchParams, pageLength int, pageNumber
 
 // Returns the ID of artist searched to use API's maker search
 func (p *PrincetonClient) FindMakerID(name string) (int, error) {
-	queryURL := fmt.Sprintf("%s/search?q=%s&type=makers", p.BaseURL, name)
+	queryURL := fmt.Sprintf("%s/search?q=%s&type=makers", p.BaseURL, url.QueryEscape(name))
 	resp, err := http.Get(queryURL)
 	if err != nil {
 		return 0, err
