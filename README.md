@@ -27,6 +27,11 @@ HARVARD_KEY=your_harvard_key_here
 # Networking
 NEXT_PUBLIC_API_URL=http://localhost:3001
 DOCKER_ENV=true
+
+# Redis
+REDIS_ADD=redis_address
+REDIS_PASS=redis_password
+AOTD_PASS= user_set_aotd_password
 ```
 
 ### 3. Launch with Docker
@@ -123,5 +128,5 @@ cd frontend && npm run dev
 
 ## 📜 License & Acknowledgments
 
-- **Data Providers:** [The Metropolitan Museum of Art Open Access API](https://metmuseum.github.io/), [Harvard Art Museums API](https://github.com/harvardartmuseums/api-docs), and [Art Institute of Chicago API](https://api.artic.edu/docs/).
+- **Data Providers:** [The Metropolitan Museum of Art Open Access API](https://metmuseum.github.io/), [Harvard Art Museums API](https://github.com/harvardartmuseums/api-docs), [Art Institute of Chicago API](https://api.artic.edu/docs/), and [Princeton University Art Museum API](https://github.com/Princeton-University-Art-Museum/puam-api-docs/tree/main).
 - **License:** MIT
