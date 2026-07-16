@@ -216,7 +216,12 @@ func (p *PrincetonClient) SearchArtistWorks(id int, resultslength int, pageNumbe
 
 	var normalized []*models.SingleArtwork
 	for _, artwork := range result.Hits.Hits {
-		art := p.NormalizeArtwork(artwork.Source.ToSingleArtwork())
+		single := artwork.Source.ToSingleArtwork()
+		// If primary image is empty, the artwork is not appended to the results
+		if len(single.PrimaryImage) == 0 {
+			continue
+		}
+		art := p.NormalizeArtwork(single)
 		normalized = append(normalized, &art)
 	}
 
@@ -247,7 +252,12 @@ func (p *PrincetonClient) search(query string, artType string, resultsLength int
 
 	var normalized []*models.SingleArtwork
 	for _, artwork := range result.Hits.Hits {
-		art := p.NormalizeArtwork(artwork.Source.ToSingleArtwork())
+		single := artwork.Source.ToSingleArtwork()
+		// If primary image is empty, the artwork is not appended to the results
+		if len(single.PrimaryImage) == 0 {
+			continue
+		}
+		art := p.NormalizeArtwork(single)
 		normalized = append(normalized, &art)
 	}
 
