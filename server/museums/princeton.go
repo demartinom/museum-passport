@@ -42,13 +42,13 @@ type PrincetonSearchResponse struct {
 // ArtObject holds the actual art object fields. DisplayMaker and DisplayDate
 // can be null in the source data, so they're pointers.
 type PrincetonSearchObject struct {
-	DisplayMaker *string  `json:"displaymaker"`
-	ObjectNumber string   `json:"objectnumber"`
-	DisplayDate  *string  `json:"displaydate"`
-	PrimaryImage []string `json:"primaryimage"`
-	Medium       string   `json:"medium"`
-	DisplayTitle string   `json:"displaytitle"`
-	ObjectID     int      `json:"objectid"`
+	DisplayMaker *string         `json:"displaymaker"`
+	ObjectNumber string          `json:"objectnumber"`
+	DisplayDate  *string         `json:"displaydate"`
+	PrimaryImage json.RawMessage `json:"primaryimage"`
+	Medium       string          `json:"medium"`
+	DisplayTitle string          `json:"displaytitle"`
+	ObjectID     int             `json:"objectid"`
 }
 
 type PrincetonMakerSearch struct {
@@ -80,7 +80,7 @@ func (o PrincetonSearchObject) ToSingleArtwork() PrincetonSingleArtwork {
 		Dated:        dated,
 		Medium:       o.Medium,
 		Artist:       artist,
-		PrimaryImage: o.PrimaryImage,
+		PrimaryImage: parsePrimaryImage(o.PrimaryImage),
 		Title:        o.DisplayTitle,
 	}
 }
@@ -262,4 +262,14 @@ func (p *PrincetonClient) GeneralSearch(query string, resultsLength int, pageNum
 // SearchByArtwork restricts the search to art objects only.
 func (p *PrincetonClient) SearchByArtwork(query string, resultsLength int, pageNumber int) (*SearchResult, error) {
 	return p.search(query, "artobjects", resultsLength, pageNumber)
+}
+
+// Used to filter out artwork with no image
+func parsePrimaryImage(raw json.RawMessage) []string {
+	var arr []string
+	if err := json.Unmarshal(raw, &arr); err == nil {
+		return arr
+	}
+
+	return nil
 }
