@@ -35,7 +35,7 @@ export default async function SearchPage({
     <div>
       <Link href="/" className="flex justify-center">
         <h1
-          className={`my-6 ${fraunces.className} text-7xl font-bold text-stone-900`}
+          className={` ${fraunces.className} text-4xl font-bold text-stone-900`}
         >
           Museum Passport
         </h1>

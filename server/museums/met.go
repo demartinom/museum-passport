@@ -86,7 +86,9 @@ func (m *MetClient) ArtworkByID(id int) (*models.SingleArtwork, error) {
 	defer resp.Body.Close()
 
 	var result MetSingleArtwork
-	json.NewDecoder(resp.Body).Decode(&result)
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
 
 	normalized := m.NormalizeArtwork(result)
 	return &normalized, nil
