@@ -69,21 +69,24 @@ export function SearchContent({ searchResult }: SearchContentProps) {
   }
 
   return (
-    <div className="px-6 pt-10">
-      <SearchBar
-        searchText={searchText}
-        searchField={searchField}
-        setSearchText={setSearchText}
-        setSearchField={setSearchField}
-        onSubmit={initialSearch}
-        isPending={isPending}
-      />
+    <div className="px-4 pt-4 sm:px-6 sm:pt-10">
+      {/* Sticky on mobile so users can re-search after scrolling; static on desktop */}
+      <div className="sticky top-0 z-20 -mx-4 bg-white/90 px-4 pt-2 pb-2 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:pt-0 sm:pb-0">
+        <SearchBar
+          searchText={searchText}
+          searchField={searchField}
+          setSearchText={setSearchText}
+          setSearchField={setSearchField}
+          onSubmit={initialSearch}
+          isPending={isPending}
+        />
+      </div>
       {/* RESULTS */}
-      <div className="relative mt-10">
+      <div className="relative mt-6 sm:mt-10">
         {/* Loading Overlay: Only visible when isPending is true */}
         {isPending && (
-          <div className="absolute inset-0 z-10 flex items-start justify-center bg-white/40 pt-20 backdrop-blur-[1px]">
-            <Spinner className="size-15 text-stone-900" />
+          <div className="absolute inset-0 z-10 flex min-h-[50vh] items-center justify-center bg-white/40 backdrop-blur-[1px]">
+            <Spinner className="size-10 text-stone-900 sm:size-15" />
           </div>
         )}
 
@@ -95,29 +98,32 @@ export function SearchContent({ searchResult }: SearchContentProps) {
           }
         >
           {searchResult?.length > 0 ? (
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {searchResult.map((item) => (
                 <Link href={`/art/${item.ID}`} key={item.ID} className="group">
-                  <div className="relative h-56 w-full overflow-hidden rounded-lg bg-stone-100">
+                  <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-stone-100">
                     <Image
                       src={item.ImageSmall}
                       alt={item.ArtworkTitle}
                       fill
                       unoptimized
+                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                       className="object-contain transition-transform group-hover:scale-105"
                     />
                   </div>
 
-                  <h3 className="mt-2 text-sm font-semibold">
+                  <h3 className="mt-1.5 line-clamp-2 text-xs font-semibold sm:mt-2 sm:text-sm">
                     {item.ArtworkTitle}
                   </h3>
-                  <p className="text-xs text-stone-400">{item.Museum}</p>
+                  <p className="mt-0.5 text-[11px] text-stone-400 sm:text-xs">
+                    {item.Museum}
+                  </p>
                 </Link>
               ))}
             </div>
           ) : (
             urlQuery && (
-              <p className="py-32 text-center text-stone-500">
+              <p className="px-4 py-10 text-center text-sm text-stone-500 sm:py-32 sm:text-base">
                 No results found for `&quot;`{urlQuery}`&quot;`.
               </p>
             )
