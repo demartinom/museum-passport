@@ -22,7 +22,7 @@ export default async function AOTD() {
   }
 
   return (
-    <div className="grid grid-cols-1 items-center gap-6 px-4 sm:px-6 md:grid-cols-2 md:gap-10 md:px-12 lg:gap-16 lg:px-24">
+    <div className="grid grid-cols-1 items-center gap-0 px-4 sm:px-6 md:grid-cols-2 md:gap-10 md:px-12 lg:gap-16 lg:px-24">
       {/* The Context (Left on Desktop, Bottom on Mobile) */}
       <div className="order-last flex flex-col justify-center md:order-first">
         <span className="mb-2 text-xs font-bold tracking-widest text-gray-400 uppercase sm:mb-4">
@@ -43,28 +43,6 @@ export default async function AOTD() {
         <p className="mb-6 text-base text-gray-500 italic sm:mb-8 sm:text-lg">
           {AOTD.DateCreated}
         </p>
-
-        <div className="flex flex-col gap-4 border-t pt-6 sm:mt-4 sm:pt-8 md:flex-row md:gap-12">
-          <div>
-            <h3 className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
-              Medium
-            </h3>
-            <p className="mt-1 text-base text-gray-800 sm:text-lg">
-              {AOTD.ArtMedium}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
-              Collection
-            </h3>
-            <Link
-              href={AOTD.URL || ""}
-              className="text-blue-500 hover:underline"
-            >
-              <p className="mt-1 text-base sm:text-lg">{AOTD.Museum}</p>
-            </Link>
-          </div>
-        </div>
       </div>
 
       {/* The Artwork (Right on Desktop, Top on Mobile) */}
