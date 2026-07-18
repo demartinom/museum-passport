@@ -12,6 +12,15 @@ export default async function AOTD() {
   } catch (err) {
     console.error("Server-side fetch error:", err);
   }
+
+  if (!AOTD) {
+    return (
+      <div className="px-6 py-12 text-center text-gray-500 md:px-12 lg:px-24">
+        Couldn&apos;t load today&apos;s artwork.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 items-center gap-6 px-6 md:grid-cols-2 md:px-12 lg:gap-16 lg:px-24">
       {/* The Context (Left on Desktop, Bottom on Mobile) */}
