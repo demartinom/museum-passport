@@ -42,6 +42,27 @@ export default async function AOTD() {
         <p className="mb-6 text-base text-gray-500 italic sm:mb-8 sm:text-lg">
           {AOTD.DateCreated}
         </p>
+        <div className="invisible flex flex-col gap-4 border-t pt-6 sm:mt-4 sm:pt-8 md:flex-row md:gap-12 lg:visible">
+          <div>
+            <h3 className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
+              Medium
+            </h3>
+            <p className="mt-1 text-base text-gray-800 sm:text-lg">
+              {AOTD.ArtMedium}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
+              Collection
+            </h3>
+            <Link
+              href={AOTD.URL || ""}
+              className="text-blue-500 hover:underline"
+            >
+              <p className="mt-1 text-base sm:text-lg">{AOTD.Museum}</p>
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* The Artwork (Right on Desktop, Top on Mobile) */}
