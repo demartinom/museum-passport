@@ -66,7 +66,10 @@ export default async function AOTD() {
       </div>
 
       {/* The Artwork (Right on Desktop, Top on Mobile) */}
-      <div className="relative order-first flex h-[38vh] w-full items-center justify-center overflow-hidden rounded-xl sm:h-[50vh] md:order-last md:h-[70vh]">
+      <Link
+        href={`/art/${AOTD.ID}`}
+        className="relative order-first flex h-[38vh] w-full items-center justify-center overflow-hidden rounded-xl sm:h-[50vh] md:order-last md:h-[70vh]"
+      >
         <Image
           src={AOTD.ImageLarge || ""}
           fill
@@ -74,7 +77,7 @@ export default async function AOTD() {
           className="object-contain p-3 sm:p-4"
           unoptimized
         />
-      </div>
+      </Link>
     </div>
   );
 }
