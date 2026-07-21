@@ -29,12 +29,11 @@ export default async function AOTD() {
           Artwork of the Day
         </span>
 
-        <Link
-          href={`/art/${AOTD.ID}`}
-          className="mb-3 text-2xl leading-tight font-bold text-gray-900 underline sm:mb-4 sm:text-4xl md:text-5xl lg:text-5xl"
-        >
-          {AOTD.ArtworkTitle}
-        </Link>
+        <h2 className="mb-3 text-2xl leading-tight font-bold text-gray-900 sm:mb-4 sm:text-4xl md:text-5xl lg:text-5xl">
+          <Link href={`/art/${AOTD.ID}`} className="underline">
+            {AOTD.ArtworkTitle}
+          </Link>
+        </h2>
 
         <p className="mb-1.5 text-lg text-gray-700 sm:mb-2 sm:text-2xl">
           {AOTD.ArtistName || "Unknown Artist"}
