@@ -38,13 +38,13 @@ const SingleArtwork = async ({
           </div>
 
           <div className="order-2 px-4 sm:px-6 lg:order-1 lg:px-10 lg:pt-10">
-            <h1 className="mb-2 text-center text-2xl font-bold sm:text-3xl lg:text-4xl">
+            <h1 className="mb-2 text-center text-2xl font-bold sm:text-3xl md:text-start lg:text-4xl">
               {data.ArtworkTitle}
             </h1>
-            <p className="text-center text-lg text-gray-600 sm:text-xl">
+            <p className="text-center text-lg text-gray-600 sm:text-xl md:text-start">
               {data.ArtistName || "Unknown Artist"}
             </p>
-            <p className="text-base text-gray-500 sm:text-lg">
+            <p className="text-center text-base text-gray-500 sm:text-lg md:text-start">
               {data.DateCreated}
             </p>
 
