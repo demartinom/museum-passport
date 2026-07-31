@@ -14,3 +14,7 @@ type Artist struct {
 	Description string `json:"description"`
 }
 
+func (a *ArtistClient) NewArtistClient() *ArtistClient {
+	return &ArtistClient{}
+}
+
