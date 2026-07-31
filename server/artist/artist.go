@@ -39,7 +39,7 @@ func (a *ArtistClient) NewArtistClient() *ArtistClient {
 }
 
 func (a *ArtistClient) FindTitle(query string) (string, error) {
-	encoded := url.QueryEscape(query)
+	encoded := url.PathEscape(query)
 	queryUrl := fmt.Sprintf("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=%s&srlimit=3&format=json&origin=*", encoded)
 
 	resp, err := http.Get(queryUrl)
