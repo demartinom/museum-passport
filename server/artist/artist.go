@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type ArtistClient struct {
@@ -54,4 +55,27 @@ func (a *ArtistClient) FindTitle(query string) (string, error) {
 		return "", err
 	}
 	return result.Query.Search[0].Title, nil
+}
+
+func (a *ArtistClient) FindArtist(query string) (*Artist, error) {
+	pageTitle, err := a.FindTitle(query)
+	if err != nil {
+		return nil, err
+	}
+	encoded := url.PathEscape(strings.ReplaceAll(pageTitle, " ", "_"))
+	queryUrl := fmt.Sprintf("https://en.wikipedia.org/api/rest_v1/page/summary/%s", encoded)
+
+	resp, err := http.Get(queryUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	var result Artist
+
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	return &result, nil
 }
