@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/demartinom/museum-passport/ai"
+	"github.com/demartinom/museum-passport/artist"
 	"github.com/demartinom/museum-passport/cache"
 	"github.com/demartinom/museum-passport/handlers"
 	"github.com/demartinom/museum-passport/internal/database"
@@ -39,9 +40,12 @@ func main() {
 		"princeton": museums.NewPrincetonClient(cache),
 	}
 
+	artistClient := artist.NewArtistClient(cache)
+
 	ArtworkHandler := handlers.NewArtworkHandler(clients, cache)
 	SearchHandler := handlers.NewSearchHandler(clients, cache)
 	AOTDHandler := handlers.NewAOTDHandler(cache)
+	ArtistHandler := handlers.NewArtistHandler(artistClient, cache)
 
 	// Create AI client
 	openAIKey := os.Getenv("OPENAI_KEY")
@@ -64,6 +68,7 @@ func main() {
 	r.Get("/api/artwork/{id}", ArtworkHandler.GetArtwork)
 	r.Get("/api/search", SearchHandler.SearchArtwork)
 	r.Get("/api/summary", summaryHandler.GenerateSummary)
+	r.Get("/api/artist", ArtistHandler.GetArtist)
 	r.Get("/api/aotd", AOTDHandler.GetAOTD)
 	r.Post("/api/internal/update-aotd", AOTDHandler.UpdateAOTD)
 
