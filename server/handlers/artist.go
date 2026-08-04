@@ -7,8 +7,8 @@ type ArtistHandler struct {
 	Cache        *cache.Cache
 }
 
+func NewArtistHandler(a *artist.ArtistClient, c *cache.Cache) *ArtistHandler {
+	return &ArtistHandler{ArtistClient: a, Cache: c}
 }
 
-func NewArtistHandler(c *cache.Cache) *ArtistHandler {
-	return &ArtistHandler{Cache: c}
 }
