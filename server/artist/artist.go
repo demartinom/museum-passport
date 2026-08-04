@@ -6,9 +6,12 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/demartinom/museum-passport/cache"
 )
 
 type ArtistClient struct {
+	Cache *cache.Cache
 }
 
 type Artist struct {
@@ -24,6 +27,10 @@ type Artist struct {
 	Description string `json:"description"`
 }
 
+func NewArtistClient(c *cache.Cache) *ArtistClient {
+	return &ArtistClient{Cache: c}
+}
+
 type SearchCandidate struct {
 	Title  string `json:"title"`
 	PageID int    `json:"pageid"`
@@ -33,10 +40,6 @@ type CandidateSearchResponse struct {
 	Query struct {
 		Search []SearchCandidate `json:"search"`
 	} `json:"query"`
-}
-
-func (a *ArtistClient) NewArtistClient() *ArtistClient {
-	return &ArtistClient{}
 }
 
 func (a *ArtistClient) FindTitle(query string) (string, error) {
