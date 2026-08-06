@@ -19,8 +19,8 @@ func NewArtistHandler(a *artist.ArtistClient, c *cache.Cache) *ArtistHandler {
 }
 
 func (a *ArtistHandler) GetArtist(w http.ResponseWriter, r *http.Request) {
-	// "Monet" placeholder test
-	artist, err := a.ArtistClient.FindArtist("Monet")
+	searchField := r.URL.Query().Get("artistname")
+	artist, err := a.ArtistClient.FindArtist(searchField)
 	if err != nil {
 		log.Printf("FindArtist error: %v", err) // TEMP debug
 		http.Error(w, "No artist found", http.StatusNotFound)
