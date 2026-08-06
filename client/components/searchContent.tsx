@@ -124,7 +124,7 @@ export function SearchContent({ searchResult }: SearchContentProps) {
           ) : (
             urlQuery && (
               <p className="px-4 py-10 text-center text-sm text-stone-500 sm:py-32 sm:text-base">
-                No results found for `&quot;`{urlQuery}`&quot;`.
+                No results found for &quot;{urlQuery}&quot;.
               </p>
             )
           )}
