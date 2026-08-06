@@ -101,7 +101,7 @@ export function SearchContent({ searchResult }: SearchContentProps) {
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {searchResult.map((item) => (
                 <Link href={`/art/${item.ID}`} key={item.ID} className="group">
-                  <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-stone-100">
+                  <div className="relative aspect-3/4 w-full overflow-hidden rounded-lg bg-stone-100">
                     <Image
                       src={item.ImageSmall}
                       alt={item.ArtworkTitle}
