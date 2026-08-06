@@ -3,6 +3,7 @@ package artist
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -15,11 +16,11 @@ type ArtistClient struct {
 }
 
 type Artist struct {
-	Titles []struct {
-		Name string `json:"normalized"`
+	Titles struct {
+		Normalized string `json:"normalized"`
 	} `json:"titles"`
 	Blurb string `json:"extract"`
-	Image []struct {
+	Image struct {
 		ImageURL string `json:"source"`
 		Width    int    `json:"width"`
 		Height   int    `json:"height"`
@@ -43,20 +44,36 @@ type CandidateSearchResponse struct {
 }
 
 func (a *ArtistClient) FindTitle(query string) (string, error) {
-	encoded := url.PathEscape(query)
+	encoded := url.QueryEscape(query)
 	queryUrl := fmt.Sprintf("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=%s&srlimit=3&format=json&origin=*", encoded)
 
-	resp, err := http.Get(queryUrl)
+	req, err := http.NewRequest("GET", queryUrl, nil)
 	if err != nil {
 		return "", err
 	}
+	// Headers to prevent blocking of api call
+	req.Header.Set("User-Agent", "museum-passport/1.0 (https://museum-passport.vercel.app; contact@yourdomain.com)")
 
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
 	defer resp.Body.Close()
-	var result CandidateSearchResponse
 
+	// Error handling
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("wikipedia search returned status %d", resp.StatusCode)
+	}
+
+	var result CandidateSearchResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return "", err
 	}
+
+	if len(result.Query.Search) == 0 {
+		return "", fmt.Errorf("no results found for query: %q", query)
+	}
+
 	return result.Query.Search[0].Title, nil
 }
 
@@ -68,17 +85,33 @@ func (a *ArtistClient) FindArtist(query string) (*Artist, error) {
 	encoded := url.PathEscape(strings.ReplaceAll(pageTitle, " ", "_"))
 	queryUrl := fmt.Sprintf("https://en.wikipedia.org/api/rest_v1/page/summary/%s", encoded)
 
-	resp, err := http.Get(queryUrl)
+	req, err := http.NewRequest("GET", queryUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+	// Headers to prevent blocking of api call
+	req.Header.Set("User-Agent", "museum-passport/1.0 (https://museum-passport.vercel.app; contact@yourdomain.com)")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
 	defer resp.Body.Close()
 
-	var result Artist
-
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return nil, err
 	}
+	// Error handling
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("wikipedia summary returned status %d: %s", resp.StatusCode, string(body))
+	}
+
+	var result Artist
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("decode failed: %w, body: %s", err, string(body))
+	}
+
 	return &result, nil
 }
