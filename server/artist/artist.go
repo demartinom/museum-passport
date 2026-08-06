@@ -28,6 +28,11 @@ type Artist struct {
 	Description string `json:"description"`
 }
 
+type ArtistResult struct {
+	Artist *Artist
+	ID     int
+}
+
 func NewArtistClient(c *cache.Cache) *ArtistClient {
 	return &ArtistClient{Cache: c}
 }
@@ -77,8 +82,8 @@ func (a *ArtistClient) FindTitle(query string) (string, int, error) {
 	return result.Query.Search[0].Title, result.Query.Search[0].PageID, nil
 }
 
-func (a *ArtistClient) FindArtist(query string) (*Artist, error) {
-	pageTitle, _, err := a.FindTitle(query)
+func (a *ArtistClient) FindArtist(query string) (*ArtistResult, error) {
+	pageTitle, artistID, err := a.FindTitle(query)
 	if err != nil {
 		return nil, err
 	}
@@ -113,5 +118,5 @@ func (a *ArtistClient) FindArtist(query string) (*Artist, error) {
 		return nil, fmt.Errorf("decode failed: %w, body: %s", err, string(body))
 	}
 
-	return &result, nil
+	return &ArtistResult{&result, artistID}, nil
 }
