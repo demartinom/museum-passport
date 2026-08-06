@@ -43,42 +43,42 @@ type CandidateSearchResponse struct {
 	} `json:"query"`
 }
 
-func (a *ArtistClient) FindTitle(query string) (string, error) {
+func (a *ArtistClient) FindTitle(query string) (string, int, error) {
 	encoded := url.QueryEscape(query)
 	queryUrl := fmt.Sprintf("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=%s&srlimit=3&format=json&origin=*", encoded)
 
 	req, err := http.NewRequest("GET", queryUrl, nil)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	// Headers to prevent blocking of api call
 	req.Header.Set("User-Agent", "museum-passport/1.0 (https://museum-passport.vercel.app; contact@yourdomain.com)")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	defer resp.Body.Close()
 
 	// Error handling
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("wikipedia search returned status %d", resp.StatusCode)
+		return "", 0, fmt.Errorf("wikipedia search returned status %d", resp.StatusCode)
 	}
 
 	var result CandidateSearchResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	if len(result.Query.Search) == 0 {
-		return "", fmt.Errorf("no results found for query: %q", query)
+		return "", 0, fmt.Errorf("no results found for query: %q", query)
 	}
 
-	return result.Query.Search[0].Title, nil
+	return result.Query.Search[0].Title, result.Query.Search[0].PageID, nil
 }
 
 func (a *ArtistClient) FindArtist(query string) (*Artist, error) {
-	pageTitle, err := a.FindTitle(query)
+	pageTitle, _, err := a.FindTitle(query)
 	if err != nil {
 		return nil, err
 	}
