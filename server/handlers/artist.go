@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/demartinom/museum-passport/artist"
@@ -14,19 +13,35 @@ type ArtistHandler struct {
 	Cache        *cache.Cache
 }
 
+type ArtistResponse struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Bio         string `json:"bio"`
+	ImageURL    string `json:"imageUrl,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
 func NewArtistHandler(a *artist.ArtistClient, c *cache.Cache) *ArtistHandler {
 	return &ArtistHandler{ArtistClient: a, Cache: c}
 }
 
-func (a *ArtistHandler) GetArtist(w http.ResponseWriter, r *http.Request) {
-	searchField := r.URL.Query().Get("artistname")
-	artist, err := a.ArtistClient.FindArtist(searchField)
+func (h *ArtistHandler) GetArtist(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("artistname") // or however you're reading it
+
+	result, err := h.ArtistClient.FindArtist(query)
 	if err != nil {
-		log.Printf("FindArtist error: %v", err) // TEMP debug
-		http.Error(w, "No artist found", http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusInternalServerError) // or map specific errors to specific codes
 		return
 	}
 
+	resp := ArtistResponse{
+		ID:          result.ID,
+		Name:        result.Artist.Titles.Normalized,
+		Bio:         result.Artist.Blurb,
+		ImageURL:    result.Artist.Image.ImageURL,
+		Description: result.Artist.Description,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(artist)
+	json.NewEncoder(w).Encode(resp)
 }
