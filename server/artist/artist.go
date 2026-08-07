@@ -9,27 +9,15 @@ import (
 	"strings"
 
 	"github.com/demartinom/museum-passport/cache"
+	"github.com/demartinom/museum-passport/models"
 )
 
 type ArtistClient struct {
 	Cache *cache.Cache
 }
 
-type Artist struct {
-	Titles struct {
-		Normalized string `json:"normalized"`
-	} `json:"titles"`
-	Blurb string `json:"extract"`
-	Image struct {
-		ImageURL string `json:"source"`
-		Width    int    `json:"width"`
-		Height   int    `json:"height"`
-	} `json:"originalimage"`
-	Description string `json:"description"`
-}
-
 type ArtistResult struct {
-	Artist *Artist
+	Artist *models.Artist
 	ID     int
 }
 
@@ -113,7 +101,7 @@ func (a *ArtistClient) FindArtist(query string) (*ArtistResult, error) {
 		return nil, fmt.Errorf("wikipedia summary returned status %d: %s", resp.StatusCode, string(body))
 	}
 
-	var result Artist
+	var result models.Artist
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("decode failed: %w, body: %s", err, string(body))
 	}
