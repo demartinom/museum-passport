@@ -18,6 +18,13 @@ export function HomeSearchBar({ children }: HomeSearchBarProps) {
   function initialSearch() {
     if (!searchText.trim()) return;
 
+    if (searchField == "artist") {
+      startTransition(() => {
+        router.push(`/artist?name=${encodeURIComponent(searchText.trim())}`);
+      });
+      return;
+    }
+
     const params = new URLSearchParams();
     params.set("q", searchText.trim());
     params.set("field", searchField);
