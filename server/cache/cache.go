@@ -177,3 +177,15 @@ func (c *Cache) RemoveOldAOTD() error {
 
 	return err
 }
+
+func (c *Cache) SetArtist(id string, artist models.Artist) {
+	key := "artist:" + id
+
+	data, err := json.Marshal(artist)
+	if err != nil {
+		return
+	}
+
+	// Lasts for 2 weeks
+	c.client.Set(ctx, key, data, 14*24*time.Hour)
+}
