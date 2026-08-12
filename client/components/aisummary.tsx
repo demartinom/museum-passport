@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-
+import Link from "next/link";
 export const AISummary = ({ id }: { id: string }) => {
   const [summary, setSummary] = useState<string>("");
   const [loadingSummary, setLoadingSummary] = useState(true);
@@ -24,7 +24,12 @@ export const AISummary = ({ id }: { id: string }) => {
     <div>
       {/* Artwork display */}
       <div className="mt-6 rounded-lg bg-gray-50 p-2">
-        <h3 className="mb-2 font-semibold">About this artwork</h3>
+        <h3 className="mb-2 font-semibold">
+          About this artwork |{" "}
+          <Link className="underline" href={"/disclaimer"}>
+            AI Disclaimer
+          </Link>
+        </h3>
         {loadingSummary ? (
           <p className="text-gray-500">Generating summary...</p>
         ) : (
