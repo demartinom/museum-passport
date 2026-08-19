@@ -10,7 +10,8 @@ import (
 )
 
 type AOTDHandler struct {
-	Cache *cache.Cache
+	Cache   *cache.Cache
+	Clients map[string]museums.Client
 }
 
 func NewAOTDHandler(c *cache.Cache) *AOTDHandler {

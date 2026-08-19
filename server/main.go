@@ -44,7 +44,7 @@ func main() {
 
 	ArtworkHandler := handlers.NewArtworkHandler(clients, cache)
 	SearchHandler := handlers.NewSearchHandler(clients, cache)
-	AOTDHandler := handlers.NewAOTDHandler(cache)
+	AOTDHandler := handlers.NewAOTDHandler(cache, clients)
 	ArtistHandler := handlers.NewArtistHandler(artistClient, cache)
 
 	// Create AI client
