@@ -41,7 +41,7 @@ func main() {
 
 	ArtworkHandler := handlers.NewArtworkHandler(clients, cache)
 	SearchHandler := handlers.NewSearchHandler(clients, cache)
-	AOTDHandler := handlers.NewAOTDHandler(cache)
+	AOTDHandler := handlers.NewAOTDHandler(cache, clients)
 
 	// Create AI client
 	openAIKey := os.Getenv("OPENAI_KEY")
