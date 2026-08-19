@@ -152,7 +152,10 @@ func (c *Cache) GetCurrentAOTD() (*models.SingleArtwork, error) {
 
 	// Get artwork information for AOTD
 	val, err := c.client.Get(ctx, currentID).Result()
-	if err != nil {
+	if err == redis.Nil {
+		// Artwork expired from cache, return just the ID so caller can re-fetch
+		return &models.SingleArtwork{ID: currentID}, nil
+	} else if err != nil {
 		return nil, err
 	}
 
