@@ -181,7 +181,7 @@ func (c *Cache) RemoveOldAOTD() error {
 	return err
 }
 
-func (c *Cache) SetArtist(id string, artist models.Artist) {
+func (c *Cache) SetArtist(id string, artist models.ArtistResult) {
 	key := "artist:" + id
 
 	data, err := json.Marshal(artist)

@@ -34,7 +34,7 @@ func (h *ArtistHandler) GetArtist(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError) // or map specific errors to specific codes
 		return
 	}
-	h.Cache.SetArtist(strconv.Itoa(result.ID), *result.Artist)
+	h.Cache.SetArtist(strconv.Itoa(result.ID), *result)
 
 	resp := ArtistResponse{
 		ID:          result.ID,
