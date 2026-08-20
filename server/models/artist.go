@@ -12,3 +12,8 @@ type Artist struct {
 	} `json:"originalimage"`
 	Description string `json:"description"`
 }
+
+type ArtistResult struct {
+	Artist *Artist
+	ID     int
+}
