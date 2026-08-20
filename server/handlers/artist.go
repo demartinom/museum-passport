@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/demartinom/museum-passport/artist"
 	"github.com/demartinom/museum-passport/cache"
@@ -33,6 +34,7 @@ func (h *ArtistHandler) GetArtist(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError) // or map specific errors to specific codes
 		return
 	}
+	h.Cache.SetArtist(strconv.Itoa(result.ID), *result.Artist)
 
 	resp := ArtistResponse{
 		ID:          result.ID,
