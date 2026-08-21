@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/demartinom/museum-passport/models"
@@ -181,6 +182,7 @@ func (c *Cache) RemoveOldAOTD() error {
 	return err
 }
 
+// Saves artist information to cache
 func (c *Cache) SetArtist(id string, artist models.ArtistResult) {
 	key := "artist:" + id
 
@@ -191,4 +193,30 @@ func (c *Cache) SetArtist(id string, artist models.ArtistResult) {
 
 	// Lasts for 2 weeks
 	c.client.Set(ctx, key, data, 14*24*time.Hour)
+}
+
+// If artist exists in cache, retrieve info
+func (c *Cache) GetArtist(id string) (models.ArtistResult, bool) {
+	key := "artist:" + id
+
+	val, err := c.client.Get(ctx, key).Result()
+	if err == redis.Nil {
+		return models.ArtistResult{}, false // genuine cache miss
+	} else if err != nil {
+		log.Printf("redis get error: %v", err) // connection/other issue, worth knowing about
+		return models.ArtistResult{}, false
+	}
+
+	var result models.ArtistResult
+	if err := json.Unmarshal([]byte(val), &result); err != nil {
+		log.Printf("cache unmarshal failed for artist %s: %v", id, err)
+		return models.ArtistResult{}, false
+	}
+
+	if result.Artist == nil {
+		log.Printf("cache entry for artist %s has nil Artist, treating as miss", id)
+		return models.ArtistResult{}, false
+	}
+
+	return result, true
 }
