@@ -21,6 +21,7 @@ func NewAOTDHandler(c *cache.Cache, clients map[string]museums.Client) *AOTDHand
 	return &AOTDHandler{Cache: c, Clients: clients}
 }
 
+// Daily function to select new AOTD
 func (a *AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
 	secretToken := r.Header.Get("Authorization")
 	if secretToken != os.Getenv("AOTD_PASS") {

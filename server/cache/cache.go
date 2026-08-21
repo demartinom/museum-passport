@@ -67,6 +67,7 @@ func (c *Cache) SetSummary(artworkID, summary string) {
 	c.client.Set(ctx, key, summary, 60*24*time.Hour)
 }
 
+// When a artwork page is visited, increment view count by 1
 func (c *Cache) RecordView(id string) {
 	redisID := "artwork:" + id
 
@@ -169,6 +170,7 @@ func (c *Cache) GetCurrentAOTD() (*models.SingleArtwork, error) {
 	return &artwork, nil
 }
 
+// If AOTD was selected 30 days ago, put it back in the running for AOTD
 func (c *Cache) RemoveOldAOTD() error {
 	// Calculate 30 days as hour
 	thirtyDaysAgo := time.Now().Add(-30 * 24 * time.Hour).Unix()
