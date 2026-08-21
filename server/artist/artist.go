@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/demartinom/museum-passport/cache"
@@ -31,6 +33,7 @@ type CandidateSearchResponse struct {
 	} `json:"query"`
 }
 
+// Finds correctly formatted artist name and page id
 func (a *ArtistClient) FindTitle(query string) (string, int, error) {
 	encoded := url.QueryEscape(query)
 	queryUrl := fmt.Sprintf("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=%s&srlimit=3&format=json&origin=*", encoded)
@@ -65,11 +68,22 @@ func (a *ArtistClient) FindTitle(query string) (string, int, error) {
 	return result.Query.Search[0].Title, result.Query.Search[0].PageID, nil
 }
 
+// Searches wikipedia API for data on artist
 func (a *ArtistClient) FindArtist(query string) (*models.ArtistResult, error) {
+	// Retrieve name and ID
 	pageTitle, artistID, err := a.FindTitle(query)
 	if err != nil {
 		return nil, err
 	}
+
+	// Check if artist already exists in cache
+	if cached, exists := a.Cache.GetArtist(strconv.Itoa(artistID)); exists {
+		log.Println("cache hit for artist", artistID)
+		return &cached, nil
+	}
+
+	log.Println("cache miss, fetching from wikipedia")
+
 	encoded := url.PathEscape(strings.ReplaceAll(pageTitle, " ", "_"))
 	queryUrl := fmt.Sprintf("https://en.wikipedia.org/api/rest_v1/page/summary/%s", encoded)
 
@@ -91,6 +105,7 @@ func (a *ArtistClient) FindArtist(query string) (*models.ArtistResult, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	// Error handling
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("wikipedia summary returned status %d: %s", resp.StatusCode, string(body))
