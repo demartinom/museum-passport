@@ -1,0 +1,17 @@
+name: Trigger AOTD update
+
+on:
+    schedule:
+        - cron: "0 0 * * *"
+    workflow_dispatch: {}
+
+jobs:
+    trigger:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Call update-aotd endpoint
+              run: |
+                  curl -fsS --retry 5 --retry-delay 3 --retry-connrefused \
+                    -X POST \
+                    -H "Authorization: ${{ secrets.AOTD_PASS }}" \
+                    https://museum-passport.fly.dev/api/internal/update-aotd
