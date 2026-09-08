@@ -1,1 +1,0 @@
-0 0 * * * sh -c 'sleep 5 && curl -fsS --retry 5 --retry-delay 3 --retry-connrefused -X POST -H "Authorization: $AOTD_PASS" https://museum-passport.fly.dev/api/internal/update-aotd'

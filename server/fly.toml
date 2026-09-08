@@ -17,5 +17,4 @@ primary_region = 'ewr'
   cpus = 1
   memory_mb = 1024
 [processes]
-  app  = "run-app"
-  cron = "supercronic /app/crontab"
+  app = "run-app"
