@@ -1,13 +1,15 @@
 import { Artist } from "@/types/artist";
 import Image from "next/image";
 import { fraunces } from "../lib/fonts";
+import BackButton from "./backbutton";
 interface ArtistProfileProps {
   artist: Artist;
 }
 
 export default function ArtistProfile({ artist }: ArtistProfileProps) {
   return (
-    <div className="min-h-screen text-[#1A1A1A]">
+    <div className="relative min-h-screen text-[#1A1A1A]">
+      <BackButton />
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1fr_55%] md:gap-16">
           <div className="order-2 md:order-1 md:py-8">
