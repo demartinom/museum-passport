@@ -66,7 +66,13 @@ export default function SearchBar({
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className="flex-1 border-0 focus-visible:ring-0"
-          placeholder="Search artworks..."
+          placeholder={
+            searchField == "general"
+              ? "Search by artwork..."
+              : searchField == "name"
+                ? "Search by artwork title..."
+                : "Search artist profiles..."
+          }
         />
 
         <button
