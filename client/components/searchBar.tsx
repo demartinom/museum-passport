@@ -27,8 +27,8 @@ export default function SearchBar({
 }: SearchBarProps) {
   // Dropdown field options
   const FIELD_OPTIONS = [
-    { value: "general", label: "All" },
-    { value: "name", label: "Artwork" },
+    { value: "general", label: "Artwork" },
+    { value: "name", label: "Title" },
     { value: "artist", label: "Artist" },
   ];
 
@@ -66,7 +66,13 @@ export default function SearchBar({
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className="flex-1 border-0 focus-visible:ring-0"
-          placeholder="Search artworks..."
+          placeholder={
+            searchField == "general"
+              ? "Search by artwork..."
+              : searchField == "name"
+                ? "Search by artwork title..."
+                : "Search artist profiles..."
+          }
         />
 
         <button

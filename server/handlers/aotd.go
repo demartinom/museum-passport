@@ -21,6 +21,7 @@ func NewAOTDHandler(c *cache.Cache, clients map[string]museums.Client) *AOTDHand
 	return &AOTDHandler{Cache: c, Clients: clients}
 }
 
+// Daily function to select new AOTD
 func (a *AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
 	secretToken := r.Header.Get("Authorization")
 	if secretToken != os.Getenv("AOTD_PASS") {
@@ -55,7 +56,6 @@ func (a *AOTDHandler) GetAOTD(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if artwork.ArtworkTitle == "" {
-		// Split artwork into museum and art id
 		artworkInfo := strings.SplitN(artwork.ID, "-", 2)
 		// Remove "artwork:" from string
 		artworkInfo[0] = strings.ReplaceAll(artworkInfo[0], "artwork:", "")

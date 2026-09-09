@@ -82,6 +82,7 @@ func (s *SearchHandler) SearchArtwork(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Attempts to sort returned artwork by view count
 func (s *SearchHandler) SortArtwork(artResults []*models.SingleArtwork) []*models.SingleArtwork {
 	// Fetch all scores in one pass
 	scores := make(map[string]float64, len(artResults))

@@ -23,6 +23,13 @@ export function HomeSearchBar({ children }: HomeSearchBarProps) {
     params.set("field", searchField);
     params.set("page", "1");
 
+    if (searchField === "artist") {
+      startTransition(() => {
+        router.push(`/artist?name=${encodeURIComponent(searchText.trim())}`);
+      });
+      return;
+    }
+
     startTransition(() => {
       router.push(`/search?${params.toString()}`);
     });
