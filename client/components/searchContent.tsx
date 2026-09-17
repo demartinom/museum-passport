@@ -99,7 +99,11 @@ export function SearchContent({ searchResult }: SearchContentProps) {
           {searchResult?.length > 0 ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {searchResult.map((artwork) => (
-                <ArtworkCard artwork={artwork} key={artwork.ID} />
+                <ArtworkCard
+                  artwork={artwork}
+                  key={artwork.ID}
+                  artistPage={false}
+                />
               ))}
             </div>
           ) : (
