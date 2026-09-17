@@ -1,4 +1,4 @@
-import ArtistProfile from "@/components/ArtistProfile";
+import ArtistProfile from "@/components/artistProfile";
 import { Artist } from "@/types/artist";
 
 export default async function ArtistPage({
