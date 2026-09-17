@@ -35,7 +35,7 @@ export default function ArtistProfile({ artist }: ArtistProfileProps) {
             <Image
               src={artist.imageUrl}
               fill
-              className="object-cover"
+              className="object-contain"
               alt={artist.name}
             />
           </div>

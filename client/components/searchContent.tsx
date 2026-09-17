@@ -2,12 +2,11 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
 import SearchBar from "./searchBar";
 import SearchPagination from "./searchPagination";
+import ArtworkCard from "./artworkCard";
 
 interface SearchContentProps {
   searchResult: Art[];
@@ -99,26 +98,12 @@ export function SearchContent({ searchResult }: SearchContentProps) {
         >
           {searchResult?.length > 0 ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {searchResult.map((item) => (
-                <Link href={`/art/${item.ID}`} key={item.ID} className="group">
-                  <div className="relative aspect-3/4 w-full overflow-hidden rounded-lg bg-stone-100">
-                    <Image
-                      src={item.ImageSmall}
-                      alt={item.ArtworkTitle}
-                      fill
-                      unoptimized
-                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                      className="object-contain transition-transform group-hover:scale-105"
-                    />
-                  </div>
-
-                  <h3 className="mt-1.5 line-clamp-2 text-xs font-semibold sm:mt-2 sm:text-sm">
-                    {item.ArtworkTitle}
-                  </h3>
-                  <p className="mt-0.5 text-[11px] text-stone-400 sm:text-xs">
-                    {item.Museum}
-                  </p>
-                </Link>
+              {searchResult.map((artwork) => (
+                <ArtworkCard
+                  artwork={artwork}
+                  key={artwork.ID}
+                  artistPage={false}
+                />
               ))}
             </div>
           ) : (
