@@ -1,4 +1,4 @@
-import ArtistProfile from "@/components/artistProfile";
+import ArtistProfile from "@/components/ArtistProfile";
 import ArtworkCard from "@/components/artworkCard";
 import { Artist } from "@/types/artist";
 import { SearchResult } from "@/types/search";
