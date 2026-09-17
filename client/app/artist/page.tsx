@@ -7,6 +7,12 @@ export default async function ArtistPage({
   searchParams: Promise<{ name?: string }>;
 }) {
   const { name } = await searchParams;
+  return (
+    <div>
+      <ArtistInfo name={name} />
+    </div>
+
+async function ArtistInfo({ name }: { name?: string }) {
   if (!name) return <p className="py-32 text-center">No artist specified.</p>;
   const res = await fetch(
     `${process.env.API_URL}/api/artist?artistname=${encodeURIComponent(name)}`,
@@ -24,3 +30,4 @@ export default async function ArtistPage({
   const artist: Artist = await res.json();
   return <ArtistProfile artist={artist} />;
 }
+
