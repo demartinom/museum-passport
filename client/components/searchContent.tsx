@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { Art } from "@/types/search";
 import SearchBar from "./searchBar";
@@ -100,8 +98,8 @@ export function SearchContent({ searchResult }: SearchContentProps) {
         >
           {searchResult?.length > 0 ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {searchResult.map((item) => (
-                <ArtworkCard item={item} key={item.ID} />
+              {searchResult.map((artwork) => (
+                <ArtworkCard artwork={artwork} key={artwork.ID} />
               ))}
             </div>
           ) : (
