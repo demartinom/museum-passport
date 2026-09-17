@@ -2,6 +2,7 @@ import ArtistProfile from "@/components/artistProfile";
 import ArtworkCard from "@/components/artworkCard";
 import { Artist } from "@/types/artist";
 import { SearchResult } from "@/types/search";
+import { Suspense } from "react";
 
 export default async function ArtistPage({
   searchParams,
@@ -12,7 +13,9 @@ export default async function ArtistPage({
   return (
     <div>
       <ArtistInfo name={name} />
-      <ArtistWorks name={name} />;
+      <Suspense fallback={ArtistWorksSkeleton()}>
+        <ArtistWorks name={name} />;
+      </Suspense>
     </div>
   );
 }
@@ -59,6 +62,22 @@ async function ArtistWorks({ name }: { name?: string }) {
       </h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-5">
         {artworks}
+      </div>
+    </section>
+  );
+}
+
+function ArtistWorksSkeleton() {
+  return (
+    <section className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mb-4 h-6 w-48 animate-pulse rounded bg-stone-100" />
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div
+            key={i}
+            className="aspect-3/4 animate-pulse rounded-lg bg-stone-100"
+          />
+        ))}
       </div>
     </section>
   );
