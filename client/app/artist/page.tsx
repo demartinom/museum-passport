@@ -1,4 +1,4 @@
-import ArtistProfile from "@/components/ArtistProfile";
+import ArtistProfile from "@/components/artistProfile";
 import ArtworkCard from "@/components/artworkCard";
 import { Artist } from "@/types/artist";
 import { SearchResult } from "@/types/search";
@@ -51,9 +51,7 @@ async function ArtistWorks({ name }: { name?: string }) {
   const works: SearchResult = await res.json();
   const artworks = works.results
     .slice(0, 5)
-    .map((artwork) => (
-      <ArtworkCard key={artwork.ID} artwork={artwork} artistPage={true} />
-    ));
+    .map((artwork) => <ArtworkCard key={artwork.ID} artwork={artwork} />);
   const artistNameFormatted = works.results[0].ArtistName.split(",");
   return (
     <section className="w-full px-4 py-8 sm:px-6 lg:px-8">
