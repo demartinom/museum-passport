@@ -11,6 +11,7 @@ export default function ArtworkCard({ artwork }: { artwork: Art }) {
           src={artwork.ImageSmall}
           alt={artwork.ArtworkTitle}
           fill
+          referrerPolicy="no-referrer"
           unoptimized
           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
           className="object-contain transition-transform group-hover:scale-105"

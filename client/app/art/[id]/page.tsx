@@ -29,6 +29,7 @@ const SingleArtwork = async ({
           {/* Image comes first on mobile via order-1; text follows via order-2. On lg screens order is reset so the grid-column placement (text left, image right) takes over. */}
           <div className="relative order-1 aspect-square w-full overflow-hidden rounded-lg bg-gray-100 lg:order-2 lg:translate-x-10">
             <Image
+              referrerPolicy="no-referrer"
               src={data.ImageLarge}
               fill
               alt={data.ArtworkTitle}
@@ -62,6 +63,7 @@ const SingleArtwork = async ({
                 <Link
                   href={data.URL}
                   target="_blank"
+                  rel="noreferrer"
                   className="text-blue-500 hover:underline"
                 >
                   <p className="text-lg">{data.Museum}</p>
