@@ -115,7 +115,7 @@ func (c *Cache) SetAOTD() (string, error) {
 
 	// Fallback
 	if winnerID == "" {
-		return "", fmt.Errorf("could not find an unchosen artwork in the top 50")
+		return "", fmt.Errorf("could not find an unchosen artwork in the top 200")
 	}
 
 	// Adds winner to AOTD history
