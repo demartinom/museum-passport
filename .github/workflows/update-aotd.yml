@@ -12,6 +12,6 @@ jobs:
             - name: Call update-aotd endpoint
               run: |
                   curl -v --retry 5 --retry-delay 3 --retry-connrefused \
-                  -X POST \
-                  -H "Authorization: ${{ secrets.AOTD_PASS }}" \
-                  https://museum-passport.fly.dev/api/internal/update-aotd
+                    -X POST \
+                    -H "Authorization: ${{ secrets.AOTD_PASS }}" \
+                    https://museum-passport.fly.dev/api/internal/update-aotd
