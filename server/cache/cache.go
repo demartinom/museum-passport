@@ -92,7 +92,7 @@ func (c *Cache) SetAOTD() (string, error) {
 	topArtworks, err := c.client.ZRangeArgs(ctx, redis.ZRangeArgs{
 		Key:   "artwork_popularity",
 		Start: 0,
-		Stop:  49,
+		Stop:  199,
 		Rev:   true,
 	}).Result()
 	if err != nil {
