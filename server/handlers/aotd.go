@@ -36,7 +36,7 @@ func (a *AOTDHandler) UpdateAOTD(w http.ResponseWriter, r *http.Request) {
 	winner, err := a.Cache.SetAOTD()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return // ADD THIS LINE
 	}
 
 	w.WriteHeader(http.StatusOK)
